@@ -9,5 +9,9 @@
     "banktransfer":"Bank Account Transfers",
     "yousend":"You send",
     "willtake":"The recipient will receive",
-    "payMethod":"Payment Method"
+    "payMethod":"Payment Method",
+    "noCard":"Debit Card",
+    "fee":"Fee",
+    "feeCount":"Total Amount with Fee",
+    "transferBtn":"Transfer"
 }

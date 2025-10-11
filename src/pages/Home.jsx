@@ -17,7 +17,7 @@ const Home = () => {
   const [isOtheCurOpen, setIsOtheCurOpen] = useState(false)
   const [myCur, setMyCur] = useState(currency[0])
   const [otherCur, setOtherCur] = useState(currency[0])
-  const [changeCards,setChangeCards] = useState(false)
+  const [changeCards, setChangeCards] = useState(false)
 
   return (
     <section>
@@ -51,13 +51,13 @@ const Home = () => {
           </div>
         </div>
         <div className='hero-right'>
-          <div className='hero-transfer-cont' style={{flexDirection:!changeCards ? "column":"column-reverse"}}>
+          <div className='hero-transfer-cont' style={{ flexDirection: !changeCards ? "column" : "column-reverse" }}>
             <div className='hero-transfer-top'>
               <div className='hero-transfer-top-cash'>
                 <p>
                   {t("yousend")}
                 </p>
-                <input type="text" value={"1000"}/>
+                <input type="text" value={"1000"} />
               </div>
               <div className="currDropdown">
                 <button
@@ -65,7 +65,7 @@ const Home = () => {
                     setIsMyCurOpen(!isMyCurOpen)
                   }}
                   className="currToggle"
-                  
+
                 >
                   <img src={myCur.flag} alt="" className="currImg" />
                   <span className="currCode">{myCur?.currencyName.toUpperCase()}</span>
@@ -92,7 +92,7 @@ const Home = () => {
                 )}
               </div>
             </div>
-            <button type='button' className='changeBtn' onClick={()=>{setChangeCards(!changeCards)}}>
+            <button type='button' className='changeBtn' onClick={() => { setChangeCards(!changeCards) }}>
               <img src={`/images/changeBtn${theme}.png`} alt="" />
             </button>
             <div className='hero-transfer-bottom'>
@@ -108,7 +108,7 @@ const Home = () => {
                     setIsOtheCurOpen(!isOtheCurOpen)
                   }}
                   className="currToggle"
-                  
+
                 >
                   <img src={otherCur.flag} alt="" className="currImg" />
                   <span className="currCode">{otherCur?.currencyName.toUpperCase()}</span>
@@ -138,36 +138,45 @@ const Home = () => {
           </div>
           <div className="hero-right-cardInfo">
             <h3>
-                {t("payMethod")}
+              {t("payMethod")}
             </h3>
-            <div>
-                <img src="" alt="" />
-                <div>
-
-                </div>
-                <img src="" alt="" />
+            <div className='cardInfo-cont'>
+              <div className='cardInfoIcon'>
+                <img src={`/images/cardIcon${theme}.png`} alt="Card Icon" />
+              </div>
+              <div className='cardInfo-numbers'>
+                <h3>
+                  {t("noCard")}
+                </h3>
+                <p>
+                  Visa, Mastercard, Maestro…
+                </p>
+              </div>
+              <svg className="ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
+              </svg>
             </div>
           </div>
           <div className='hero-right-transferBtn'>
-                <div>
-                  <p>
-
-                  </p>
-                  <h4>
-
-                  </h4>
-                </div>
-                <div>
-                  <p>
-
-                  </p>
-                  <h4>
-
-                  </h4>
-                </div>
-                <button>
-
-                </button>
+            <div className='hero-fee'>
+              <p>
+                {t("fee")}
+              </p>
+              <h4>
+                0.5%
+              </h4>
+            </div>
+            <div className='hero-feeCount'>
+              <p>
+                {t("feeCount")}
+              </p>
+              <h4>
+                1005 USD
+              </h4>
+            </div>
+            <button>
+                {t("transferBtn")}
+            </button>
           </div>
         </div>
       </div>
