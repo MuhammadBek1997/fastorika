@@ -947,15 +947,27 @@ section{
         width: 100%;
         justify-content: space-between;
     }
-    
+    .cardInfoIcon{
+        width: 16vw;
+        height: 13vw;
+        border-radius: 50vw;
+    }
     .cardInfo-cont {
         width: 100%;
         padding: 0.8rem;
-        flex-wrap: wrap;
     }
-    
     .cardInfo-numbers {
         width: 100%;
+        line-height: normal;
+        
+    }
+    .cardInfo-numbers h3{
+        margin-left: 1rem;
+        font-size: 1rem;
+    }
+    .cardInfo-numbers p{
+        margin-left: 1rem;
+        font-size: 0.7rem;
     }
     
     .hero-right-transferBtn {
