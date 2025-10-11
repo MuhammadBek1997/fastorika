@@ -1,0 +1,810 @@
+/* ============================================
+   App.css orqali CSS Dark/Light Mode
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+:root {
+    /* Light mode ranglar */
+    --bg-body-light: #F0F0F0;
+    --bg-light: #FFFFFF;
+    --text-light: #202020;
+    --text-secondary-light: #666666;
+    --border-light: #E0E0E0;
+    --shadow-light: rgba(0, 0, 0, 0.1);
+
+    /* Dark mode ranglar */
+    --bg-body-dark: #363636;
+    --bg-dark: #202020;
+    --text-dark: #FFFFFF;
+    --text-secondary-dark: #B0B0B0;
+    --border-dark: #404040;
+    --shadow-dark: rgba(0, 0, 0, 0.3);
+
+    /* Button ranglar */
+    --btn-primary: #22c55e;
+    --btn-primary-hover: #16a34a;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inter", sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ============================================
+   LIGHT MODE
+   ============================================ */
+#light {
+    background-color: var(--bg-body-light);
+    color: var(--text-light);
+    min-height: 100vh;
+}
+
+#light nav {
+    background-color: var(--bg-light);
+    border-bottom: 1px solid var(--border-light);
+    box-shadow: 0 2px 4px var(--shadow-light);
+}
+
+#light nav a,
+#light nav button:not(.loginBtn):not(.themeToggle) {
+    color: var(--text-light);
+}
+
+#light nav a:hover {
+    color: var(--btn-primary);
+}
+
+#light .loginBtn {
+    background-color: var(--btn-primary);
+    color: white;
+}
+
+#light .loginBtn:hover {
+    background-color: var(--btn-primary-hover);
+}
+
+/* ============================================
+   DARK MODE
+   ============================================ */
+#dark {
+    background-color: var(--bg-body-dark);
+    color: var(--text-dark);
+    min-height: 100vh;
+}
+
+#dark nav {
+    background-color: var(--bg-dark);
+    border-bottom: none;
+    box-shadow: 0 2px 4px var(--shadow-dark);
+}
+
+#dark nav a,
+#dark nav button:not(.loginBtn):not(.themeToggle) {
+    color: var(--text-dark);
+}
+
+#dark nav a:hover {
+    color: var(--btn-primary);
+}
+
+#dark .loginBtn {
+    background-color: var(--btn-primary);
+    color: white;
+}
+
+#dark .loginBtn:hover {
+    background-color: var(--btn-primary-hover);
+}
+
+/* ============================================
+   NAVBAR UMUMIY STILLAR
+   ============================================ */
+nav {
+    margin: 1rem auto;
+    padding: 0rem 1.5rem;
+    border-radius: 2rem;
+}
+
+#dark #navbar-sticky {
+    background-color: var(--bg-dark);
+}
+#light #navbar-sticky {
+    background-color: var(--bg-light);
+}
+#navbar-sticky{
+    width: 83%;
+    gap: 18vw;
+}
+
+.logo img {
+    width: 100px;
+    height: auto;
+}
+
+.loginBtn {
+    padding: 0.4rem 1.3rem;
+    border-radius: 0.7rem;
+    border: none;
+    font-weight: 500;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* ============================================
+   DROPDOWNS CONTAINER
+   ============================================ */
+.dropdowns-cont {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ============================================
+   THEME DROPDOWN
+   ============================================ */
+.themeDropdown {
+    position: relative;
+}
+
+.themeToggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 0.7rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: all 0.3s ease;
+}
+
+#light .themeToggle {
+    background-color: var(--bg-light);
+    color: var(--text-light);
+    border: 0.1vw solid #CECECE;
+}
+
+#light .themeToggle:hover {
+    background-color: var(--border-light);
+}
+
+#dark .themeToggle {
+    background-color: var(--bg-dark);
+    color: var(--text-dark);
+    border: 0.1vw solid #5B5B5B;
+}
+
+#dark .themeToggle:hover {
+    background-color: var(--border-dark);
+}
+
+.themeToggle svg:first-child {
+    width: 18px;
+    height: 18px;
+}
+
+.themeToggle svg.ms-1 {
+    width: 10px;
+    height: 10px;
+    margin-left: 0.25rem;
+}
+
+/* Theme Dropdown Menu */
+.themeDropdownMenu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    min-width: 150px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 50;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#light .themeDropdownMenu {
+    background-color: var(--bg-light);
+    border: 1px solid var(--border-light);
+}
+
+#dark .themeDropdownMenu {
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border-dark);
+}
+
+/* Theme Options */
+.themeOption {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.75rem;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    background: none;
+}
+
+.themeOption svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+#light .themeOption {
+    color: var(--text-light);
+}
+
+#light .themeOption:hover {
+    background-color: var(--border-light);
+}
+
+#light .themeOption.active {
+    background-color: var(--btn-primary);
+    color: white;
+}
+
+#dark .themeOption {
+    color: var(--text-dark);
+}
+
+#dark .themeOption:hover {
+    background-color: var(--border-dark);
+}
+
+#dark .themeOption.active {
+    background-color: var(--btn-primary);
+    color: white;
+}
+
+/* ============================================
+   LANGUAGE DROPDOWN
+   ============================================ */
+.langDropdown {
+    position: relative;
+}
+
+.langToggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.4rem 0.75rem;
+    border-radius: 0.7rem;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 0.875rem;
+}
+
+#light .langToggle {
+    background-color: var(--bg-light);
+    color: var(--text-light);
+    border: 0.1vw solid #CECECE;
+}
+
+#light .langToggle:hover {
+    background-color: var(--border-light);
+}
+
+#dark .langToggle {
+    background-color: var(--bg-dark);
+    color: var(--text-dark);
+    border: 0.1vw solid #5B5B5B;
+}
+
+#dark .langToggle:hover {
+    background-color: var(--border-dark);
+}
+
+.langFlag {
+    font-size: 1.125rem;
+    line-height: 1;
+}
+
+.langCode {
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.langToggle svg.ms-1 {
+    width: 10px;
+    height: 10px;
+    margin-left: 0.125rem;
+}
+
+/* Language Dropdown Menu */
+.langDropdownMenu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    min-width: 170px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 50;
+    animation: fadeIn 0.2s ease;
+}
+
+#light .langDropdownMenu {
+    background-color: var(--bg-light);
+    border: 1px solid var(--border-light);
+}
+
+#dark .langDropdownMenu {
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border-dark);
+}
+
+/* Language Options */
+.langOption {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.75rem;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    background: none;
+    text-align: left;
+}
+
+.langImg {
+    width: 16px;
+}
+
+.langOption .langFlag {
+    flex-shrink: 0;
+}
+
+#light .langOption {
+    color: var(--text-light);
+}
+
+#light .langOption:hover {
+    background-color: var(--border-light);
+}
+
+#light .langOption.active {
+    background-color: var(--btn-primary);
+    color: white;
+}
+
+#dark .langOption {
+    color: var(--text-dark);
+}
+
+#dark .langOption:hover {
+    background-color: var(--border-dark);
+}
+
+#dark .langOption.active {
+    background-color: var(--btn-primary);
+    color: white;
+}
+
+/* ============================================
+   MOBILE MENU BUTTON
+   ============================================ */
+#light button[aria-controls="navbar-sticky"] {
+    color: var(--text-light);
+}
+
+#light button[aria-controls="navbar-sticky"]:hover {
+    background-color: var(--border-light);
+}
+
+#dark button[aria-controls="navbar-sticky"] {
+    color: var(--text-dark);
+}
+
+#dark button[aria-controls="navbar-sticky"]:hover {
+    background-color: var(--border-dark);
+}
+
+/* ============================================
+   RESPONSIVE navbar
+   ============================================ */
+@media (max-width:1160px) {
+    #navbar-sticky {
+        width: 70vw;
+        gap: 18vw;
+    }
+}
+@media (max-width:900px) {
+    #navbar-sticky {
+        width: 65vw;
+        gap: 10vw;
+    }
+}
+
+@media (max-width: 770px) {
+    nav {
+        padding: 0.1rem 0.5rem;
+        background-color: var(--bg-body-light);
+    }
+
+
+    .dropdowns-cont {
+        position: absolute;
+        top: 15%;
+        left: 75%;
+    }
+    #navbar-sticky {
+        width: 80vw;
+        gap: 20vw;
+    }
+}
+/* @media (max-width:600px) {
+    .dropdowns-cont {
+        position: absolute;
+        top: 15%;
+        left: 70%;
+    }
+} */
+@media (max-width:500px) {
+    .dropdowns-cont {
+        position: absolute;
+        top: 15%;
+        left: 65%;
+    }
+}
+@media (max-width:450px) {
+    .dropdowns-cont {
+        position: absolute;
+        top: 15%;
+        left: 60%;
+        right: 5%;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ============================================
+   SECTION
+   ============================================ */
+
+section{
+    padding-top: 7rem;
+}
+
+
+
+
+
+
+
+
+/* ============================================
+   Hero
+============================================ */
+
+.hero{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem;
+    border-radius: 2rem;
+}
+#light .hero{
+    background-color: var(--bg-light);
+}
+#dark .hero{
+    background-color: var(--bg-dark);
+}
+.hero-left{
+    flex: 1;
+}
+.hero-left h1{
+    font-size: 56px;
+    font-weight: 700;
+}
+.hero-left p{
+    font-size: 24px;
+    font-weight: 400;
+}
+.hero-func-list{
+    padding-top: 5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.hero-func-list-item{
+    width: 218px;
+    height: 218px;
+    border: 1px solid #CECECE;
+    border-radius: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: start;
+    padding: 0rem 1rem;
+    padding-right: 4rem;
+}
+
+.hero-right{
+    flex: 1;
+    padding: 1rem 0.1rem;
+    border-radius: 1.5rem;
+    
+}
+#dark .hero-right{
+    background-color: var(--bg-body-dark);
+}
+#light .hero-right{
+    background-color: var(--bg-body-light);
+}
+.hero-transfer-cont{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 0.5rem;
+    position: relative;
+}
+.hero-transfer-cont input{
+    background: none;
+    font-size: 24px;
+    font-weight: 700;
+}
+.hero-transfer-top{
+    width: 95%;
+    display: flex;
+    justify-content: space-around;
+    padding: 1rem;
+    border-radius: 1rem;
+}
+.hero-transfer-top-cach p{
+    font-size: 15px;
+}
+#light .hero-transfer-top{
+    background-color: var(--bg-light);
+}
+#dark .hero-transfer-top{
+    background-color: var(--bg-dark);
+}
+
+
+
+.hero-transfer-bottom{
+    width: 95%;
+    display: flex;
+    justify-content: space-around;
+    padding: 1rem;
+    border-radius: 1rem;
+}
+.hero-transfer-bottom-cash p{
+    font-size: 15px;
+}
+#light .hero-transfer-bottom{
+    background-color: var(--bg-light);
+}
+#dark .hero-transfer-bottom{
+    background-color: var(--bg-dark);
+}
+
+
+
+/* Currency dropdown */
+
+
+
+.currDropdown {
+    position: relative;
+}
+
+.currToggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 1rem 1.5rem;
+    border-radius: 0.7rem;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 0.875rem;
+}
+
+#light .currToggle {
+    background-color: var(--bg-light);
+    color: var(--text-light);
+    border: 0.1vw solid #CECECE;
+}
+
+#light .currToggle:hover {
+    background-color: var(--border-light);
+}
+
+#dark .currToggle {
+    background-color: var(--bg-dark);
+    color: var(--text-dark);
+    border: 0.1vw solid #5B5B5B;
+}
+
+#dark .currToggle:hover {
+    background-color: var(--border-dark);
+}
+
+.currFlag {
+    font-size: 1.125rem;
+    line-height: 1;
+}
+
+.currCode {
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.currToggle svg.ms-1 {
+    width: 10px;
+    height: 10px;
+    margin-left: 0.125rem;
+}
+
+/* currency Dropdown Menu */
+.currDropdownMenu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    min-width: 170px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 50;
+    animation: fadeIn 0.2s ease;
+}
+
+#light .currDropdownMenu {
+    background-color: var(--bg-light);
+    border: 1px solid var(--border-light);
+}
+
+#dark .currDropdownMenu {
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border-dark);
+}
+
+/* currency Options */
+.currOption {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.75rem;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    background: none;
+    text-align: left;
+}
+
+.currImg {
+    width: 16px;
+}
+
+.currOption .currFlag {
+    flex-shrink: 0;
+}
+
+#light .currOption {
+    color: var(--text-light);
+}
+
+#light .currOption:hover {
+    background-color: var(--border-light);
+}
+
+#light .currOption.active {
+    background-color: var(--btn-primary);
+    color: white;
+}
+
+#dark .currOption {
+    color: var(--text-dark);
+}
+
+#dark .currOption:hover {
+    background-color: var(--border-dark);
+}
+
+#dark .currOption.active {
+    background-color: var(--btn-primary);
+    color: white;
+}
+
+
+
+
+.changeBtn{
+    position: absolute;
+    left: 48%;
+    padding: 0.3rem;
+    border-radius: 50%;
+}
+.changeBtn img{
+    border-radius: 50%;
+    padding: 0.5rem;
+}
+#dark .changeBtn img{
+    background-color: var(--bg-dark);
+}
+#light .changeBtn img{
+    background-color: var(--bg-light);
+}
+#dark .changeBtn{
+    background-color: var(--bg-body-dark);
+}
+#light .changeBtn{
+    background-color: var(--bg-body-light);
+}
+
+.hero-right-cardInfo{
+    padding: 1rem;
+}
+.hero-right-cardInfo h3{
+    font-size: 17px;
+    font-weight: 600;
+}
+
+
+
