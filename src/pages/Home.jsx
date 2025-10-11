@@ -21,7 +21,7 @@ const Home = () => {
 
   return (
     <section>
-      <div className='hero'>
+      {/* <div className='hero'>
         <div className='hero-left'>
           <h1>
             {t("heroHead")}
@@ -179,7 +179,7 @@ const Home = () => {
             </button>
           </div>
         </div>
-      </div>
+      </div> */}
     </section>
   )
 }
