@@ -461,6 +461,7 @@ nav {
 
 section{
     padding-top: 6rem;
+    overflow: hidden;
 }
 
 
@@ -480,6 +481,7 @@ section{
     align-items: center;
     padding: 2rem;
     border-radius: 2rem;
+    overflow: hidden;
 }
 #light .hero{
     background-color: var(--bg-light);
@@ -825,121 +827,218 @@ section{
 
 
 
-
 /* ============================================
-   RESPONSIVE
+   RESPONSIVE FIXES
    ============================================ */
 
-
-
-
-
-@media (max-width:1250px) {
-    .hero{
-        flex-direction: column;
-        gap: 2rem;
-    }
-    .hero-right{
-        padding: 1rem 0;
-    }
-    .hero-func-list-item{
-        width: 150px;
-        height: 150px;
-    }
-    .hero-func-list{
-        overflow-x: auto;
-    }
-    .hero-left,
-    .hero-right{
-        flex: 1;
-    }
-    .hero-transfer-cont div{
-        width: 85%;
-        justify-content: center;
-    }
-    .hero-right-cardInfo{
-        padding: 0;
-    }
-    .hero-right-cardInfo h3,
-    .hero-right-cardInfo p{
-        margin-left: 2rem;
-    }
-    .cardInfo-cont{
-        width: 90%;
-        margin: 0 auto;
-    }
-    .hero-right-transferBtn div{
-        margin: 0 auto;
-        width: 90%;
-    }
-    .hero-right-transferBtn button{
-        width: 90%;
-        margin: 0 auto;
-    }
-}
-
-@media (max-width:1160px) {
-    #navbar-sticky {
-        width: 70vw;
-        gap: 18vw;
-    }
-}
-@media (max-width:900px) {
-    #navbar-sticky {
-        width: 65vw;
-        gap: 10vw;
-    }
-}
-
-@media (max-width: 770px) {
+/* 360px uchun maxsus tuzatishlar */
+@media (max-width: 768px) {
+    /* Navbar tuzatish */
     nav {
-        padding: 0.1rem 0.5rem;
-        background-color: var(--bg-body-light);
+        margin: 0.5rem auto;
+        padding: 0.5rem;
+        width: 95% !important;
+        margin-left: 2.5%;
     }
-
-
-    .dropdowns-cont {
-        position: absolute;
-        top: 15%;
-        left: 75%;
-    }
+    
     #navbar-sticky {
-        width: 80vw;
-        gap: 20vw;
+        width: 100% !important;
+        gap: 1rem !important;
+        padding: 0.5rem !important;
     }
-}
-/* @media (max-width:600px) {
-    .dropdowns-cont {
-        position: absolute;
-        top: 15%;
-        left: 70%;
+    
+    /* Hero section */
+    .hero {
+        padding: 1rem;
+        width: 100%;
+        overflow-x: hidden;
+        display: block;
     }
-} */
-@media (max-width:500px) {
-    nav{
+    
+    .hero-left {
+        width: 100%;
         padding: 0;
     }
+    
+    .hero-left h1 {
+        font-size: 8vw;
+        line-height: 1.2;
+    }
+    
+    .hero-left p {
+        font-size: 4vw;
+        margin-top: 0.5rem;
+    }
+    
+    /* Hero functions list */
+    .hero-func-list {
+        padding: 2rem 0;
+        gap: 0.5rem;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    
+    .hero-func-list::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .hero-func-list-item {
+        min-width: 120px;
+        width: 120px;
+        height: 120px;
+        padding: 1rem;
+        padding-right: 1rem !important; /* Fix padding issue */
+        gap: 0.5rem;
+        flex-shrink: 0;
+    }
+    
+    .hero-func-list-item img {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .hero-func-list-item h3 {
+        font-size: 12px;
+        line-height: 1.2;
+    }
+    
+    /* Dropdowns */
     .dropdowns-cont {
         position: absolute;
-        top: 15%;
-        left: 65%;
+        top: 1rem;
+        right: 1rem;
+        left: auto !important;
+        gap: 0.5rem;
+        flex-wrap: nowrap;
+    }
+    
+    .langToggle,
+    .themeToggle {
+        padding: 0.4rem 0.6rem;
+        font-size: 12px;
+    }
+    
+    .langImg {
+        width: 14px;
+    }
+    
+    /* Hero right section */
+    .hero-right {
+        width: 100%;
+        padding: 1rem;
+    }
+    
+    .hero-transfer-cont {
+        width: 100%;
+    }
+    
+    .hero-transfer-top,
+    .hero-transfer-bottom {
+        width: 100%;
+        padding: 0.8rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .currToggle {
+        padding: 0.8rem 1rem;
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .cardInfo-cont {
+        width: 100%;
+        padding: 0.8rem;
+        flex-wrap: wrap;
+    }
+    
+    .cardInfo-numbers {
+        width: 100%;
+    }
+    
+    .hero-right-transferBtn {
+        padding: 1rem;
+    }
+    
+    .hero-right-transferBtn button {
+        width: 100%;
+    }
+    .changeBtn{
+        left: auto;
+        right: -1rem;
     }
 }
-@media (max-width:450px) {
+
+/* 360px va undan kichik ekranlar uchun */
+@media (max-width: 360px) {
+    nav {
+        width: 100% !important;
+        margin: 0;
+        border-radius: 0;
+        padding: 0;
+    }
+    
+    #navbar-sticky {
+        padding: 0.2rem !important;
+    }
+    
+    .logo img {
+        width: 70px;
+    }
+    
+    .loginBtn {
+        padding: 0.3rem 0.8rem;
+        font-size: 12px;
+    }
+    
     .dropdowns-cont {
-        position: absolute;
-        top: 15%;
-        left: 60%;
-        right: 5%;
+        right: 0.5rem;
+        gap: 0.25rem;
     }
+    
+    .langToggle,
+    .themeToggle {
+        padding: 0.3rem 0.5rem;
+    }
+    
+    .hero {
+        padding: 1rem;
+    }
+    
+    .hero-left h1 {
+        font-size: 9vw;
+    }
+    
+    .hero-left p {
+        font-size: 4.5vw;
+    }
+    
+    .hero-func-list {
+        padding: 1.5rem 0;
+    }
+    
+    .hero-func-list-item {
+        min-width: 110px;
+        width: 110px;
+        height: 110px;
+        padding: 0.8rem;
+    }
+    
 }
 
+/* Umumiy overflow tuzatish */
+* {
+    box-sizing: border-box;
+}
 
+body {
+    overflow-x: hidden;
+}
 
-
-
-
-
-
-
-
+section {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+}

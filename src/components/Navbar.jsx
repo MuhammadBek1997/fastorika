@@ -17,7 +17,7 @@ const Navbar = () => {
     const currentLang = languages.find(lang => lang.code === currentLanguage)
 
     return (
-        <nav className="fixed w-full z-20 top-0 start-0" style={{background:isMobileMenuOpen?"#F0F0F0":null,height:isMobileMenuOpen?"100%":null,marginTop:isMobileMenuOpen?"0":null,borderRadius:isMobileMenuOpen?"0":null}} >
+        <nav className="fixed w-full z-20 top-0 start-0" style={{background:isMobileMenuOpen && theme=="light"?"#F0F0F0":isMobileMenuOpen && theme=="dark"?"#363636":null,height:isMobileMenuOpen?"100%":null,marginTop:isMobileMenuOpen?"0":null,borderRadius:isMobileMenuOpen?"0":null}} >
             <div className="max-w-screen-xxl flex flex-wrap items-center justify-between mx-auto p-4">
                 <div className="flex gap-1">
                     <button 
