@@ -10,6 +10,7 @@
     --bg-light: #FFFFFF;
     --text-light: #202020;
     --text-secondary-light: #666666;
+    --textp-secondary-light: rgba(0, 0, 0, 0.75);
     --border-light: #E0E0E0;
     --shadow-light: rgba(0, 0, 0, 0.1);
 
@@ -18,6 +19,7 @@
     --bg-dark: #202020;
     --text-dark: #FFFFFF;
     --text-secondary-dark: #B0B0B0;
+    --textp-secondary-dark: rgba(255, 255, 255, 0.75);
     --border-dark: #404040;
     --shadow-dark: rgba(0, 0, 0, 0.3);
 
@@ -119,14 +121,25 @@
     background-color: var(--btn-primary-hover);
 }
 
+
 /* ============================================
    NAVBAR UMUMIY STILLAR
    ============================================ */
 nav {
-    margin: 1rem auto;
+    margin: 0 auto;
     padding: 0rem 1.5rem;
-    border-radius: 1.2rem;
+    border-radius: 1.7rem;
 }
+/* Navbar scroll effekti */
+nav {
+    transition: all 0.3s ease;
+}
+
+nav.scrolled {
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+}
+
 
 #dark #navbar-sticky {
     background-color: var(--bg-dark);
@@ -462,7 +475,7 @@ nav {
    ============================================ */
 
 section {
-    padding-top: 6rem;
+    padding-top: 1rem;
     overflow: hidden;
 }
 
@@ -911,6 +924,77 @@ section {
 
 
 
+.transferanywere{
+    display: flex;
+    border-radius: 2rem;
+    margin-bottom: 1rem;
+}
+.transferanywere-img{
+    width: 70vw;
+    display: flex;
+    justify-content: center;
+    align-items: end;
+}
+.transferanywere-img img{
+    width: 100%;
+}
+.transferanywere-textCont{
+    padding: 2rem;
+    padding-right: 14rem;
+}
+#light .transferanywere{
+    background-color: var(--bg-light);
+}
+#dark .transferanywere{
+    background-color: var(--bg-dark);
+}
+.transferanywere-head{
+    min-width: 15rem;
+    max-width: 20rem;
+    width:fit-content;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+    font-weight: 500;
+    padding: 0.2rem;
+    padding-right: 0.7rem;
+    border-radius: 0.7rem;
+    margin-bottom: 1rem;
+}
+.transferanywere-head img{
+    width: 2rem;
+}
+#dark .transferanywere-head{
+    background-color: var(--bg-body-dark);
+}
+#light .transferanywere-head{
+    background-color: var(--bg-body-light);
+}
+.transferanywere-textCont h2{
+    font-size: 3vw;
+    font-weight: 600;
+    line-height: normal;
+}
+.coloredanywere{
+    color: #00D796;    
+}
+.transferanywere-textCont p{
+    font-size: 1.7vw;
+    margin-top: 1rem;
+}
+#dark .transferanywere-textCont p{
+    color: var(--textp-secondary-dark);
+}
+#light .transferanywere-textCont p{
+    color: var(--textp-secondary-light);
+}
+.forM{
+    display: none;
+}
+
+
+
 
 
 
@@ -1104,6 +1188,51 @@ section {
         height: 224px;
         gap: 0.5rem;
         flex-shrink: 0;
+    }
+
+
+    .transferanywere{
+        flex-direction: column-reverse;
+        align-items: center;
+        padding: 2rem;
+        gap: 1rem;
+    }
+    .transferanywere-textCont{
+        padding: 0;
+    }
+    .forD{
+        display: none;
+    }
+    .forM{
+        display: inline;
+    }
+    .transferanywere-img{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    #light .transferanywere-img{
+        border-radius: 2rem;
+        background: url(/public/images/underGlobus.png) no-repeat , var(--bg-body-light);
+        background-size: cover;
+    }
+    #dark .transferanywere-img{
+        border-radius: 2rem;
+        background: url(/public/images/underGlobus.png) , var(--bg-body-dark);
+        background-size: cover;
+    }
+    .transferanywere-head{
+        max-width: 70vw;
+    }
+    .transferanywere-head h4{
+        font-size: 3.8vw;
+    }
+    .transferanywere-textCont h2{
+        font-size: 5vw;
+    }
+    .transferanywere-textCont p{
+        font-size: 4vw;
     }
 }
 

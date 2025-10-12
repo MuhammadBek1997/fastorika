@@ -19,5 +19,11 @@
     "servicestep2":"Pay for the Transfer",
     "servicestep2p":"With card, crypto, or from bank account",
     "servicestep3":"The recipient receives money",
-    "servicestep3p":"within 5 minutes"
+    "servicestep3p":"within 5 minutes",
+    "unlimitedTransfer":"Unlimited Transfers",
+    "transferanywere1":"Send money ",
+    "transferanywere2":"anywhere, ",
+    "transferanywere3":"anytime ",
+    "transferanywere":"Send money to loved ones anywhere in the world — quickly, conveniently, and safely. Always close by, no matter where they are.",
+    "":""
 }

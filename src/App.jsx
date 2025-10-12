@@ -13,7 +13,7 @@ function App() {
 
 
   return (
-    <div id={theme}>
+    <div id={theme} className='pt-4'>
       <Navbar/>
       <Routes>
         <Route path='/' element={<Home/>} />

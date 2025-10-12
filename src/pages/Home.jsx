@@ -208,6 +208,28 @@ const Home = () => {
           </div>
         </div>
       </div>
+      <div className='transferanywere'>
+        <div className='transferanywere-textCont'>
+            <div className='transferanywere-head'>
+              <img src="/images/transferanywereIcon.png" alt="" />
+              <h4>
+                {t("unlimitedTransfer")}
+              </h4>
+            </div>
+            <h2>
+                {t("transferanywere1")}
+                <span className='coloredanywere'><br />{t("transferanywere2")}</span>
+                {t("transferanywere3")}
+            </h2>
+            <p>
+                {t("transferanywere")}
+            </p>
+        </div>
+        <div className='transferanywere-img'>
+          <img src="/images/globusMobile.png" alt="" className='forM' />
+          <img src="/images/transferanywerePhoto.png"  alt="" className='forD' />
+        </div>
+      </div>
     </section>
   )
 }

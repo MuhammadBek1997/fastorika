@@ -1,12 +1,33 @@
 import { Link } from "react-router-dom"
 import { useGlobalContext } from "../Context"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 const Navbar = () => {
-    const { theme, toggleTheme, currentLanguage, handleChange,t } = useGlobalContext()
+    const { theme, toggleTheme, currentLanguage, handleChange, t } = useGlobalContext()
     const [isThemeOpen, setIsThemeOpen] = useState(false)
     const [isLangOpen, setIsLangOpen] = useState(false)
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+
+
+    // Navbar komponenti ichida, useState lardan keyin:
+    const [isScrolled, setIsScrolled] = useState(false)
+
+    // useEffect qo'shing
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 50) {
+                setIsScrolled(true)
+            } else {
+                setIsScrolled(false)
+            }
+        }
+
+        window.addEventListener('scroll', handleScroll)
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll)
+        }
+    }, [])
 
     // Language options
     const languages = [
@@ -17,14 +38,14 @@ const Navbar = () => {
     const currentLang = languages.find(lang => lang.code === currentLanguage)
 
     return (
-        <nav className="fixed w-full z-20 top-0 start-0" style={{background:isMobileMenuOpen && theme=="light"?"#F0F0F0":isMobileMenuOpen && theme=="dark"?"#363636":null,height:isMobileMenuOpen?"100%":null,marginTop:isMobileMenuOpen?"0":null,borderRadius:isMobileMenuOpen?"0":null}} >
+        <nav className={`sticky w-full z-20 top-0 start-0 ${isScrolled ? 'scrolled' : ''}`} style={{ background: isMobileMenuOpen && theme == "light" ? "#F0F0F0" : isMobileMenuOpen && theme == "dark" ? "#363636" : null, height: isMobileMenuOpen ? "100%" : null, marginTop: isMobileMenuOpen ? "0" : null, borderRadius: isMobileMenuOpen ? "0" : null }} >
             <div className="max-w-screen-xxl flex flex-wrap items-center justify-between mx-auto p-4">
                 <div className="flex gap-1">
-                    <button 
+                    <button
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                        type="button" 
-                        className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm rounded-lg md:hidden" 
-                        aria-controls="navbar-sticky" 
+                        type="button"
+                        className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm rounded-lg md:hidden"
+                        aria-controls="navbar-sticky"
                         aria-expanded={isMobileMenuOpen}
                     >
                         <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
@@ -34,27 +55,27 @@ const Navbar = () => {
                     <Link to={'/'} className="logo">
                         <img src={`/images/logo${theme}.png`} className="h-8" alt="Logo" />
                     </Link>
-                    
+
                 </div>
 
                 <div className="flex md:order-2 items-center space-x-3 md:space-x-0 rtl:space-x-reverse">
-                    
+
                     {!isMobileMenuOpen && <button type="button" className="loginBtn">{t("login")}</button>}
-                    
+
                 </div>
 
-                <div className={`${isMobileMenuOpen ? 'block' : 'hidden'} items-center justify-end w-full md:flex md:w-auto md:order-1`}  style={{marginTop:isMobileMenuOpen ?"1rem":null,width:isMobileMenuOpen ?"100%":null,borderRadius:isMobileMenuOpen ?"1rem":null }} id="navbar-sticky">
+                <div className={`${isMobileMenuOpen ? 'block' : 'hidden'} items-center justify-end w-full md:flex md:w-auto md:order-1`} style={{ marginTop: isMobileMenuOpen ? "1rem" : null, width: isMobileMenuOpen ? "100%" : null, borderRadius: isMobileMenuOpen ? "1rem" : null }} id="navbar-sticky">
                     <ul className="flex flex-col p-4 md:p-0 mt-4 gap-3 font-medium rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0">
                         <li>
-                            <a href="#faq" className="block" aria-current="page">{t("faq")}</a>
+                            <a href="" className="block" aria-current="page">{t("faq")}</a>
                         </li>
                         <li>
-                            <Link to={'/about'} className="block">
+                            <Link to={'/'} className="block">
                                 {t("aboutUs")}
                             </Link>
                         </li>
                     </ul>
-                    <div className="dropdowns-cont" style={{top:"1rem"}}>
+                    <div className="dropdowns-cont" style={{ top: "1rem" }}>
                         {/* Theme Dropdown */}
                         <div className="themeDropdown">
                             <button
