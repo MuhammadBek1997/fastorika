@@ -989,10 +989,95 @@ section {
 #light .transferanywere-textCont p{
     color: var(--textp-secondary-light);
 }
+
 .forM{
     display: none;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.fasttransfer{
+    display: flex;
+    border-radius: 2rem;
+    margin-bottom: 1rem;
+}
+.fasttransfer-img{
+    width: 70vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.fasttransfer-img img{
+    width: 100%;
+}
+.fasttransfer-textCont{
+    padding: 2rem;
+    padding-right: 14rem;
+}
+#light .fasttransfer{
+    background-color: var(--bg-light);
+}
+#dark .fasttransfer{
+    background-color: var(--bg-dark);
+}
+.fasttransfer-head{
+    min-width: 15rem;
+    max-width: 20rem;
+    width:fit-content;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+    font-weight: 500;
+    padding: 0.2rem;
+    padding-right: 0.7rem;
+    border-radius: 0.7rem;
+    margin-bottom: 1rem;
+}
+.fasttransfer-head img{
+    width: 2rem;
+}
+#dark .fasttransfer-head{
+    background-color: var(--bg-body-dark);
+}
+#light .fasttransfer-head{
+    background-color: var(--bg-body-light);
+}
+.fasttransfer-textCont h2{
+    font-size: 4vw;
+    font-weight: 600;
+    line-height: normal;
+}
+.coloredfast{
+    color: #F4A700;    
+}
+.fasttransfer-textCont p{
+    font-size: 1.7vw;
+    margin-top: 1rem;
+}
+#dark .fasttransfer-textCont p{
+    color: var(--textp-secondary-dark);
+}
+#light .fasttransfer-textCont p{
+    color: var(--textp-secondary-light);
+}
 
 
 
@@ -1234,6 +1319,52 @@ section {
     .transferanywere-textCont p{
         font-size: 4vw;
     }
+
+
+
+    .fasttransfer{
+        flex-direction: column-reverse;
+        align-items: center;
+        padding: 2rem;
+        gap: 1rem;
+    }
+    .fasttransfer-textCont{
+        padding: 0;
+    }
+
+    .fasttransfer-img img{
+        border-radius: 2rem;
+    }
+    .fasttransfer-img{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    #light .fasttransfer-img{
+        border-radius: 2rem;
+        background:  var(--bg-body-light);
+        background-size: cover;
+    }
+    #dark .fasttransfer-img{
+        border-radius: 2rem;
+        background: var(--bg-body-dark);
+        background-size: cover;
+    }
+    .fasttransfer-head{
+        max-width: 70vw;
+    }
+    .fasttransfer-head h4{
+        font-size: 3.8vw;
+    }
+    .fasttransfer-textCont h2{
+        font-size: 7vw;
+    }
+    .fasttransfer-textCont p{
+        font-size: 4vw;
+    }
+
+
 }
 
 /* 360px va undan kichik ekranlar uchun */

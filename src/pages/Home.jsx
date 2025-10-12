@@ -230,6 +230,26 @@ const Home = () => {
           <img src="/images/transferanywerePhoto.png"  alt="" className='forD' />
         </div>
       </div>
+      <div className='fasttransfer'>
+        <div className='fasttransfer-textCont'>
+          <div className='fasttransfer-head'>
+            <img src="/images/fasttransferIcon.png" alt="" />
+            <h4>
+                {t("fasttransferID")}
+            </h4>
+          </div>
+          <h2>
+              {t("fasttransfer1")} <span className='coloredfast'>{t("fasttransfer2")}</span>
+          </h2>
+          <p>
+              {t("fasttransfer")}
+          </p>
+        </div>
+        <div className='fasttransfer-img'>
+          <img src={`/images/fasttransferPhoto${theme}.png`} alt="" />
+        </div>
+      </div>
+
     </section>
   )
 }
