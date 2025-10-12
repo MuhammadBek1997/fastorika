@@ -13,5 +13,11 @@
     "noCard":"Debit Card",
     "fee":"Fee",
     "feeCount":"Total Amount with Fee",
-    "transferBtn":"Transfer"
+    "transferBtn":"Transfer",
+    "servicestep1":"Select Country and Amount",
+    "servicestep1p":"50+ Countries",
+    "servicestep2":"Pay for the Transfer",
+    "servicestep2p":"With card, crypto, or from bank account",
+    "servicestep3":"The recipient receives money",
+    "servicestep3p":"within 5 minutes"
 }

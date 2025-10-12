@@ -180,6 +180,34 @@ const Home = () => {
           </div>
         </div>
       </div>
+      <div className='services'>
+        <div className="service-steps">
+          <div className="serviceStep">
+            <h3>
+                {t("servicestep1")}
+            </h3>
+            <p>
+                {t("servicestep1p")}
+            </p>
+          </div>
+          <div className="serviceStep">
+            <h3>
+                {t("servicestep2")}
+            </h3>
+            <p>
+                {t("servicestep2p")}
+            </p>
+          </div>
+          <div className="serviceStep">
+            <h3>
+                {t("servicestep3")}
+            </h3>
+            <p>
+                {t("servicestep3p")}
+            </p>
+          </div>
+        </div>
+      </div>
     </section>
   )
 }
