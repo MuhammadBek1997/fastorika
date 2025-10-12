@@ -1274,6 +1274,12 @@ section {
         gap: 0.5rem;
         flex-shrink: 0;
     }
+    .serviceStep h3{
+        font-size: 3vw;
+    }
+    .serviceStep p{
+        font-size: 2vw;
+    }
 
 
     .transferanywere{
@@ -1367,6 +1373,15 @@ section {
 
 }
 
+
+@media (max-width: 500px) {
+    .serviceStep h3{
+        font-size: 4.5vw;
+    }
+    .serviceStep p{
+        font-size: 3.5vw;
+    }
+}
 /* 360px va undan kichik ekranlar uchun */
 @media (max-width: 360px) {
     nav {
