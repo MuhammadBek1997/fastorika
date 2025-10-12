@@ -587,7 +587,7 @@ section {
     border-radius: 1rem;
 }
 
-.hero-transfer-top-cach p {
+.hero-transfer-top-cash p {
     font-size: 15px;
 }
 
@@ -1019,13 +1019,13 @@ section {
     margin-bottom: 1rem;
 }
 .fasttransfer-img{
-    width: 70vw;
+    width: 80vw;
     display: flex;
     justify-content: center;
-    align-items: center;
 }
 .fasttransfer-img img{
     width: 100%;
+    border-radius: 2rem;
 }
 .fasttransfer-textCont{
     padding: 2rem;
@@ -1080,6 +1080,24 @@ section {
 }
 
 
+
+
+
+
+
+
+
+
+
+
+.ourapp{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-radius: 2rem;
+    margin: 1rem 0;
+    background: url(/public/images/ourappEllipse.png) 100% 0 no-repeat,#1F1F1F;
+}
 
 
 
@@ -1205,8 +1223,19 @@ section {
     .hero-transfer-bottom {
         width: 100%;
         padding: 0.8rem;
-        flex-direction: column;
         gap: 0.5rem;
+    }
+    .hero-transfer-top-cash,
+    .hero-transfer-bottom-cash{
+        width: 50%;
+    }
+    .hero-transfer-top-cash p,
+    .hero-transfer-bottom-cash p{
+        font-size: 3.2vw;
+    }
+    .hero-transfer-top-cash input,
+    .hero-transfer-bottom-cash input{
+        font-size: 6vw;
     }
 
     .currToggle {

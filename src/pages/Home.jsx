@@ -249,7 +249,43 @@ const Home = () => {
           <img src={`/images/fasttransferPhoto${theme}.png`} alt="" />
         </div>
       </div>
-
+      <div className='ourapp'>
+        <div className='ourapp-textCont'>
+          <div className='ourapp-rating'>
+            <div className='appstore-rating'>
+                <img src="/images/appstoremini.png" alt="" />
+                <img src="/images/star.png" alt="" />
+                <p>
+                  4.8
+                </p>
+            </div>
+            <div className='appstore-rating'>
+                <img src="/images/googleplaymini.png" alt="" />
+                <img src="/images/star.png" alt="" />
+                <p>
+                  4.7
+                </p>
+            </div>
+          </div>
+          <h2>
+            {t("ourapp1")}
+          </h2>
+          <p>
+            {t("ourapp")}
+          </p>
+          <div className='ourapp-bottom'>
+            <a href="">
+              <img src="/images/ourapp1.png" alt="" />
+            </a>
+            <a href="">
+                <img src="/images/ourapp2.png" alt="" />
+            </a>
+          </div>
+        </div>
+        <div className='forD'>
+          <img src="/images/iPhone14Pro.png" alt="" />
+        </div>
+      </div>
     </section>
   )
 }
