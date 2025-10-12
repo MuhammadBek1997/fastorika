@@ -866,8 +866,6 @@ section {
 }
 
 .service-steps {
-    width: 96rem;
-    margin: 0 auto;
     padding: 1rem 0;
     display: flex;
     align-items: center;
