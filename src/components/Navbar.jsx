@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useGlobalContext } from "../Context"
 import { useEffect, useState } from "react"
 
@@ -7,7 +7,8 @@ const Navbar = () => {
     const [isThemeOpen, setIsThemeOpen] = useState(false)
     const [isLangOpen, setIsLangOpen] = useState(false)
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-
+    const navigate = useNavigate()
+    const location = useLocation()
 
     // Navbar komponenti ichida, useState lardan keyin:
     const [isScrolled, setIsScrolled] = useState(false)
@@ -28,6 +29,38 @@ const Navbar = () => {
             window.removeEventListener('scroll', handleScroll)
         }
     }, [])
+
+
+    // FAQ scroll effect - location hash o'zgarganda ishlaydi
+    useEffect(() => {
+        if (location.hash === '#faq') {
+            setTimeout(() => {
+                const element = document.getElementById('faq')
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                }
+            }, 100)
+        }
+    }, [location])
+
+    // FAQ linkni bosganda ishlaydi
+    const handleFaqClick = (e) => {
+        e.preventDefault()
+        setIsMobileMenuOpen(false)
+        
+        if (location.pathname === '/') {
+            // Agar home page'da bo'lsak, faqat scroll qilamiz
+            const element = document.getElementById('faq')
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+            }
+        } else {
+            // Agar boshqa sahifada bo'lsak, home page'ga o'tib, keyin scroll qilamiz
+            navigate('/#faq')
+        }
+    }
+
+
 
     // Language options
     const languages = [
@@ -67,10 +100,10 @@ const Navbar = () => {
                 <div className={`${isMobileMenuOpen ? 'block' : 'hidden'} items-center justify-end w-full md:flex md:w-auto md:order-1`} style={{ marginTop: isMobileMenuOpen ? "1rem" : null, width: isMobileMenuOpen ? "100%" : null, borderRadius: isMobileMenuOpen ? "1rem" : null }} id="navbar-sticky">
                     <ul className="flex flex-col p-4 md:p-0 mt-4 gap-3 font-medium rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0">
                         <li>
-                            <a href="" className="block" aria-current="page">{t("faq")}</a>
+                            <a href="/#faq" className="block" aria-current="page" onClick={()=>handleFaqClick()}>{t("faq")}</a>
                         </li>
                         <li>
-                            <Link to={'/'} className="block">
+                            <Link to={'/about'} className="block"  onClick={()=>handleFaqClick()}>
                                 {t("aboutUs")}
                             </Link>
                         </li>

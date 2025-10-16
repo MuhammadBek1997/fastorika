@@ -35,7 +35,9 @@
     font-family: "Inter", sans-serif;
     transition: background-color 0.3s ease, color 0.3s ease;
 }
-
+html{
+    scroll-behavior: smooth;
+}
 
 
 
@@ -1462,10 +1464,11 @@ section {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
 }
 .footer-top div{
     display: flex;
+    padding-top: 2rem;
     gap: 2rem;
 }
 .footer-middle{
@@ -1492,6 +1495,24 @@ section {
     color: #FFFFFFB2;
     margin-bottom: 0.7rem;
 }
+
+
+
+
+
+/* About Us */
+
+
+.about-hero{
+    display: flex;
+    background-color: #009966;
+    color: #FFFFFF;
+}
+
+
+
+
+
 
 
 
@@ -1900,6 +1921,9 @@ section {
         gap: 2rem;
         font-size: 0.7rem;
     }
+    .footer-top div{
+        padding-top: 0;
+    }
 
     .footer-middle{
         flex-direction: column;
@@ -1927,6 +1951,13 @@ section {
     
 
 }
+
+
+
+
+
+
+
 
 
 @media (max-width: 500px) {

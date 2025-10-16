@@ -363,7 +363,7 @@ const Home = () => {
           </div>
         </div>
       </div>
-      <div className='faq'>
+      <div className='faq' id='faq'>
         <div className='faq-left'>
           <h2>
             {t("faqhead")}
