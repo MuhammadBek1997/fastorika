@@ -30,5 +30,15 @@
     "fasttransfer2":"Fastorika ID",
     "fasttransfer":"Forget about long details and complicated forms. Just know the unique Fastorika ID of the recipient to send a transfer in seconds.",
     "ourapp1":"Download our mobile app",
-    "ourapp":"Fast transfers always at hand"
+    "ourapp":"Fast transfers always at hand",
+    "ursechead":"Безопасные переводы",
+    "ursec1":"Ваша ",
+    "ursec2":"безопасность ",
+    "ursec3":"наш приоритет",
+    "datasec":"Защита данных",
+    "datasec2":"При обработке транзакций используется технология 3d secure",
+    "lisense":"Лицензия",
+    "lisense2":"Сертифицированы PCI DSS",
+    "defsec":"Страхование переводов",
+    "defsec2":"Используем собственные технологии защиты от мошеннических схем"
 }
