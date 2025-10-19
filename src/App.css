@@ -38,7 +38,10 @@
 html{
     scroll-behavior: smooth;
 }
-
+body{
+    max-width: 1920px;
+    margin: 0 auto;
+}
 
 
 
@@ -515,12 +518,12 @@ section {
 }
 
 .hero-left h1 {
-    font-size: 5vw;
+    font-size: 5rem;
     font-weight: 700;
 }
 
 .hero-left p {
-    font-size: 1.5vw;
+    font-size: 1.5rem;
     font-weight: 400;
 }
 
@@ -532,8 +535,8 @@ section {
 }
 
 .hero-func-list-item {
-    width: 15vw;
-    height: 15vw;
+    width: 15rem;
+    height: 15rem;
     border-radius: 2rem;
     display: flex;
     flex-direction: column;
@@ -1505,8 +1508,40 @@ section {
 
 .about-hero{
     display: flex;
+    justify-content: space-between;
     background-color: #009966;
     color: #FFFFFF;
+    border-radius: 2rem;
+    margin: 1rem auto;
+}
+.about-hero-left{
+    width: 60%;
+    padding: 2rem;
+    line-height: normal;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+    gap: 0.5rem;
+
+}
+.about-hero-left h1{
+    font-size: 3.5em;
+    font-weight: 600;
+}
+.about-hero-left p{
+    font-size: 1.7rem;
+    font-weight: 300;
+}
+.about-hero-right{
+    border-radius: 2rem;
+    background:  linear-gradient(to right , #009966 , #00D796);
+}
+.about-hero-right img{
+    height: 100.3%;
+    margin-top: -0.1%;
+    border-top-right-radius: 2rem;
+    border-bottom-right-radius: 2rem;
 }
 
 
@@ -1515,6 +1550,62 @@ section {
 
 
 
+
+
+.about-ourmission{
+    padding: 2rem;
+    border-radius: 2rem;
+}
+
+#light .about-ourmission{
+    background-color: var(--bg-light);
+}
+#dark .about-ourmission{
+    background-color: var(--bg-dark);
+}
+
+.about-ourmission h1{
+    font-size: 3.5rem;
+    font-weight: 600;
+}
+.about-ourmission p{
+    font-size: 1.5rem;
+}
+
+.about-ourmission-list {
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding-top: 2rem;
+}
+
+.ourmission-card {
+    width: 24vw;
+    height: 25vh;
+    padding: 1.5rem;
+    border-radius: 1.5rem;
+}
+
+#dark .ourmission-card {
+    background-color: var(--bg-body-dark);
+}
+
+#light .ourmission-card {
+    background-color: var(--bg-body-light);
+}
+
+.ourmission-card h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: 1.2rem;
+}
+
+.ourmission-card p {
+    font-size: 1.05rem;
+    width: 17rem;
+}
 
 
 
@@ -1529,12 +1620,13 @@ section {
 
     /* Navbar tuzatish */
     nav {
-        margin: 0.5rem auto;
         padding: 0.5rem;
-        width: 95% !important;
-        margin-left: 2.5%;
+        position: fixed !important;
     }
 
+    section{
+        padding-top: 5rem;
+    }
     #navbar-sticky {
         width: 100% !important;
         gap: 1rem !important;
@@ -1950,6 +2042,62 @@ section {
 
     
 
+
+
+
+
+    .about-hero{
+        flex-direction: column;
+        padding-top: 1rem; 
+        gap: 1rem;
+    }
+    .about-hero-left{
+        width: 100%;
+        padding: 0.7rem;
+    }
+    .about-hero-left img{
+        order: 0;
+    }
+    .about-hero-left h1{
+        order: 1;
+        font-size: 2rem;
+    }
+    .about-hero-left p{
+        order: 2;
+        font-weight: 300;
+    }
+    .about-hero-right{
+        border-radius: 0;
+        border-bottom-left-radius: 2rem;
+        border-bottom-right-radius: 2rem;
+        background: #009966;
+    }
+    .about-hero-right img{
+        width: 100%;
+        border-radius: 0;
+        border-bottom-left-radius: 2rem;
+        border-bottom-right-radius: 2rem;
+    }
+
+
+    .about-ourmission h1{
+        font-size: 2rem;
+    }
+    .about-ourmission p{
+        font-size: 0.9rem;
+    }
+
+    .about-ourmission-list {
+        grid-template-columns: repeat(1, auto);
+    }
+
+    .ourmission-card {
+        width: 95vw;
+        height: 25vh;
+        padding: 1.2rem;
+    }
+    
+
 }
 
 
@@ -1980,7 +2128,6 @@ section {
     nav {
         width: 100% !important;
         margin: 0;
-        border-radius: 0;
         padding: 0;
     }
 

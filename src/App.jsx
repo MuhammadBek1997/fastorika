@@ -12,6 +12,10 @@ function App() {
 
   let {theme} = useGlobalContext()
 
+  let body = document.getElementById("root").parentElement
+
+  body.parentElement.style.backgroundColor = theme == "dark" ? "#363636" : "#F0F0F0"
+  
 
   return (
     <div id={theme} className='pt-4'>

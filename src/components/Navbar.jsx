@@ -71,7 +71,7 @@ const Navbar = () => {
     const currentLang = languages.find(lang => lang.code === currentLanguage)
 
     return (
-        <nav className={`sticky w-full z-20 top-0 start-0 ${isScrolled ? 'scrolled' : ''}`} style={{ background: isMobileMenuOpen && theme == "light" ? "#F0F0F0" : isMobileMenuOpen && theme == "dark" ? "#363636" : null, height: isMobileMenuOpen ? "100%" : null, marginTop: isMobileMenuOpen ? "0" : null, borderRadius: isMobileMenuOpen ? "0" : null }} >
+        <nav className={`sticky w-full z-20 top-0 start-0 ${isScrolled ? 'scrolled' : ''}`} style={{ background: isMobileMenuOpen && theme == "light" ? "#F0F0F0" : isMobileMenuOpen && theme == "dark" ? "#363636" : null, height: isMobileMenuOpen ? "100%" : null, marginTop: isScrolled ? "0" : "0.5rem", borderRadius: isMobileMenuOpen ? "0" : null }} >
             <div className="max-w-screen-xxl flex flex-wrap items-center justify-between mx-auto p-4">
                 <div className="flex gap-1">
                     <button
