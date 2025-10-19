@@ -1535,7 +1535,7 @@ section {
 }
 .about-hero-right{
     border-radius: 2rem;
-    background:  linear-gradient(to right , #009966 , #00D796);
+    background: linear-gradient(103deg,rgba(0, 153, 102, 1) 20%, rgba(0, 215, 150, 1) 100%);
 }
 .about-hero-right img{
     height: 100.3%;
@@ -2096,7 +2096,7 @@ section {
         height: 25vh;
         padding: 1.2rem;
     }
-    
+
 
 }
 
