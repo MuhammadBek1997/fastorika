@@ -78,6 +78,63 @@ const AboutUs = () => {
 
         </div>
       </div>
+      <div className='about-trust'>
+        <h1>
+          {t("trusthead")}
+        </h1>
+        <p>
+          {t("trustsecond")}
+        </p>
+        <div className='about-trust-list'>
+          <div className='trust-card'>
+            <h4>
+              {t("trust11")}
+
+            </h4>
+            <p>
+              {t("trust12")}
+
+            </p>
+          </div>
+          <div className='trust-card'>
+            <h4>
+              {t("trust21")}
+
+            </h4>
+            <p>
+              {t("trust22")}
+
+            </p>
+          </div>
+          <div className='trust-card'>
+            <h4>
+              {t("trust31")}
+
+            </h4>
+            <p>
+              {t("trust32")}
+
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className='about-transfer'>
+        <div className='about-transfer-head'>
+          <img src="/images/transferhead.png" alt="" />
+          <h4>
+            {t("transfertop")}
+          </h4>
+        </div>
+        <h1>
+          {t("transferhead")}
+        </h1>
+        <p>
+          {t("transfersecond")}
+        </p>
+        <button>
+          {t("transfersend")}
+        </button>
+      </div>
     </section>
   )
 }

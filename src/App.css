@@ -1611,6 +1611,118 @@ section {
 
 
 
+
+
+
+
+
+
+.about-trust{
+    padding: 2rem;
+    border-radius: 2rem;
+    margin: 1rem auto;
+}
+#dark .about-trust{
+    background-color: var(--bg-dark);
+}
+#light .about-trust{
+    background-color: var(--bg-light);
+}
+.about-trust h1{
+    font-size: 3.5rem;
+    font-weight: 600;
+}
+.about-trust p{
+    font-size: 1.5rem;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+    width: 50%;
+}
+.about-trust-list{
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    justify-content: space-between;
+}
+.trust-card{
+    width: 31vw;
+    height: 26vh;
+    padding: 1.5rem;
+    border-radius: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: start;
+}
+#dark .trust-card{
+    background-color: var(--bg-body-dark);
+}
+#light .trust-card{
+    background-color: var(--bg-body-light);
+}
+.trust-card h4{
+    font-size: 2rem;
+    font-weight: 600;
+    color: #00B1EC;
+}
+.trust-card p{
+    font-size: 1.2rem;
+    font-weight: 600;
+    width: 100%;
+}
+
+
+
+.about-transfer{
+    height: 60vh;
+    border-radius: 2rem;
+    color: #FFFFFF;
+    padding: 2rem;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    text-align: center;
+    background: url(/public/images/transferright.png) 0 0 no-repeat ,
+    url(/public/images/transferleft.png) 100% 0 no-repeat,
+    #1F1F1F;
+
+}
+.about-transfer-head{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    background-color: var(--bg-body-dark);
+    padding: 0.4rem;
+    padding-right: 1rem;
+    border-radius: 0.8rem;
+}
+.about-transfer h1{
+    width: 40%;
+    font-size: 2.5rem;
+    font-weight: 600;
+}
+.about-transfer p{
+    font-size: 1.3rem;
+    color:#FFFFFFB2 ;
+    width: 25%;
+}
+.about-transfer button{
+    background-color: #00D796;
+    color: #000000F2;
+    padding: 1rem;
+    font-weight: 600;
+    border-radius: 1rem;
+}
+
+
+
+
+
+
+
 /* ============================================
    RESPONSIVE FIXES
    ============================================ */
@@ -2097,6 +2209,39 @@ section {
         padding: 1.2rem;
     }
 
+    .about-trust h1{
+        font-size: 2rem;
+    }
+    .about-trust p{
+        font-size: 1rem;
+        width: 100%;
+    }
+    .about-trust-list{
+        grid-template-columns: repeat(1 , auto);
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+    }
+    .trust-card{
+        width: 95vw;
+    }
+
+
+
+
+
+    .about-transfer{
+        background: url(/public/images/transfermobile.png) 0 100% no-repeat, #1F1F1F;
+        background-size: cover;
+    }
+    .about-transfer h1{
+        font-size: 1.6rem;
+        width: 100%;
+    }
+    .about-transfer p{
+        font-size: 1.1rem;
+        width: 100%;
+    }
 
 }
 
