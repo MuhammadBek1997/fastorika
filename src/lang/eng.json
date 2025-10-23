@@ -74,5 +74,18 @@
     "transfertop":"Transfers without limits",
     "transferhead":"Send your transfer right now",
     "transfersecond":"Fast, convenient, and secure — just the way it should be",
-    "transfersend":"Send Transfer"
+    "transfersend":"Send Transfer",
+    "login-client":"Login",
+    "login-clientToptext":"New user?",
+    "login-clientToplink":"Create an account",
+    "login-clientForm1":"Enter your Email",
+    "login-clientForm2":"Enter password",
+    "login-clientForgot":"Forgot password?",
+    "login-clientwithG":"Log in with Google",
+    "login-clientwithA":"Log in with Apple",
+    "or":"or",
+    "reg-clientToptext":"Do you already have an account?",
+    "reg-clientForm2":"Create a password",
+    "reg-clientForm3":"Confirm password",
+    "reg-clientStep1":"Continue"
 }

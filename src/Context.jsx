@@ -1,17 +1,27 @@
-import  { createContext, useState, useEffect, useContext } from 'react';
+import { createContext, useState, useEffect, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 // AppContext
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
   const { t, i18n } = useTranslation();
-	const currentLanguage = localStorage.getItem("i18nextLng")
-	const handleChange = (langCode) => {
-		i18n.changeLanguage(langCode);
-		localStorage.setItem('language', langCode);
-	}
+  const currentLanguage = localStorage.getItem("i18nextLng")
+  // Language options
+  const languages = [
+    { code: 'ru', name: 'Русский', flag: '/images/russia.png' },
+    { code: 'en', name: 'English', flag: '/images/us.png' }
+  ]
 
+  const currentLang = languages.find(lang => lang.code === currentLanguage)
+
+
+  const handleChange = (langCode) => {
+    i18n.changeLanguage(langCode);
+    localStorage.setItem('language', langCode);
+  }
+  const navigate = useNavigate()
 
   const [theme, setTheme] = useState(() => {
     const savedTheme = localStorage.getItem('theme');
@@ -32,13 +42,37 @@ export const AppProvider = ({ children }) => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
   };
 
+  const [clientPage, setClientPage] = useState(false)
+
+  // Loginga o'tish uchun
+
+
+
+
+  const handleNavigateLogin = () => {
+    localStorage.setItem("login", true)
+    navigate('/login')
+  }
+  const cancelLogin = () => {
+        localStorage.removeItem("login")
+        navigate('/')
+    }
+
+
+
   return (
-    <AppContext.Provider value={{ theme, toggleTheme,handleChange,currentLanguage,t }}>
+    <AppContext.Provider value={{
+      theme, toggleTheme,
+      handleChange, currentLanguage,
+      t, navigate, clientPage, setClientPage,
+      handleNavigateLogin,currentLang,languages,
+      cancelLogin
+    }}>
       {children}
     </AppContext.Provider>
   );
 };
 
-export const useGlobalContext = () =>{
-    return useContext(AppContext)
+export const useGlobalContext = () => {
+  return useContext(AppContext)
 }

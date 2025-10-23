@@ -74,5 +74,19 @@
     "transfertop":"Переводы без ограничений",
     "transferhead":"Отправьте свой перевод прямо сейчас",
     "transfersecond":"Быстро, удобно и безопасно — именно так, как это должно быть",
-    "transfersend":"Отправить перевод"
+    "transfersend":"Отправить перевод",
+    "login-client":"Вход",
+    "login-clientToptext":"Новый пользователь?",
+    "login-clientToplink":"Создать учетную запись",
+    "login-clientForm1":"Введите ваш Email",
+    "login-clientForm2":"Введите пароль",
+    "login-clientForgot":"Забыли пароль?",
+    "login-clientwithG":"Войти через Google",
+    "login-clientwithA":"Войти через Apple",
+    "or":"или",
+    "reg-client":"Регистрация",
+    "reg-clientToptext":"У вас уже есть учетная запись?",
+    "reg-clientForm2":"Придумайте пароль",
+    "reg-clientForm3":"Подтвердите пароль",
+    "reg-clientStep1":"Продолжить"
 }
