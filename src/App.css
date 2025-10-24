@@ -2747,6 +2747,9 @@ nav.scrolled {
         height: 85%;
         border-radius: 2rem;
     }
+    .sidebar-list{
+        padding: 2rem;
+    }
     
 }
 @media (max-width:600px) {
