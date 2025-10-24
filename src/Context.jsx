@@ -54,9 +54,14 @@ export const AppProvider = ({ children }) => {
     navigate('/login')
   }
   const cancelLogin = () => {
-        localStorage.removeItem("login")
-        navigate('/')
-    }
+    localStorage.removeItem("login")
+    navigate('/')
+  }
+  const handleLogin = ()=>{
+    localStorage.removeItem("login")
+    localStorage.setItem("logged",true)
+    navigate('/transactions')
+  }
 
 
 
@@ -65,8 +70,8 @@ export const AppProvider = ({ children }) => {
       theme, toggleTheme,
       handleChange, currentLanguage,
       t, navigate, clientPage, setClientPage,
-      handleNavigateLogin,currentLang,languages,
-      cancelLogin
+      handleNavigateLogin, currentLang, languages,
+      cancelLogin,handleLogin
     }}>
       {children}
     </AppContext.Provider>

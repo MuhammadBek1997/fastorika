@@ -88,5 +88,8 @@
     "reg-clientToptext":"У вас уже есть учетная запись?",
     "reg-clientForm2":"Придумайте пароль",
     "reg-clientForm3":"Подтвердите пароль",
-    "reg-clientStep1":"Продолжить"
+    "reg-clientStep1":"Продолжить",
+    "reg-clientRule1":"Не менее 8 символов",
+    "reg-clientRule2":"Минимум одна заглавная буква",
+    "reg-clientRule3":"Пароли совпадают"
 }

@@ -1,46 +1,63 @@
-import { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useGlobalContext } from '../Context'
 
-const Registration = () => {
-    let { t, theme, handleChange, languages, currentLang, currentLanguage, toggleTheme, cancelLogin } = useGlobalContext()
-    const [themeRegOpen, setThemeRegOpen] = useState(false)
-    const [langRegOpen, setLangRegOpen] = useState(false)
-    const [showReg1Psw, setShowReg1Psw] = useState(false)
-    const [showReg2Psw, setShowReg2Psw] = useState(false)
-    const [mail,setMail] = useState('')
-    const [psw,setPsw] = useState('')
-    const [accPsw,setAccPsw] = useState('')
-
-
-    const checkPsw = (rule) =>{
-        if(rule == "case" && psw.split('').find((item)=>item == item.toUpperCase())) return true
-        if(rule == "length" && psw.split('').length >= 8) return true
-        if(rule == "match" && psw === accPsw && accPsw > '') return true
-    }
-
-    
-    useEffect(()=>{
-
-    },[psw,accPsw])
-
+const Sidebar = () => {
+    const [themeSideOpen, setThemeSideOpen] = useState(false)
+    const [langSideOpen, setLangSideOpen] = useState(false)
+    const [isSideMobileMenuOpen, setIsSideMobileMenuOpen] = useState(false)
+    let { t, theme, navigate, toggleTheme, languages, currentLang, currentLanguage, handleChange } = useGlobalContext()
     return (
-        <div className='registration-client' style={{
-            width: '100vw',
-            height: '100vh',
-            background: `url(/images/BG${theme}.png) 100% 0 no-repeat`
-        }}>
-            <nav className='flex justify-between p-3'>
-                <button onClick={() => cancelLogin()} className='logo'>
-                    <img src={`/images/logo${theme}.png`} alt="" />
+        <div className='sidebar'>
+            <div className='sidebar-top'>
+                <button
+                    onClick={() => setIsSideMobileMenuOpen(!isSideMobileMenuOpen)}
+                    type="button"
+                    className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm rounded-lg md:hidden"
+                    aria-controls="navbar-sticky"
+                    aria-expanded={isSideMobileMenuOpen}
+                >
+                    <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1h15M1 7h15M1 13h15" />
+                    </svg>
                 </button>
-                <div className="dropdowns-cont" style={{ top: "1rem" }}>
+                <div className='sidebar-logo'>
+                    <img src={`/images/logo${theme}.png`} className="h-8" alt="Logo" />
+                </div>
+                <div className={`${isSideMobileMenuOpen ?  'hidden':'block' } sidebar-sticky-list`} id='navbar-sticky'>
+                    <div className="sidebar-list">
+                        <Link to={'/transactions'} onClick={()=>setIsSideMobileMenuOpen(true)}>
+                            Transactions
+                        </Link>
+                        <Link to={'/cards'} onClick={()=>setIsSideMobileMenuOpen(true)}>
+                            My cards
+                        </Link>
+                        <Link to={'/profile'} onClick={()=>setIsSideMobileMenuOpen(true)}>
+                            Profile
+                        </Link>
+                        <Link to={'/settings'} onClick={()=>setIsSideMobileMenuOpen(true)}>
+                            Settings
+                        </Link>
+                        <Link to={'/support'} onClick={()=>setIsSideMobileMenuOpen(true)}>
+                            Support
+                        </Link>
+                    </div>
+                    <button onClick={() => {
+                        localStorage.removeItem("logged")
+                        navigate('/')
+                    }} className='forM'>
+                        logout
+                    </button>
+                </div>
+            </div>
+            <div className='sidebar-bottom'>
+                <div className="dropdowns-cont" style={{ top: "2.3rem" }}>
                     {/* Theme Dropdown */}
                     <div className="themeDropdown">
                         <button
                             onClick={() => {
-                                setThemeRegOpen(!themeRegOpen)
-                                setLangRegOpen(false)
+                                setThemeSideOpen(!themeSideOpen)
+                                setLangSideOpen(false)
                             }}
                             className="themeToggle"
                             aria-label="Theme menu"
@@ -59,12 +76,12 @@ const Registration = () => {
                             </svg>
                         </button>
 
-                        {themeRegOpen && (
-                            <div className="themeDropdownMenu">
+                        {themeSideOpen && (
+                            <div className="themeDropdownMenu left-0">
                                 <button
                                     onClick={() => {
                                         if (theme !== 'light') toggleTheme()
-                                        setThemeRegOpen(false)
+                                        setThemeSideOpen(false)
                                     }}
                                     className={`themeOption ${theme === 'light' ? 'active' : ''}`}
                                 >
@@ -76,7 +93,7 @@ const Registration = () => {
                                 <button
                                     onClick={() => {
                                         if (theme !== 'dark') toggleTheme()
-                                        setThemeRegOpen(false)
+                                        setThemeSideOpen(false)
                                     }}
                                     className={`themeOption ${theme === 'dark' ? 'active' : ''}`}
                                 >
@@ -93,8 +110,8 @@ const Registration = () => {
                     <div className="langDropdown">
                         <button
                             onClick={() => {
-                                setLangRegOpen(!langRegOpen)
-                                setThemeRegOpen(false)
+                                setLangSideOpen(!langSideOpen)
+                                setThemeSideOpen(false)
                             }}
                             className="langToggle"
                             aria-label="Language menu"
@@ -106,14 +123,14 @@ const Registration = () => {
                             </svg>
                         </button>
 
-                        {langRegOpen && (
+                        {langSideOpen && (
                             <div className="langDropdownMenu">
                                 {languages.map((lang) => (
                                     <button
                                         key={lang.code}
                                         onClick={() => {
                                             handleChange(lang.code)
-                                            setLangRegOpen(false)
+                                            setLangSideOpen(false)
                                         }}
                                         className={`langOption ${currentLanguage === lang.code ? 'active' : ''}`}
                                     >
@@ -125,81 +142,15 @@ const Registration = () => {
                         )}
                     </div>
                 </div>
-            </nav>
-            <div className='registration-cont'>
-                <h1>
-                    {t("reg-client")}
-                </h1>
-                <div className='login-cont-top'>
-                    <p>
-                        {t("reg-clientToptext")}
-                    </p>
-                    <Link to={'/login'} style={{ color: "#348BDC" }}>
-                        {t("login")}
-                    </Link>
-                </div>
-                <div className='registration-cont-form'>
-                    <label htmlFor="">
-                        {t("login-clientForm1")}
-                    </label>
-                    <input type="text" value={mail} onChange={(e)=>setMail(e.target.value)} />
-                    <label htmlFor="">
-                        {t("reg-clientForm2")}
-                    </label>
-                    <div className='login-cont-form-psw'>
-                        <input type={showReg1Psw ? "text" : "password"}  value={psw} onChange={(e)=>setPsw(e.target.value)}  />
-                        <img src={!showReg1Psw ? `/images/visible${theme}.png` : `/images/hide${theme}.png`} alt="" onClick={() => setShowReg1Psw(!showReg1Psw)} />
-                    </div>
-                    <div>
-                        <div className='pswrule'>
-                            <img src={checkPsw("length") ? `/images/ruleDone${theme}.png`:`/images/ruleUdone${theme}.png`} alt="" />
-                            <p>
-                            {t("reg-clientRule1")}
-                            </p>
-                        </div>
-                        <div className='pswrule'>
-                            <img src={checkPsw("case") ? `/images/ruleDone${theme}.png`:`/images/ruleUdone${theme}.png`} alt="" />
-                            <p>
-                            {t("reg-clientRule2")}
-                            </p>
-                        </div>
-                    </div>
-                    <label htmlFor="">
-                        {t("reg-clientForm3")}
-                    </label>
-                    <div className='login-cont-form-psw'>
-                        <input type={showReg2Psw ? "text" : "password"} value={accPsw} onChange={(e)=>setAccPsw(e.target.value)}  />
-                        <img src={!showReg2Psw ? `/images/visible${theme}.png` : `/images/hide${theme}.png`} alt="" onClick={() => setShowReg2Psw(!showReg2Psw)} />
-                    </div>
-                    <div className='pswrule'>
-                        <img src={checkPsw("match") ? `/images/ruleDone${theme}.png`:`/images/ruleUdone${theme}.png`} alt="" />
-                        <p>
-                        {t("reg-clientRule3")}
-                        </p>
-                    </div>
-                </div>
-                <button className='reg-clientBtn'>
-                    {t("reg-clientStep1")}
+                <button onClick={() => {
+                    localStorage.removeItem("logged")
+                    navigate('/')
+                }} className='forD'>
+                    logout
                 </button>
-                <div className='login-or'>
-                    <hr />
-                    <p>
-                        {t("or")}
-                    </p>
-                </div>
-                <div className='login-clientProviders'>
-                    <button>
-                        <img src="/images/Google.png" alt="" />
-                        {t("login-clientwithG")}
-                    </button>
-                    <button>
-                        <img src={`/images/apple${theme}.png`} alt="" />
-                        {t("login-clientwithA")}
-                    </button>
-                </div>
             </div>
         </div>
     )
 }
 
-export default Registration
+export default Sidebar

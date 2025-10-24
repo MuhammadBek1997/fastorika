@@ -4,13 +4,13 @@ import { Link } from 'react-router-dom'
 
 const Login = () => {
 
-    let { t, theme, toggleTheme, handleChange, currentLang, currentLanguage, languages , cancelLogin} = useGlobalContext()
+    let { t, theme, toggleTheme, handleChange, currentLang, currentLanguage, languages, cancelLogin, handleLogin } = useGlobalContext()
 
     const [themeOpen, setThemeOpen] = useState(false)
     const [langOpen, setLangOpen] = useState(false)
     const [isShowPsw, setIsShowPsw] = useState(false)
 
-    
+
 
 
 
@@ -19,8 +19,7 @@ const Login = () => {
             width: '100vw',
             height: '100vh',
             background: `url(/images/BG${theme}.png) 100% 0 no-repeat`,
-            backgroundSize: "cover",
-            overflow: "hidden"
+            backgroundSize: "cover"
         }}>
             <nav className='fixed flex justify-between p-5'>
                 <button onClick={() => cancelLogin()} className='logo'>
@@ -143,17 +142,17 @@ const Login = () => {
                         <img src={!isShowPsw ? `/images/visible${theme}.png` : `/images/hide${theme}.png`} alt="" onClick={() => setIsShowPsw(!isShowPsw)} />
                     </div>
                 </div>
-                <button className='login-clientBtn'>
+                <button className='login-clientBtn' onClick={()=>handleLogin()}>
                     {t("login")}
                 </button>
                 <Link to={'/registration'} style={{ color: "#348BDC", marginLeft: "32.5%" }}>
                     {t("login-clientForgot")}
                 </Link>
                 <div className='login-or'>
-                        <hr />
-                        <p>
-                            {t("or")}
-                        </p>
+                    <hr />
+                    <p>
+                        {t("or")}
+                    </p>
 
                 </div>
                 <div className='login-clientProviders'>
@@ -167,8 +166,6 @@ const Login = () => {
                     </button>
                 </div>
             </div>
-
-
         </div>
     )
 }

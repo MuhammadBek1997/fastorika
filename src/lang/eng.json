@@ -87,5 +87,8 @@
     "reg-clientToptext":"Do you already have an account?",
     "reg-clientForm2":"Create a password",
     "reg-clientForm3":"Confirm password",
-    "reg-clientStep1":"Continue"
+    "reg-clientStep1":"Continue",
+    "reg-clientRule1":"At least 8 characters",
+    "reg-clientRule2":"At least one uppercase letter",
+    "reg-clientRule3":"Passwords match"
 }
