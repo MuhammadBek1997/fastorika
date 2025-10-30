@@ -91,5 +91,6 @@
     "reg-clientStep1":"Продолжить",
     "reg-clientRule1":"Не менее 8 символов",
     "reg-clientRule2":"Минимум одна заглавная буква",
-    "reg-clientRule3":"Пароли совпадают"
+    "reg-clientRule3":"Пароли совпадают",
+    "transBtn":"Отправить"
 }

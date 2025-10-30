@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { NavLink, useLocation } from 'react-router-dom'
 import { useGlobalContext } from '../Context'
 
 const Sidebar = () => {
@@ -7,6 +7,34 @@ const Sidebar = () => {
     const [langSideOpen, setLangSideOpen] = useState(false)
     const [isSideMobileMenuOpen, setIsSideMobileMenuOpen] = useState(false)
     let { t, theme, navigate, toggleTheme, languages, currentLang, currentLanguage, handleChange } = useGlobalContext()
+
+
+
+    const location = useLocation()
+
+    useEffect(() => {
+        setIsSideMobileMenuOpen(false)
+        setThemeSideOpen(false)
+        setLangSideOpen(false)
+    }, [location])
+
+    useEffect(() => {
+        const onKeyDown = (e) => {
+            if (e.key === 'Escape') {
+                setIsSideMobileMenuOpen(false)
+                setThemeSideOpen(false)
+                setLangSideOpen(false)
+            }
+        }
+        window.addEventListener('keydown', onKeyDown)
+        return () => window.removeEventListener('keydown', onKeyDown)
+    }, [])
+
+    useEffect(() => {
+        document.body.style.overflow = isSideMobileMenuOpen ? 'hidden' : ''
+        return () => { document.body.style.overflow = '' }
+    }, [isSideMobileMenuOpen])
+
     return (
         <div className='sidebar'>
             <div className='sidebar-top'>
@@ -22,36 +50,114 @@ const Sidebar = () => {
                     </svg>
                 </button>
                 <div className='sidebar-logo'>
-                    <img src={`/images/logo${theme}.png`} className="h-8" alt="Logo" />
+                    <div className='forD'>
+                        <img src={`/images/logoside${theme}.png`} alt="Logo" />
+                    </div>
+                    <div className='forM'>
+                        <img src={`/images/logo${theme}.png`} alt="Logo" />
+
+                    </div>
                 </div>
-                <div className={`${isSideMobileMenuOpen ?  'hidden':'block' } sidebar-sticky-list`} id='navbar-sticky'>
+                {isSideMobileMenuOpen && (
+                    <div className="fixed inset-0 bg-black/40 md:hidden" onClick={() => setIsSideMobileMenuOpen(false)}></div>
+                )}
+                <div className={`${isSideMobileMenuOpen ? 'block' : 'hidden'} sidebar-sticky-list md:block z-20`} id='navbar-sticky'>
                     <div className="sidebar-list">
-                        <Link to={'/transactions'} onClick={()=>setIsSideMobileMenuOpen(true)}>
-                            Transactions
-                        </Link>
-                        <Link to={'/cards'} onClick={()=>setIsSideMobileMenuOpen(true)}>
-                            My cards
-                        </Link>
-                        <Link to={'/profile'} onClick={()=>setIsSideMobileMenuOpen(true)}>
-                            Profile
-                        </Link>
-                        <Link to={'/settings'} onClick={()=>setIsSideMobileMenuOpen(true)}>
-                            Settings
-                        </Link>
-                        <Link to={'/support'} onClick={()=>setIsSideMobileMenuOpen(true)}>
-                            Support
-                        </Link>
+                        <NavLink
+                            to={'/transactions'}
+                            className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
+                            onClick={() => setIsSideMobileMenuOpen(false)}
+                        >
+                            {({ isActive }) => {
+                                const imgSrc = isActive ? '/images/sidebarTrans.png' : `/images/sidebarTransoff${theme}.png`;
+                                return (
+                                    <>
+                                        <img src={imgSrc} alt="" />
+                                        Transactions
+                                    </>
+                                );
+                            }}
+                        </NavLink>
+                        <NavLink
+                            to={'/cards'}
+                            className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
+                            onClick={() => setIsSideMobileMenuOpen(false)}
+                        >
+                            {({ isActive }) => {
+                                const imgSrc = isActive ? '/images/sidebarCards.png' : `/images/sidebarCardsoff${theme}.png`;
+                                return (
+                                    <>
+                                        <img src={imgSrc} alt="" />
+                                        My cards
+                                    </>
+                                );
+                            }}
+                        </NavLink>
+                        <NavLink
+                            to={'/profile'}
+                            className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
+                            onClick={() => setIsSideMobileMenuOpen(false)}
+                        >
+                            {({ isActive }) => {
+                                const imgSrc = isActive ? '/images/sidebarProfile.png' : `/images/sidebarProfileoff${theme}.png`;
+                                return (
+                                    <>
+                                        <img src={imgSrc} alt="" />
+                                        Profile
+                                    </>
+                                );
+                            }}
+                        </NavLink>
+                        <NavLink
+                            to={'/settings'}
+                            className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
+                            onClick={() => setIsSideMobileMenuOpen(false)}
+                        >
+                            {({ isActive }) => {
+                                const imgSrc = isActive ? '/images/sidebarSettings.png' : `/images/sidebarSettingsoff${theme}.png`;
+                                return (
+                                    <>
+                                        <img src={imgSrc} alt="" />
+                                        Settings
+                                    </>
+                                );
+                            }}
+                        </NavLink>
+                        <NavLink
+                            to={'/support'}
+                            className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
+                            onClick={() => setIsSideMobileMenuOpen(false)}
+                        >
+                            {({ isActive }) => {
+                                const imgSrc = isActive ? '/images/sidebarChats.png' : `/images/sidebarChatsoff${theme}.png`;
+                                return (
+                                    <>
+                                        <img src={imgSrc} alt="" />
+                                        Support
+                                    </>
+                                );
+                            }}
+                        </NavLink>
                     </div>
                     <button onClick={() => {
                         localStorage.removeItem("logged")
                         navigate('/')
+                        setIsSideMobileMenuOpen(false)
                     }} className='forM'>
-                        logout
+                        <div style={{
+                            color: theme == "dark" ? "rgba(255, 255, 255, 0.5)" : "rgba(0, 0, 0, 0.5)",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "0.5rem"
+                        }}>
+                            <img src={`/images/logout${theme}.png`} alt="" />
+                            logout
+                        </div>
                     </button>
                 </div>
             </div>
             <div className='sidebar-bottom'>
-                <div className="dropdowns-cont" style={{ top: "2.3rem" }}>
+                <div className="dropdowns-cont">
                     {/* Theme Dropdown */}
                     <div className="themeDropdown">
                         <button
@@ -146,7 +252,15 @@ const Sidebar = () => {
                     localStorage.removeItem("logged")
                     navigate('/')
                 }} className='forD'>
-                    logout
+                    <div style={{
+                        color: theme == "dark" ? "rgba(255, 255, 255, 0.5)" : "rgba(0, 0, 0, 0.5)",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.5rem"
+                    }}>
+                        <img src={`/images/logout${theme}.png`} alt="" />
+                        logout
+                    </div>
                 </button>
             </div>
         </div>

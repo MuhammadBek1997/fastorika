@@ -2656,25 +2656,50 @@ nav.scrolled {
 
 
 
-.webClient{
-    display: flex;
-}
 .sidebar{
     width: 20vw;
     height: 100vh;
-    position: sticky;
+    position: fixed;
     padding: 2rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
 .sidebar-list{
+    width: 100%;
     display: flex;
     flex-direction: column;
 }
+.sidebar-link{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: 1rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+#light .sidebar-link{
+    color: rgba(0, 0, 0, 0.5);
+}
+#dark .sidebar-link{
+    color:rgba(255, 255, 255, 0.5);
+
+}
+.sidebar-link img{
+    width: 18px;
+    height: 18px;
+}
+#dark .sidebar-link.active,
+#light .sidebar-link.active{
+    background-color: var(--btn-primary);
+    color: #1F1F1F;
+}
 .sidebar-bottom{
     width: 100%;
-    min-height: 8rem;
+    min-height: 3rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -2687,6 +2712,395 @@ nav.scrolled {
 #dark .sidebar{
     background-color: var(--bg-dark);
 }
+#webSection{
+    padding-left: 21vw;
+}
+
+
+
+
+
+
+
+
+
+
+.transactions-navbar{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 2rem;
+}
+
+#dark .transactions-navbar{
+    background-color: var(--bg-dark);
+}
+#light .transactions-navbar{
+    background-color: var(--bg-light);
+}
+.transactions-transfer-cont {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.7rem;
+    position: relative;
+}
+.transactions-transfer-cont.transrow{
+    flex-direction: row;
+}
+.transactions-transfer-cont.transreverse{
+    flex-direction: row-reverse;
+}
+.transactions-transfer-cont input {
+    background: none;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.transactions-transfer-top {
+    flex: 1;
+    display: flex;
+    justify-content: space-around;
+    padding: 0.5rem 1rem;
+    border-radius: 1.5rem;
+}
+
+.transactions-transfer-top-cash p {
+    font-size: 12px;
+}
+
+#light .transactions-transfer-top {
+    background-color: var(--bg-body-light);
+}
+
+#dark .transactions-transfer-top {
+    background-color: var(--bg-body-dark);
+}
+
+.changeTransBtn {
+    position: absolute;
+    left: 47.7%;
+    padding: 0.25rem;
+    border-radius: 50%;
+    transform: rotateZ(90deg);
+}
+.changeTransBtn img {
+    border-radius: 50%;
+    padding: 0.5rem;
+}
+
+#dark .changeTransBtn img {
+    background-color: var(--bg-dark);
+}
+
+#light .changeTransBtn img {
+    background-color: var(--bg-light);
+}
+
+#dark .changeTransBtn {
+    background-color: var(--bg-body-dark);
+}
+
+#light .changeTransBtn {
+    background-color: var(--bg-body-light);
+}
+
+.transactions-transfer-bottom {
+    flex: 1;
+    display: flex;
+    justify-content: space-around;
+    padding: 0.5rem 1.5rem;
+    border-radius: 1.5rem;
+}
+
+.transactions-transfer-bottom-cash p {
+    font-size: 10px;
+}
+
+#light .transactions-transfer-bottom {
+    background-color: var(--bg-body-light);
+}
+
+#dark .transactions-transfer-bottom {
+    background-color: var(--bg-body-dark);
+}
+
+.transactions-transferBtn {
+    background-color: #00D796;
+    padding: 1.2rem;
+    border-radius: 1.5rem;
+    font-weight: 600;
+}
+
+
+
+.currTransDropdown {
+    position: relative;
+}
+
+.currTransToggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.7rem 1.5rem;
+    border-radius: 0.7rem;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 0.8rem;
+}
+
+#light .currTransToggle {
+    background-color: var(--bg-body-light);
+    color: var(--text-light);
+    border: 0.1vw solid #CECECE;
+}
+
+#light .currTransToggle:hover {
+    background-color: var(--border-light);
+}
+
+#dark .currTransToggle {
+    background-color: var(--bg-body-dark);
+    color: var(--text-dark);
+    border: 0.1vw solid #5B5B5B;
+}
+
+#dark .currTransToggle:hover {
+    background-color: var(--border-dark);
+}
+
+.currFlag {
+    font-size: 1.125rem;
+    line-height: 1;
+}
+
+.currCode {
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.currTransToggle svg.ms-1 {
+    width: 10px;
+    height: 10px;
+    margin-left: 0.125rem;
+}
+
+/* currency Dropdown Menu */
+.currTransDropdownMenu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    min-width: 170px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 50;
+    animation: fadeIn 0.2s ease;
+}
+
+#light .currTransDropdownMenu {
+    background-color: var(--bg-light);
+    border: 1px solid var(--border-light);
+}
+
+#dark .currTransDropdownMenu {
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border-dark);
+}
+
+/* currency Options */
+.currOption {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.75rem;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    background: none;
+    text-align: left;
+}
+
+.currImg {
+    width: 16px;
+}
+
+.currOption .currFlag {
+    flex-shrink: 0;
+}
+
+#light .currOption {
+    color: var(--text-light);
+}
+
+#light .currOption:hover {
+    background-color: var(--border-light);
+}
+
+#light .currOption.active {
+    background-color: var(--btn-primary);
+    color: white;
+}
+
+#dark .currOption {
+    color: var(--text-dark);
+}
+
+#dark .currOption:hover {
+    background-color: var(--border-dark);
+}
+
+#dark .currOption.active {
+    background-color: var(--btn-primary);
+    color: white;
+}
+
+
+
+
+
+
+
+
+.transactions{
+    padding: 1rem;
+}
+
+.transactions-navbar{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 2rem;
+    gap: 1rem;
+}
+
+.transactions-transfer-cont {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.7rem;
+    position: relative;
+}
+
+.transactions-transfer-top,
+.transactions-transfer-bottom {
+    flex: 1;
+    display: flex;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-radius: 1.5rem;
+    min-width: 0;
+}
+
+.transactions-transfer-top-cash,
+.transactions-transfer-bottom-cash {
+    flex: 1;
+}
+
+.transactions-transfer-top-cash p,
+.transactions-transfer-bottom-cash p {
+    font-size: 12px;
+}
+
+.transactions-transfer-cont input {
+    background: none;
+    font-size: 20px;
+    font-weight: 700;
+    border: none;
+    outline: none;
+    width: 100%;
+}
+
+.changeTransBtn {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%) rotateZ(90deg);
+    padding: 0.25rem;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.changeTransBtn img {
+    width: 2rem;
+    height: 2rem;
+}
+
+.transactions-transferBtn {
+    background-color: #00D796;
+    padding: 1.2rem 2rem;
+    border-radius: 1.5rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.3s ease;
+}
+
+.transactions-transferBtn:hover {
+    background-color: #009966;
+}
+
+
+
+
+
+
+
+
+
+
+.myCards{
+    padding: 1rem;
+}
+.myCards-navbar{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 2rem;
+    gap: 1rem;
+}
+#light .myCards-navbar{
+    background-color: var(--bg-light);
+}
+#dark .myCards-navbar{
+    background-color: var(--bg-dark);
+}
+.myCards-head{
+    font-size: 1.3rem;
+    font-weight: 500;
+}
+.myCardsBtn {
+    background-color: #00D796;
+    padding: 1rem;
+    border-radius: 1rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.3s ease;
+    font-size: 0.8rem;
+}
+
+.myCardsBtn:hover {
+    background-color: #009966;
+}
+
+
 
 
 
@@ -2724,11 +3138,6 @@ nav.scrolled {
     .webClient{
         flex-direction: column;
     }
-    .sidebar{
-        width: 100vw;
-        height: 20vh;
-        flex-direction: row;
-    }
     #dark .sidebar{
         background-color: var(--bg-body-dark);
     }
@@ -2750,8 +3159,116 @@ nav.scrolled {
     .sidebar-list{
         padding: 2rem;
     }
-    
+
+
+    .transactions-navbar{
+        flex-direction: column;
+        width: 100%;
+    }
+    .transactions-transfer-cont.transrow{
+        flex-direction: column;
+    }
+    .transactions-transfer-cont.transreverse{
+        flex-direction: column-reverse;
+    }
+    .changeTransBtn{
+        transform: rotateZ(0deg);
+    }
+
+
+
 }
+
+
+@media (max-width:768px) {
+    .sidebar{
+        width: 100vw;
+        height: auto;
+        height: 7vh;
+        flex-direction: row;
+        padding: 0.5rem;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 100;
+    }
+    
+    #navbar-sticky.sidebar-sticky-list{
+        position: fixed;
+        top: 10vh;
+        left: 1%;
+        width: 96% !important;
+        border-radius: 2rem;
+        padding: 1rem;
+    }
+    
+    #webSection{
+        padding-left: 0;
+        padding: 1rem;
+        padding-top: 8vh;
+        width: 100%;
+    }
+
+    .transactions{
+        padding: 0.5rem;
+    }
+
+    .transactions-navbar{
+        flex-direction: column;
+        width: 100%;
+        padding: 0.5rem;
+        gap: 1rem;
+    }
+    
+    .transactions-transfer-cont{
+        width: 100%;
+        gap: 0.3rem;
+    }
+    
+    .transactions-transfer-cont.transrow{
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .transactions-transfer-cont.transreverse{
+        flex-direction: column-reverse;
+        width: 100%;
+    }
+    
+    .changeTransBtn{
+        padding: 0.5rem;
+        transform: translateX(-50%) rotateZ(0deg);
+        top: 35%;
+        left: 50%;
+    }
+    
+    .transactions-transfer-top,
+    .transactions-transfer-bottom{
+        width: 100%;
+        padding: 0.5rem;
+    }
+    
+    .transactions-transferBtn{
+        width: 100%;
+        padding: 0.5rem;
+    }
+    
+    .currTransToggle{
+        width: 100%;
+    }
+    
+    .transactions-transfer-cont input{
+        font-size: 15px;
+    }
+    .transactions-transfer-cont p{
+        font-size: 12px;
+    }
+    .currTransToggle{
+        padding: 0.5rem;
+    }
+}
+
+
 @media (max-width:600px) {
     .login-cont-form-psw img,
     .registration-cont-form-psw img{

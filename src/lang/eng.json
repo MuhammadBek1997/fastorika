@@ -90,5 +90,6 @@
     "reg-clientStep1":"Continue",
     "reg-clientRule1":"At least 8 characters",
     "reg-clientRule2":"At least one uppercase letter",
-    "reg-clientRule3":"Passwords match"
+    "reg-clientRule3":"Passwords match",
+    "transBtn":"Send"
 }

@@ -2,7 +2,7 @@
 
 const Settings = () => {
   return (
-    <div>
+    <div id='webSection'>
         Settings
     </div>
   )
