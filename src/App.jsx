@@ -1,4 +1,5 @@
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, Navigate } from 'react-router-dom'
+import { useEffect } from 'react'
 import './App.css'
 import Navbar from './components/Navbar'
 import Home from './pages/Home'
@@ -25,10 +26,13 @@ import AboutRoute from './pages/AboutRoute'
 function App() {
 
   let { theme, clientPage } = useGlobalContext()
-
-  let body = document.getElementById("root").parentElement
-
-  body.parentElement.style.backgroundColor = theme == "dark" ? "#363636" : "#F0F0F0"
+  
+  useEffect(() => {
+    const htmlEl = document.documentElement
+    if (htmlEl) {
+      htmlEl.style.backgroundColor = theme === 'dark' ? '#363636' : '#F0F0F0'
+    }
+  }, [theme])
 
 
   if(localStorage.getItem("logged")){
@@ -36,6 +40,7 @@ function App() {
       <div className='webClient' id={theme}>
         <Sidebar/>
         <Routes>
+          <Route path='/' element={<Navigate to='/transactions' replace />} />
           <Route path='/transactions' element={<Transactions/>} />
           <Route path='/cards' element={<MyCards/>} />
           <Route path='/profile' element={<Profile/>} />
@@ -48,6 +53,7 @@ function App() {
           <Route path='/politics' element={<PoliticsAndCon/>}/>
           <Route path='/termService' element={<TermService/>}/>
           <Route path='/serviceTerm' element={<ServiceTerm/>}/>
+          <Route path='*' element={<Navigate to='/transactions' replace />} />
         </Routes>
       </div>
     )
@@ -58,6 +64,7 @@ function App() {
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/about' element={<AboutUs />} />
+          <Route path='*' element={<Navigate to='/' replace />} />
         </Routes>
         <Footer />
       </div>
@@ -68,6 +75,7 @@ function App() {
         <Routes>
           <Route path='/login' element={<Login />} />
           <Route path='/registration' element={<Registration />} />
+          <Route path='*' element={<Navigate to='/login' replace />} />
         </Routes>
       </div>
     )
