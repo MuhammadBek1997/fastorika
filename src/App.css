@@ -1624,9 +1624,12 @@ nav.scrolled {
     width: 17rem;
 }
 
-
-
-
+#aboutRoute.about-ourmission-list .ourmission-card{
+    width: 17vw;
+}
+#aboutRoute.about-trust .about-trust-list .trust-card{
+    width: 23vw;
+}
 
 
 
@@ -1774,7 +1777,7 @@ nav.scrolled {
     }
 
     section {
-        padding-top: 5rem;
+        padding-top: 1rem;
     }
 
     #navbar-sticky {
@@ -2314,7 +2317,12 @@ nav.scrolled {
         font-size: 1.1rem;
         width: 100%;
     }
-
+    #aboutRoute.about-ourmission-list .ourmission-card{
+    width: 100%;
+}
+#aboutRoute.about-trust .about-trust-list .trust-card{
+    width: 100%;
+}
 }
 
 @media (max-width: 500px) {

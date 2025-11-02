@@ -45,14 +45,16 @@ const AboutRoute = () => {
           {t("ourmissionsecond")}
 
         </p>
-        <div className='about-ourmission-list'>
+        <div className='about-ourmission-list' id='aboutRoute'>
           <div className='ourmission-card'>
             <img src="/images/ourMissionSecure.png" alt="" />
             <h3>
               {t("ourmission11")}
 
             </h3>
-            <p>
+            <p style={{
+              width:"auto"
+            }}>
               {t("ourmission12")}
 
             </p>
@@ -63,7 +65,9 @@ const AboutRoute = () => {
               {t("ourmission21")}
 
             </h3>
-            <p>
+            <p style={{
+              width:"auto"
+            }}>
               {t("ourmission22")}
 
             </p>
@@ -74,7 +78,9 @@ const AboutRoute = () => {
               {t("ourmission31")}
 
             </h3>
-            <p>
+            <p style={{
+              width:"auto"
+            }}>
               {t("ourmission32")}
 
             </p>
@@ -85,15 +91,16 @@ const AboutRoute = () => {
               {t("ourmission41")}
 
             </h3>
-            <p>
+            <p style={{
+              width:"auto"
+            }}>
               {t("ourmission42")}
-
             </p>
           </div>
 
         </div>
       </div>
-      <div className='about-trust'>
+      <div className='about-trust' id='aboutRoute'>
         <h1>
           {t("trusthead")}
         </h1>
