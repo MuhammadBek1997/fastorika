@@ -1,39 +1,41 @@
 import { ChevronRight } from "lucide-react"
 import { Link } from "react-router-dom"
+import { useGlobalContext } from "../Context"
 
 
 const Settings = () => {
+  const { t } = useGlobalContext()
   return (
     <div className="settings" id='webSection'>
         <div className="settings-navbar">
           <div className="settings-navbar-cont">
             <h3>
-              Settings
+              {t('settingsPage.title')}
             </h3>
           </div>
         </div>
         <div className="settings-body">
             <Link to={'/support'}>
           <div className="date-input-container">
-              Contact Support
+              {t('settingsPage.contactSupport')}
           <ChevronRight/>
           </div>
             </Link>
             <Link to={'/docs'}>
           <div className="date-input-container">
-              Documents
+              {t('settingsPage.documents')}
           <ChevronRight/>
           </div>
             </Link>
             <Link to={'/faqs'}>
           <div className="date-input-container">
-              FAQ's
+              {t('settingsPage.faqs')}
           <ChevronRight/>
           </div>
             </Link>
             <Link to={'/aboutUs'}>
           <div className="date-input-container">
-              About Us
+              {t('settingsPage.aboutUs')}
           <ChevronRight/>
           </div>
             </Link>

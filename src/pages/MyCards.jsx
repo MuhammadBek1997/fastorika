@@ -7,10 +7,10 @@ const MyCards = () => {
     <div className='myCards' id='webSection'>
       <div className="myCards-navbar">
         <h2 className='myCards-head'>
-          Мои карты
+          {t('myCards.title')}
         </h2>
         <button className='myCardsBtn'>
-          Добавить карту
+          {t('myCards.addButton')}
         </button>
       </div>
       <div className="myCards-body">

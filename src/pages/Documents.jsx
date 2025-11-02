@@ -18,7 +18,7 @@ const Documents = () => {
                         </Link>
                     </div>
                     <h3>
-                        Legal Documents
+                        {t('documentsPage.title')}
                     </h3>
                 </div>
             </div>

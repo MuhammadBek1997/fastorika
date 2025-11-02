@@ -73,7 +73,7 @@ const Sidebar = () => {
                                 return (
                                     <>
                                         <img src={imgSrc} alt="" />
-                                        Transactions
+                                        {t('nav.transactions')}
                                     </>
                                 );
                             }}
@@ -88,7 +88,7 @@ const Sidebar = () => {
                                 return (
                                     <>
                                         <img src={imgSrc} alt="" />
-                                        My cards
+                                        {t('nav.cards')}
                                     </>
                                 );
                             }}
@@ -103,7 +103,7 @@ const Sidebar = () => {
                                 return (
                                     <>
                                         <img src={imgSrc} alt="" />
-                                        Profile
+                                        {t('nav.profile')}
                                     </>
                                 );
                             }}
@@ -118,7 +118,7 @@ const Sidebar = () => {
                                 return (
                                     <>
                                         <img src={imgSrc} alt="" />
-                                        Settings
+                                        {t('nav.settings')}
                                     </>
                                 );
                             }}
@@ -133,7 +133,7 @@ const Sidebar = () => {
                                 return (
                                     <>
                                         <img src={imgSrc} alt="" />
-                                        Support
+                                        {t('nav.support')}
                                     </>
                                 );
                             }}

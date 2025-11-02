@@ -22,8 +22,8 @@
     --border-btn-dark: #5B5B5B;
 
     /* Button ranglar */
-    --btn-primary: #22c55e;
-    --btn-primary-hover: #16a34a;
+    --btn-primary: #00D796;
+    --btn-primary-hover: #00ca8e;
 }
 
 * {
@@ -3335,7 +3335,7 @@ nav.scrolled {
 
 .month-option.active,
 .year-option.active {
-    background-color: #10b981;
+    background-color: #00D796;
     color: #ffffff;
 }
 
@@ -3512,7 +3512,7 @@ nav.scrolled {
 
 .month-option.active,
 .year-option.active {
-    background-color: #10b981;
+    background-color: #00D796;
     color: #ffffff;
 }
 
@@ -3818,10 +3818,14 @@ nav.scrolled {
     }
 
     .sidebar-list {
-        padding: 2rem;
+        padding: 0.5rem;
     }
 
-
+    .sidebar-sticky-list .forM{
+        position: absolute;
+        bottom: 2rem;
+        left: 40%;
+    }
     .transactions-navbar {
         flex-direction: column;
         width: 100%;

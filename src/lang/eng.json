@@ -91,5 +91,51 @@
     "reg-clientRule1":"At least 8 characters",
     "reg-clientRule2":"At least one uppercase letter",
     "reg-clientRule3":"Passwords match",
-    "transBtn":"Send"
+    "transBtn":"Send",
+    "nav":{
+      "transactions":"My transactions",
+      "cards":"My cards",
+      "profile":"Profile",
+      "settings":"Settings",
+      "support":"Support"
+    },
+    "myCards":{
+      "title":"My cards",
+      "addButton":"Add card"
+    },
+    "settingsPage":{
+      "title":"Settings",
+      "contactSupport":"Contact Support",
+      "documents":"Legal Documents",
+      "faqs":"FAQ's",
+      "aboutUs":"About Us"
+    },
+    "documentsPage":{
+      "title":"Legal Documents"
+    },
+    "supportPage":{
+      "title":"Support"
+    },
+    "profilePage":{
+      "title":"Profile",
+      "unverified":"Unverified",
+      "verifyTitle":"Please complete identity verification",
+      "verifyDesc":"Before you can start transferring funds, we need to verify that you are a real person; this process will take 5 minutes.",
+      "verifyBtn":"Complete Verification",
+      "labels":{
+        "firstName":"First Name",
+        "lastName":"Last Name",
+        "phone":"Phone Number",
+        "email":"Email",
+        "date":"Date of Birth",
+        "country":"Country"
+      },
+      "placeholders":{
+        "selectDate":"Select date"
+      },
+      "countries":{
+        "uzbekistan":"Uzbekistan",
+        "russia":"Russia"
+      }
+    }
 }

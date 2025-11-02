@@ -20,8 +20,8 @@ const Profile = () => {
   const weekDays = ['Du', 'Se', 'Ch', 'Pa', 'Ju', 'Sh', 'Ya'];
 
   const countries = [
-    "Uzbekistan",
-    "Russia"
+    t('profilePage.countries.uzbekistan'),
+    t('profilePage.countries.russia')
   ]
 
   const handleStateSelect = (state) => {
@@ -110,25 +110,25 @@ const Profile = () => {
     <div className='profile' id='webSection' data-theme={theme}>
       <div className='profile-top'>
         <h2 className='profile-head'>
-          Profile
+          {t('profilePage.title')}
         </h2>
       </div>
       <div className='profile-body'>
         <div className="profile-verify">
           <div className="profile-verify-status">
-            Unverified
+            {t('profilePage.unverified')}
           </div>
           <div className="profile-verify-head">
             <img src={`/images/notverified${theme}.png`} alt="" />
             <h3>
-              Please complete identity verification
+              {t('profilePage.verifyTitle')}
             </h3>
           </div>
           <p>
-            Before you can start transferring funds, we need to verify that you are a real person; this process will take 5 minutes.
+            {t('profilePage.verifyDesc')}
           </p>
           <button className="verify-btn">
-            Complete Verification
+            {t('profilePage.verifyBtn')}
           </button>
         </div>
         <div className="profile-info">
@@ -136,19 +136,19 @@ const Profile = () => {
           <div className="profile-info-cont">
             <div className="profile-info-left">
               <label className="date-input-label">
-                Familiya
+                {t('profilePage.labels.firstName')}
               </label>
               <div className="date-input-container">
                 <input type="text" className="date-input-field" />
               </div>
               <label className="date-input-label">
-                Nomer
+                {t('profilePage.labels.email')}
               </label>
               <div className="date-input-container">
                 <input type="text" className="date-input-field" />
               </div>
               <label className="date-input-label">
-                Nomer
+                {t('profilePage.labels.country')}
               </label>
               <div className="date-input-container" style={{ padding: "0" }}>
                 <button
@@ -176,13 +176,13 @@ const Profile = () => {
             </div>
             <div className="profile-info-right">
               <label className="date-input-label">
-                Familiya
+                {t('profilePage.labels.lastName')}
               </label>
               <div className="date-input-container">
                 <input type="text" className="date-input-field" />
               </div>
               <label className="date-input-label">
-                Nomer
+                {t('profilePage.labels.phone')}
               </label>
               <div className="date-input-container">
                 <input type="text" className="date-input-field" />
@@ -190,13 +190,13 @@ const Profile = () => {
 
               {/* Date Input Field */}
               <div className="date-input-wrapper">
-                <label className="date-input-label">Sana</label>
+                <label className="date-input-label">{t('profilePage.labels.date')}</label>
                 <div className="date-input-container" onClick={() => setIsDateOpen(!isDateOpen)}>
                   <input
                     type="text"
                     value={isSelDate}
                     readOnly
-                    placeholder="Sanani tanlang"
+                    placeholder={t('profilePage.placeholders.selectDate')}
                     className="date-input-field"
                   />
 
