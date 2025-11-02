@@ -3633,7 +3633,7 @@ nav.scrolled {
 .save-btn {
     width: 100%;
     margin-top: 24px;
-    background-color: #10b981;
+    background-color: #00D796;
     color: #ffffff;
     padding: 12px;
     border-radius: 8px;
@@ -3645,7 +3645,21 @@ nav.scrolled {
 }
 
 .save-btn:hover {
-    background-color: #059669;
+    background-color: #00c788;
+}
+
+.save-btn:disabled {
+    cursor: not-allowed;
+}
+
+[data-theme="light"] .save-btn:disabled {
+    background-color: #F0F0F0;
+    color: #9ca3af;
+}
+
+[data-theme="dark"] .save-btn:disabled {
+    background-color: #363636;
+    color: #9ca3af;
 }
 
 /* Theme Variables */

@@ -18,6 +18,7 @@ const Profile = () => {
   const [lastName, setLastName] = useState("")
   const [phone, setPhone] = useState("")
   const [email, setEmail] = useState("")
+  const [initial, setInitial] = useState(null)
   const months = [
     'Yanvar', 'Fevral', 'Mart', 'April', 'May', 'Iyun',
     'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'
@@ -123,6 +124,15 @@ const Profile = () => {
         const data = await res.json()
         if (!res.ok) {
           console.warn('Profile load failed:', data.message)
+          // initialize baseline to current (empty) values to allow change detection
+          setInitial({
+            email: '',
+            firstName: '',
+            lastName: '',
+            phone: '',
+            country: '',
+            birthDate: ''
+          })
           return
         }
         setEmail(data.email || '')
@@ -131,11 +141,36 @@ const Profile = () => {
         setPhone(data.phone || '')
         setCurState(data.country || '')
         setIsSelDate(data.birthDate || '')
+        setInitial({
+          email: data.email || '',
+          firstName: data.firstName || '',
+          lastName: data.lastName || '',
+          phone: data.phone || '',
+          country: data.country || '',
+          birthDate: data.birthDate || ''
+        })
       } catch (e) {
         console.warn('Profile load network error')
+        setInitial({
+          email: '',
+          firstName: '',
+          lastName: '',
+          phone: '',
+          country: '',
+          birthDate: ''
+        })
       }
     })()
   }, [])
+
+  const norm = (v) => (typeof v === 'string' ? v.trim() : (v ?? ''))
+  const hasChanges = initial ? (
+    norm(firstName) !== norm(initial.firstName) ||
+    norm(lastName) !== norm(initial.lastName) ||
+    norm(phone) !== norm(initial.phone) ||
+    norm(curState) !== norm(initial.country) ||
+    norm(isSelDate) !== norm(initial.birthDate)
+  ) : false
 
   return (
     <div className='profile' id='webSection' data-theme={theme}>
@@ -342,9 +377,15 @@ const Profile = () => {
           </div>
           <button
             className="save-btn"
+            disabled={!hasChanges}
+            style={{
+              backgroundColor: hasChanges ? '#00D796' : (theme === 'dark' ? '#363636' : '#F0F0F0'),
+              cursor: hasChanges ? 'pointer' : 'not-allowed'
+            }}
             onClick={async () => {
               const token = localStorage.getItem('token')
               if (!token) { alert('Avval login qiling'); return; }
+              if (!hasChanges) { return; }
               try {
                 const res = await apiFetch('/api/profile', {
                   method: 'PUT',
@@ -357,6 +398,15 @@ const Profile = () => {
                   return
                 }
                 alert('Profil saqlandi')
+                // update baseline after successful save
+                setInitial({
+                  email,
+                  firstName: norm(firstName),
+                  lastName: norm(lastName),
+                  phone: norm(phone),
+                  country: norm(curState),
+                  birthDate: norm(isSelDate)
+                })
               } catch (e) {
                 alert('Tarmoq xatosi')
               }

@@ -18,11 +18,30 @@ export default async function handler(req, res) {
       return;
     }
 
-    if (req.method === 'PUT') {
+  if (req.method === 'PUT') {
       const { firstName, lastName, phone, country, birthDate } = req.body || {};
+
+      // Build partial update object: only include provided, non-empty fields
+      const updates = {};
+      const apply = (key, val) => {
+        if (val === undefined || val === null) return;
+        if (typeof val === 'string' && val.trim() === '') return;
+        updates[key] = typeof val === 'string' ? val.trim() : val;
+      };
+      apply('firstName', firstName);
+      apply('lastName', lastName);
+      apply('phone', phone);
+      apply('country', country);
+      apply('birthDate', birthDate);
+
+      if (Object.keys(updates).length === 0) {
+        res.status(400).json({ message: 'Hech qanday o\'zgarish topilmadi' });
+        return;
+      }
+
       const updated = await User.findByIdAndUpdate(
         userId,
-        { firstName, lastName, phone, country, birthDate },
+        updates,
         { new: true, runValidators: true }
       ).select('-passwordHash');
       res.status(200).json(updated);
