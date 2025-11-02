@@ -1,6 +1,6 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
 import { useGlobalContext } from '../Context'
+import { ChevronRight } from 'lucide-react'
 
 const Documents = () => {
     let { t, theme } = useGlobalContext()
@@ -23,7 +23,30 @@ const Documents = () => {
                 </div>
             </div>
             <div className='settings-body'>
-                
+                <Link to={'/support'}>
+                    <div className="date-input-container">
+                        {t('settingsPage.contactSupport')}
+                        <ChevronRight />
+                    </div>
+                </Link>
+                <Link to={'/docs'}>
+                    <div className="date-input-container">
+                        {t('settingsPage.documents')}
+                        <ChevronRight />
+                    </div>
+                </Link>
+                <Link to={'/faqs'}>
+                    <div className="date-input-container">
+                        {t('settingsPage.faqs')}
+                        <ChevronRight />
+                    </div>
+                </Link>
+                <Link to={'/aboutUs'}>
+                    <div className="date-input-container">
+                        {t('settingsPage.aboutUs')}
+                        <ChevronRight />
+                    </div>
+                </Link>
             </div>
         </div>
     )

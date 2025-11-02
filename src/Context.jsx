@@ -7,10 +7,10 @@ import { useNavigate } from 'react-router-dom';
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
-  
-  
+
+
   const [openIndex, setOpenIndex] = useState(null);
-  
+
 
   const { t, i18n } = useTranslation();
   const currentLanguage = localStorage.getItem("i18nextLng")
@@ -37,19 +37,6 @@ export const AppProvider = ({ children }) => {
     return savedTheme || 'light';
   });
 
-  useEffect(() => {
-    const root = document.documentElement;
-    if (theme === 'dark') {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
-    localStorage.setItem('theme', theme);
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme(prev => prev === 'light' ? 'dark' : 'light');
-  };
 
   const [clientPage, setClientPage] = useState(false)
 
@@ -66,6 +53,9 @@ export const AppProvider = ({ children }) => {
     localStorage.removeItem("login")
     navigate('/')
   }
+
+
+
   const handleLogin = async (email, password) => {
     try {
       const res = await apiFetch('/api/auth/login', {
@@ -79,7 +69,7 @@ export const AppProvider = ({ children }) => {
         try {
           const { toast } = await import('react-toastify')
           toast.error(data.message || t('toast.login.error'))
-        } catch {}
+        } catch { }
         return
       }
       localStorage.setItem('token', data.token)
@@ -88,15 +78,18 @@ export const AppProvider = ({ children }) => {
       try {
         const { toast } = await import('react-toastify')
         toast.success(t('toast.login.success'))
-      } catch {}
+      } catch { }
       navigate('/transactions')
     } catch (err) {
       try {
         const { toast } = await import('react-toastify')
         toast.error(t('toast.networkError'))
-      } catch {}
+      } catch { }
     }
   }
+
+
+
 
   const faqData = [
     {
@@ -125,13 +118,30 @@ export const AppProvider = ({ children }) => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
+
+
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
+
   return (
     <AppContext.Provider value={{
       theme, toggleTheme,
       handleChange, currentLanguage,
       t, navigate, clientPage, setClientPage,
       handleNavigateLogin, currentLang, languages,
-      cancelLogin, handleLogin,faqData,toggleAccordion,
+      cancelLogin, handleLogin, faqData, toggleAccordion,
       openIndex
     }}>
       {children}
