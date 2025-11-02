@@ -1,6 +1,6 @@
 import connectDb from '../_db.js';
 import User from '../../server/models/User.js';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 export default async function handler(req, res) {
