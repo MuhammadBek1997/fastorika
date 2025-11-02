@@ -23,27 +23,27 @@ const Documents = () => {
                 </div>
             </div>
             <div className='settings-body'>
-                <Link to={'/support'}>
+                <Link to={'/politics'}>
                     <div className="date-input-container">
-                        {t('settingsPage.contactSupport')}
+                        {t('documentsPage.politics')}
                         <ChevronRight />
                     </div>
                 </Link>
-                <Link to={'/docs'}>
+                <Link to={'/politicsAml'}>
                     <div className="date-input-container">
-                        {t('settingsPage.documents')}
+                        {t('documentsPage.privacy')}
                         <ChevronRight />
                     </div>
                 </Link>
-                <Link to={'/faqs'}>
+                <Link to={'/termService'}>
                     <div className="date-input-container">
-                        {t('settingsPage.faqs')}
+                        {t('documentsPage.amlPrivacy')}
                         <ChevronRight />
                     </div>
                 </Link>
-                <Link to={'/aboutUs'}>
+                <Link to={'/serviceTerm'}>
                     <div className="date-input-container">
-                        {t('settingsPage.aboutUs')}
+                        {t('documentsPage.termService')}
                         <ChevronRight />
                     </div>
                 </Link>

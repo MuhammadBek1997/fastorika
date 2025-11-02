@@ -52,8 +52,8 @@ function App() {
           <Route path='/docs' element={<Documents/>} />
           <Route path='/faqs' element={<Faqs/>} />
           <Route path='/aboutUs' element={<AboutRoute />} />
-          <Route path='/politicsAml' element={<PoliticsAML/>}/>
           <Route path='/politics' element={<PoliticsAndCon/>}/>
+          <Route path='/politicsAml' element={<PoliticsAML/>}/>
           <Route path='/termService' element={<TermService/>}/>
           <Route path='/serviceTerm' element={<ServiceTerm/>}/>
           <Route path='*' element={<Navigate to='/transactions' replace />} />

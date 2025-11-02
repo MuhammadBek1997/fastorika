@@ -165,13 +165,15 @@ nav.scrolled {
     width: 83%;
     gap: 18vw;
 }
+
 @media (max-width:1200px) {
     #navbar-sticky {
         width: 70%;
         gap: 13vw;
     }
-    
+
 }
+
 .logo img {
     width: 100px;
     height: auto;
@@ -2698,7 +2700,7 @@ nav.scrolled {
     width: 20vw;
     height: 100vh;
     position: fixed;
-    padding: 2rem;
+    padding: 1rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -2764,6 +2766,9 @@ nav.scrolled {
     padding-left: 21vw;
 }
 
+#navbar-sticky.sidebar-sticky-list {
+    width: 100%;
+}
 
 
 
@@ -3196,10 +3201,10 @@ nav.scrolled {
 
 [data-theme="dark"] .profile-verify {
     background-color: var(--bg-dark);
-    
+
 }
 
-.profile-verify-status{
+.profile-verify-status {
     width: fit-content;
     padding: 0.3rem 0.7rem;
     border-radius: 1rem;
@@ -3208,24 +3213,27 @@ nav.scrolled {
     font-size: 1.1rem;
     font-weight: 500;
 }
-[data-theme="dark"] .profile-verify-status{
+
+[data-theme="dark"] .profile-verify-status {
     border: 1px solid var(--border-btn-dark);
     color: rgba(255, 255, 255, 0.5);
 
 }
-.profile-verify-head{
+
+.profile-verify-head {
     display: flex;
     align-items: center;
     gap: 1rem;
     padding: 1rem 0;
 }
-.profile-verify-head h3{
+
+.profile-verify-head h3 {
     font-size: 2rem;
     font-weight: 500;
     line-height: normal;
 }
 
-.verify-btn{
+.verify-btn {
     width: 100%;
     margin-top: 24px;
     background-color: #10b981;
@@ -3708,10 +3716,11 @@ nav.scrolled {
 
 
 
-.settings-navbar{
+.settings-navbar {
     padding-top: 1.5rem;
 }
-.settings-navbar-cont{
+
+.settings-navbar-cont {
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -3721,15 +3730,17 @@ nav.scrolled {
     font-size: 1.5rem;
     font-weight: 500;
 }
-#dark .settings-navbar-cont{
+
+#dark .settings-navbar-cont {
     background-color: var(--bg-dark);
 }
 
-.settings-back-btn .date-input-container{
+.settings-back-btn .date-input-container {
     width: fit-content;
     font-size: 1rem;
 }
-.settings-body{
+
+.settings-body {
     width: 40%;
     background-color: var(--bg-light);
     padding: 1rem;
@@ -3740,30 +3751,100 @@ nav.scrolled {
     gap: 1rem;
     font-weight: 500;
 }
-#dark .settings-body{
+
+#dark .settings-body {
     background-color: var(--bg-dark);
 }
 
 
 
 
+.serviceTerm-body {
+    background-color: var(--bg-light);
+    padding: 1rem;
+    margin-top: 1rem;
+    border-radius: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    font-weight: 500;
+}
+
+#dark .serviceTerm-body {
+    background-color: var(--bg-dark);
+}
+
+.termService-body {
+    background-color: var(--bg-light);
+    padding: 1rem;
+    margin-top: 1rem;
+    border-radius: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    font-weight: 500;
+}
+
+#dark .termService-body {
+    background-color: var(--bg-dark);
+}
+
+.politics-body {
+    background-color: var(--bg-light);
+    padding: 1rem;
+    margin-top: 1rem;
+    border-radius: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    font-weight: 400;
+    font-size: 0.8rem;
+}
+
+#dark .politics-body {
+    background-color: var(--bg-dark);
+}
+.politics-body h2{
+    font-size: 1.3rem;
+    font-weight: 600;
+}
 
 
+.politicsAml-body {
+    background-color: var(--bg-light);
+    padding: 1rem;
+    margin-top: 1rem;
+    border-radius: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    font-weight: 400;
+    font-size: 0.8rem;
+}
+
+#dark .politicsAml-body {
+    background-color: var(--bg-dark);
+}
+.politicsAml-body h2{
+    font-size: 1.3rem;
+    font-weight: 500;
+}
 
 
 
 /* Responsive */
 
-@media (max-width:1100px) {
+@media (max-width:1200px) {
+
     .sidebar,
-    .sidebar-list{
+    .sidebar-list {
         padding: 0.2rem;
     }
 
-    .sidebar-list a{
-        font-size: 0.8rem;
+    .sidebar-list a {
         gap: 0.3rem;
-        img{
+
+        img {
             width: 0.8rem;
             height: 0.8rem;
         }
@@ -3783,7 +3864,8 @@ nav.scrolled {
         width: 100%;
         padding: 20px;
     }
-    .profile-verify{
+
+    .profile-verify {
         width: 100%;
     }
 }
@@ -3858,11 +3940,12 @@ nav.scrolled {
         padding: 0.5rem;
     }
 
-    .sidebar-sticky-list .forM{
+    .sidebar-sticky-list .forM {
         position: absolute;
         bottom: 2rem;
         left: 40%;
     }
+
     .transactions-navbar {
         flex-direction: column;
         width: 100%;
@@ -3973,7 +4056,8 @@ nav.scrolled {
     .currTransToggle {
         padding: 0.5rem;
     }
-    .settings-body{
+
+    .settings-body {
         width: 100%;
     }
 }
