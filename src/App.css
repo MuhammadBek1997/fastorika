@@ -166,7 +166,13 @@ nav.scrolled {
     width: 83%;
     gap: 18vw;
 }
-
+@media (max-width:1200px) {
+    #navbar-sticky {
+        width: 70%;
+        gap: 13vw;
+    }
+    
+}
 .logo img {
     width: 100px;
     height: auto;
@@ -498,6 +504,7 @@ nav.scrolled {
     justify-content: space-between;
     align-items: center;
     padding: 2rem;
+    margin-top: 0.8rem;
     border-radius: 2rem;
     overflow: hidden;
 }
