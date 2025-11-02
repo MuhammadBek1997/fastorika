@@ -3882,7 +3882,15 @@ nav.scrolled {
     .profile-verify {
         width: 100%;
     }
-
+    .profile-verify p{
+        font-size: 0.8rem;
+    }
+    .profile-verify-status{
+        font-size: 0.7rem;
+    }
+    .profile-verify-head h3{
+        font-size: 1rem;
+    }
     .settings-navbar-cont {
         padding: 0.7rem;
     }
