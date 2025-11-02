@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useGlobalContext } from '../Context'
 import { apiFetch } from '../api'
+import { toast } from 'react-toastify'
 
 const Registration = () => {
     let { t, theme, handleChange, languages, currentLang, currentLanguage, toggleTheme, cancelLogin, navigate } = useGlobalContext()
@@ -181,7 +182,7 @@ const Registration = () => {
                 </div>
                 <button className='reg-clientBtn' onClick={async ()=>{
                     if(!mail || !psw || psw !== accPsw){
-                      alert('Maʼlumotlarni tekshiring');
+                      toast.error('Maʼlumotlarni tekshiring');
                       return;
                     }
                     try{
@@ -192,13 +193,13 @@ const Registration = () => {
                       })
                       const data = await res.json()
                       if(!res.ok){
-                        alert(data.message || 'Roʻyxatdan oʻtish xatosi')
+                        toast.error(data.message || 'Roʻyxatdan oʻtish xatosi')
                         return
                       }
-                      alert('Muvaffaqiyatli roʻyxatdan oʻtdingiz')
+                      toast.success('Muvaffaqiyatli roʻyxatdan oʻtdingiz')
                       navigate('/login')
                     }catch(err){
-                      alert('Tarmoq xatosi')
+                      toast.error('Tarmoq xatosi')
                     }
                 }}>
                     {t("reg-clientStep1")}

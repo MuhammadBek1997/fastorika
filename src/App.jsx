@@ -21,6 +21,8 @@ import ServiceTerm from './pages/ServiceTerm.jsx'
 import Documents from './pages/Documents'
 import Faqs from './pages/Faqs'
 import AboutRoute from './pages/AboutRoute'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 
 function App() {
@@ -38,6 +40,7 @@ function App() {
   if(localStorage.getItem("logged")){
     return(
       <div className='webClient' id={theme}>
+        <ToastContainer position="top-right" autoClose={3000} theme={theme === 'dark' ? 'dark' : 'light'} />
         <Sidebar/>
         <Routes>
           <Route path='/' element={<Navigate to='/transactions' replace />} />
@@ -61,6 +64,7 @@ function App() {
     return (
       <div id={theme}>
         <Navbar />
+        <ToastContainer position="top-right" autoClose={3000} theme={theme === 'dark' ? 'dark' : 'light'} />
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/about' element={<AboutUs />} />
@@ -72,6 +76,7 @@ function App() {
   } else {
     return (
       <div id={theme}>
+        <ToastContainer position="top-right" autoClose={3000} theme={theme === 'dark' ? 'dark' : 'light'} />
         <Routes>
           <Route path='/login' element={<Login />} />
           <Route path='/registration' element={<Registration />} />

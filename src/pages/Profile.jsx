@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useGlobalContext } from "../Context"
 import { apiFetch } from "../api"
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react"
+import { toast } from 'react-toastify'
 
 const Profile = () => {
   let { t, theme } = useGlobalContext()
@@ -19,6 +20,7 @@ const Profile = () => {
   const [phone, setPhone] = useState("")
   const [email, setEmail] = useState("")
   const [initial, setInitial] = useState(null)
+  const [status, setStatus] = useState({ type: null, message: '' })
   const months = [
     'Yanvar', 'Fevral', 'Mart', 'April', 'May', 'Iyun',
     'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'
@@ -124,6 +126,7 @@ const Profile = () => {
         const data = await res.json()
         if (!res.ok) {
           console.warn('Profile load failed:', data.message)
+          setStatus({ type: 'error', message: data.message || '' })
           // initialize baseline to current (empty) values to allow change detection
           setInitial({
             email: '',
@@ -149,8 +152,10 @@ const Profile = () => {
           country: data.country || '',
           birthDate: data.birthDate || ''
         })
+        setStatus({ type: null, message: '' })
       } catch (e) {
         console.warn('Profile load network error')
+        setStatus({ type: 'error', message: 'Profilni yuklashda tarmoq xatosi' })
         setInitial({
           email: '',
           firstName: '',
@@ -384,7 +389,7 @@ const Profile = () => {
             }}
             onClick={async () => {
               const token = localStorage.getItem('token')
-              if (!token) { alert('Avval login qiling'); return; }
+              if (!token) { setStatus({ type: 'error', message: 'Avval login qiling' }); toast.error('Avval login qiling'); return; }
               if (!hasChanges) { return; }
               try {
                 const res = await apiFetch('/api/profile', {
@@ -394,10 +399,12 @@ const Profile = () => {
                 })
                 const data = await res.json()
                 if (!res.ok) {
-                  alert(data.message || 'Saqlash xatosi')
+                  setStatus({ type: 'error', message: data.message || 'Saqlash xatosi' })
+                  toast.error(data.message || 'Saqlash xatosi')
                   return
                 }
-                alert('Profil saqlandi')
+                setStatus({ type: 'success', message: 'Profil saqlandi' })
+                toast.success('Profil saqlandi')
                 // update baseline after successful save
                 setInitial({
                   email,
@@ -408,12 +415,16 @@ const Profile = () => {
                   birthDate: norm(isSelDate)
                 })
               } catch (e) {
-                alert('Tarmoq xatosi')
+                setStatus({ type: 'error', message: 'Tarmoq xatosi' })
+                toast.error('Tarmoq xatosi')
               }
             }}
           >
             {t('profilePage.saveBtn') || 'Saqlash'}
           </button>
+          {status.type && (
+            <div className={`status-msg ${status.type}`}>{status.message}</div>
+          )}
         </div>
       </div>
     </div>

@@ -3662,6 +3662,20 @@ nav.scrolled {
     color: #9ca3af;
 }
 
+/* Inline status messages */
+.status-msg {
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.status-msg.success {
+    color: #10b981;
+}
+
+.status-msg.error {
+    color: #ef4444;
+}
+
 /* Theme Variables */
 :root {
     --text-primary: #111827;
