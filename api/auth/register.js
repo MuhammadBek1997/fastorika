@@ -24,7 +24,8 @@ export default async function handler(req, res) {
     res.status(201).json({ message: 'Registered successfully' });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Server error' });
+    const msg = err && err.message ? err.message : 'Server error';
+    res.status(500).json({ message: msg });
   }
 }
 
