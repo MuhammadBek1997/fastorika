@@ -106,13 +106,13 @@
     },
     "settingsPage":{
       "title":"Настройки",
-      "contactSupport":"Связаться с поддержкой",
-      "documents":"Правовые документы",
+      "contactSupport":"Обратиться в поддержку",
+      "documents":"Документы",
       "faqs":"Вопросы и ответы",
       "aboutUs":"О нас"
     },
     "documentsPage":{
-      "title":"Правовые документы"
+      "title":"Документы"
     },
     "supportPage":{
       "title":"Поддержка"
