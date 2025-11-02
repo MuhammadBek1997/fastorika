@@ -3743,6 +3743,7 @@ nav.scrolled {
     background-color: var(--bg-dark);
 }
 
+
 .settings-back-btn .date-input-container {
     width: fit-content;
     font-size: 1rem;
@@ -3876,6 +3877,23 @@ nav.scrolled {
     .profile-verify {
         width: 100%;
     }
+    .settings-navbar-cont{
+        padding: 0.7rem;
+    }
+    .settings-navbar-cont h3{
+    font-size: 1rem;
+}
+.settings-back-btn .date-input-container{
+    padding: 0;
+    width: 3rem;
+    height: 2.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.settings-back-btn img{
+    width: 1.3rem;
+}
 }
 
 
