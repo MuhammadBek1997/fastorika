@@ -5,7 +5,11 @@ const Support = () => {
   const { t } = useGlobalContext()
   return (
     <div id='webSection'>
-      {t('supportPage.title')}
+      <div className='settings-navbar'>
+        <div className="settings-navbar-cont">
+          {t('supportPage.title')}
+        </div>
+      </div>
     </div>
   )
 }
