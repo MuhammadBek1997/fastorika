@@ -182,7 +182,7 @@ const Registration = () => {
                 </div>
                 <button className='reg-clientBtn' onClick={async ()=>{
                     if(!mail || !psw || psw !== accPsw){
-                      toast.error('Maʼlumotlarni tekshiring');
+                      toast.error(t('toast.registration.validationError'));
                       return;
                     }
                     try{
@@ -193,13 +193,13 @@ const Registration = () => {
                       })
                       const data = await res.json()
                       if(!res.ok){
-                        toast.error(data.message || 'Roʻyxatdan oʻtish xatosi')
+                        toast.error(data.message || t('toast.registration.error'))
                         return
                       }
-                      toast.success('Muvaffaqiyatli roʻyxatdan oʻtdingiz')
+                      toast.success(t('toast.registration.success'))
                       navigate('/login')
                     }catch(err){
-                      toast.error('Tarmoq xatosi')
+                      toast.error(t('toast.networkError'))
                     }
                 }}>
                     {t("reg-clientStep1")}

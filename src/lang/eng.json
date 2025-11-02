@@ -113,7 +113,7 @@
     "documentsPage":{
       "title":"Legal Documents"
     },
-    "supportPage":{
+  "supportPage":{
       "title":"Support"
     },
     "profilePage":{
@@ -137,6 +137,24 @@
       "countries":{
         "uzbekistan":"Uzbekistan",
         "russia":"Russia"
+      }
+    }
+    ,
+    "toast":{
+      "networkError":"Network error",
+      "authRequired":"Please log in first",
+      "login":{
+        "success":"Logged in successfully",
+        "error":"Login failed"
+      },
+      "registration":{
+        "validationError":"Please check your data",
+        "success":"Registered successfully",
+        "error":"Registration error"
+      },
+      "profile":{
+        "saveSuccess":"Profile saved",
+        "saveError":"Save error"
       }
     }
 }

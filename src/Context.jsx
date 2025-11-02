@@ -78,7 +78,7 @@ export const AppProvider = ({ children }) => {
         // Toastify for login errors
         try {
           const { toast } = await import('react-toastify')
-          toast.error(data.message || 'Login failed')
+          toast.error(data.message || t('toast.login.error'))
         } catch {}
         return
       }
@@ -87,13 +87,13 @@ export const AppProvider = ({ children }) => {
       localStorage.setItem("logged", true)
       try {
         const { toast } = await import('react-toastify')
-        toast.success('Muvaffaqiyatli login')
+        toast.success(t('toast.login.success'))
       } catch {}
       navigate('/transactions')
     } catch (err) {
       try {
         const { toast } = await import('react-toastify')
-        toast.error('Network error')
+        toast.error(t('toast.networkError'))
       } catch {}
     }
   }

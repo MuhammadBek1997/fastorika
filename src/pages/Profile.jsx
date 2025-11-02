@@ -389,7 +389,7 @@ const Profile = () => {
             }}
             onClick={async () => {
               const token = localStorage.getItem('token')
-              if (!token) { setStatus({ type: 'error', message: 'Avval login qiling' }); toast.error('Avval login qiling'); return; }
+              if (!token) { setStatus({ type: 'error', message: t('toast.authRequired') }); toast.error(t('toast.authRequired')); return; }
               if (!hasChanges) { return; }
               try {
                 const res = await apiFetch('/api/profile', {
@@ -399,12 +399,12 @@ const Profile = () => {
                 })
                 const data = await res.json()
                 if (!res.ok) {
-                  setStatus({ type: 'error', message: data.message || 'Saqlash xatosi' })
-                  toast.error(data.message || 'Saqlash xatosi')
+                  setStatus({ type: 'error', message: data.message || t('toast.profile.saveError') })
+                  toast.error(data.message || t('toast.profile.saveError'))
                   return
                 }
-                setStatus({ type: 'success', message: 'Profil saqlandi' })
-                toast.success('Profil saqlandi')
+                setStatus({ type: 'success', message: t('toast.profile.saveSuccess') })
+                toast.success(t('toast.profile.saveSuccess'))
                 // update baseline after successful save
                 setInitial({
                   email,
@@ -415,8 +415,8 @@ const Profile = () => {
                   birthDate: norm(isSelDate)
                 })
               } catch (e) {
-                setStatus({ type: 'error', message: 'Tarmoq xatosi' })
-                toast.error('Tarmoq xatosi')
+                setStatus({ type: 'error', message: t('toast.networkError') })
+                toast.error(t('toast.networkError'))
               }
             }}
           >
