@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { useGlobalContext } from "../Context"
+import { apiFetch } from "../api"
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react"
 
 const Profile = () => {
@@ -116,7 +117,7 @@ const Profile = () => {
     if (!token) return;
     (async () => {
       try {
-        const res = await fetch('/api/profile', {
+        const res = await apiFetch('/api/profile', {
           headers: { Authorization: 'Bearer ' + token }
         })
         const data = await res.json()
@@ -345,7 +346,7 @@ const Profile = () => {
               const token = localStorage.getItem('token')
               if (!token) { alert('Avval login qiling'); return; }
               try {
-                const res = await fetch('/api/profile', {
+                const res = await apiFetch('/api/profile', {
                   method: 'PUT',
                   headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
                   body: JSON.stringify({ firstName, lastName, phone, country: curState, birthDate: isSelDate })

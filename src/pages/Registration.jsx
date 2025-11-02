@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useGlobalContext } from '../Context'
+import { apiFetch } from '../api'
 
 const Registration = () => {
     let { t, theme, handleChange, languages, currentLang, currentLanguage, toggleTheme, cancelLogin, navigate } = useGlobalContext()
@@ -184,7 +185,7 @@ const Registration = () => {
                       return;
                     }
                     try{
-                      const res = await fetch('/api/auth/register',{
+                      const res = await apiFetch('/api/auth/register',{
                         method:'POST',
                         headers:{'Content-Type':'application/json'},
                         body: JSON.stringify({email:mail, password:psw})
