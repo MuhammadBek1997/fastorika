@@ -13,6 +13,13 @@ import MyCards from './pages/MyCards'
 import Profile from './pages/Profile'
 import Settings from './pages/Settings'
 import Support from './pages/Support'
+import PoliticsAML from './pages/PoliticsAML'
+import PoliticsAndCon from './pages/PoliticsAndCon'
+import TermService from './pages/TermService'
+import ServiceTerm from './pages/serviceTerm'
+import Documents from './pages/Documents'
+import Faqs from './pages/Faqs'
+import AboutRoute from './pages/AboutRoute'
 
 
 function App() {
@@ -34,6 +41,13 @@ function App() {
           <Route path='/profile' element={<Profile/>} />
           <Route path='/settings' element={<Settings/>} />
           <Route path='/support' element={<Support/>} />
+          <Route path='/docs' element={<Documents/>} />
+          <Route path='/faqs' element={<Faqs/>} />
+          <Route path='/aboutUs' element={<AboutRoute />} />
+          <Route path='/politicsAml' element={<PoliticsAML/>}/>
+          <Route path='/politics' element={<PoliticsAndCon/>}/>
+          <Route path='/termService' element={<TermService/>}/>
+          <Route path='/serviceTerm' element={<ServiceTerm/>}/>
         </Routes>
       </div>
     )

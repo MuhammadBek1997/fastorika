@@ -6,8 +6,16 @@ import { useNavigate } from 'react-router-dom';
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
+  
+  
+  const [openIndex, setOpenIndex] = useState(null);
+  
+
   const { t, i18n } = useTranslation();
   const currentLanguage = localStorage.getItem("i18nextLng")
+
+
+
   // Language options
   const languages = [
     { code: 'ru', name: 'Русский', flag: '/images/russia.png' },
@@ -57,13 +65,38 @@ export const AppProvider = ({ children }) => {
     localStorage.removeItem("login")
     navigate('/')
   }
-  const handleLogin = ()=>{
+  const handleLogin = () => {
     localStorage.removeItem("login")
-    localStorage.setItem("logged",true)
+    localStorage.setItem("logged", true)
     navigate('/transactions')
   }
 
+  const faqData = [
+    {
+      question: "Как отправить деньги?",
+      answer: "Pul o'tkazmasini amalga oshirish uchun ilovaga kiring, 'Pul yuborish' bo'limini tanlang, qabul qiluvchining ma'lumotlarini kiriting (telefon raqami yoki karta raqami), summani ko'rsating va to'lovni tasdiqlang."
+    },
+    {
+      question: "Какая комиссия взимается за перевод?",
+      answer: "Komissiya summasi o'tkazma turiga va miqdoriga bog'liq. Ichki o'tkazmalar uchun 0.5% dan 2% gacha, xalqaro o'tkazmalar uchun esa 2% dan 5% gacha komissiya olinadi. Aniq summani o'tkazma yuborishdan oldin ko'rishingiz mumkin."
+    },
+    {
+      question: "Сколько денег получит адресат?",
+      answer: "Qabul qiluvchi siz yuborgan summadan komissiya miqdorini ayirib tashlangandan keyingi summani oladi. Agar siz to'liq summani yubormoqchi bo'lsangiz, komissiyani o'zingiz to'lash variantini tanlashingiz mumkin."
+    },
+    {
+      question: "Сколько времени занимает перевод?",
+      answer: "O'tkazma tezligi yo'nalishga bog'liq. Bir bank ichidagi o'tkazmalar bir necha daqiqada, boshqa banklarga 10 daqiqadan 24 soatgacha, xalqaro o'tkazmalar esa 1-5 ish kuni ichida bajariladi."
+    },
+    {
+      question: "Какие лимиты установлены на переводы?",
+      answer: "Kunlik limit tasdiqlangan foydalanuvchilar uchun 50 million so'mgacha, oylik limit esa 200 million so'mgacha. Tasdiqlanmagan hisoblar uchun limitlar ancha pastroq bo'ladi. Xalqaro o'tkazmalar uchun alohida limitlar amal qiladi."
+    }
+  ];
 
+  const toggleAccordion = (index) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
 
   return (
     <AppContext.Provider value={{
@@ -71,7 +104,8 @@ export const AppProvider = ({ children }) => {
       handleChange, currentLanguage,
       t, navigate, clientPage, setClientPage,
       handleNavigateLogin, currentLang, languages,
-      cancelLogin,handleLogin
+      cancelLogin, handleLogin,faqData,toggleAccordion,
+      openIndex
     }}>
       {children}
     </AppContext.Provider>
