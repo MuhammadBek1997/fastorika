@@ -9,6 +9,8 @@ const Login = () => {
     const [themeOpen, setThemeOpen] = useState(false)
     const [langOpen, setLangOpen] = useState(false)
     const [isShowPsw, setIsShowPsw] = useState(false)
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
 
 
 
@@ -133,16 +135,16 @@ const Login = () => {
                     <label htmlFor="">
                         {t("login-clientForm1")}
                     </label>
-                    <input type="text" />
+                    <input type="email" value={email} onChange={(e)=>setEmail(e.target.value)} />
                     <label htmlFor="">
                         {t("login-clientForm2")}
                     </label>
                     <div className='login-cont-form-psw'>
-                        <input type={isShowPsw ? "text" : "password"} />
+                        <input type={isShowPsw ? "text" : "password"} value={password} onChange={(e)=>setPassword(e.target.value)} />
                         <img src={!isShowPsw ? `/images/visible${theme}.png` : `/images/hide${theme}.png`} alt="" onClick={() => setIsShowPsw(!isShowPsw)} />
                     </div>
                 </div>
-                <button className='login-clientBtn' onClick={()=>handleLogin()}>
+                <button className='login-clientBtn' onClick={()=>handleLogin(email, password)}>
                     {t("login")}
                 </button>
                 <Link to={'/registration'} style={{ color: "#348BDC", marginLeft: "32.5%" }}>

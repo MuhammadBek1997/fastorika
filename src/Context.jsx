@@ -65,10 +65,25 @@ export const AppProvider = ({ children }) => {
     localStorage.removeItem("login")
     navigate('/')
   }
-  const handleLogin = () => {
-    localStorage.removeItem("login")
-    localStorage.setItem("logged", true)
-    navigate('/transactions')
+  const handleLogin = async (email, password) => {
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        alert(data.message || 'Login failed')
+        return
+      }
+      localStorage.setItem('token', data.token)
+      localStorage.removeItem("login")
+      localStorage.setItem("logged", true)
+      navigate('/transactions')
+    } catch (err) {
+      alert('Network error')
+    }
   }
 
   const faqData = [

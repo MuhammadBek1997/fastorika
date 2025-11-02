@@ -122,6 +122,7 @@
       "verifyTitle":"Please complete identity verification",
       "verifyDesc":"Before you can start transferring funds, we need to verify that you are a real person; this process will take 5 minutes.",
       "verifyBtn":"Complete Verification",
+      "saveBtn":"Save",
       "labels":{
         "firstName":"First Name",
         "lastName":"Last Name",

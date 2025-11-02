@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useGlobalContext } from "../Context"
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react"
 
@@ -13,6 +13,10 @@ const Profile = () => {
   const [isYearDropOpen, setIsYearDropOpen] = useState(false)
   const [isStateDropOpen, setIsStateDropOpen] = useState(false)
   const [curState, setCurState] = useState("")
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [phone, setPhone] = useState("")
+  const [email, setEmail] = useState("")
   const months = [
     'Yanvar', 'Fevral', 'Mart', 'April', 'May', 'Iyun',
     'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'
@@ -106,6 +110,32 @@ const Profile = () => {
 
   const days = getDaysInMonth(curMonth);
 
+  // Load profile info
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    if (!token) return;
+    (async () => {
+      try {
+        const res = await fetch('/api/profile', {
+          headers: { Authorization: 'Bearer ' + token }
+        })
+        const data = await res.json()
+        if (!res.ok) {
+          console.warn('Profile load failed:', data.message)
+          return
+        }
+        setEmail(data.email || '')
+        setFirstName(data.firstName || '')
+        setLastName(data.lastName || '')
+        setPhone(data.phone || '')
+        setCurState(data.country || '')
+        setIsSelDate(data.birthDate || '')
+      } catch (e) {
+        console.warn('Profile load network error')
+      }
+    })()
+  }, [])
+
   return (
     <div className='profile' id='webSection' data-theme={theme}>
       <div className='profile-top'>
@@ -139,13 +169,13 @@ const Profile = () => {
                 {t('profilePage.labels.firstName')}
               </label>
               <div className="date-input-container">
-                <input type="text" className="date-input-field" />
+                <input type="text" className="date-input-field" value={firstName} onChange={(e)=>setFirstName(e.target.value)} />
               </div>
               <label className="date-input-label">
                 {t('profilePage.labels.email')}
               </label>
               <div className="date-input-container">
-                <input type="text" className="date-input-field" />
+                <input type="text" className="date-input-field" value={email} readOnly />
               </div>
               <label className="date-input-label">
                 {t('profilePage.labels.country')}
@@ -179,13 +209,13 @@ const Profile = () => {
                 {t('profilePage.labels.lastName')}
               </label>
               <div className="date-input-container">
-                <input type="text" className="date-input-field" />
+                <input type="text" className="date-input-field" value={lastName} onChange={(e)=>setLastName(e.target.value)} />
               </div>
               <label className="date-input-label">
                 {t('profilePage.labels.phone')}
               </label>
               <div className="date-input-container">
-                <input type="text" className="date-input-field" />
+                <input type="text" className="date-input-field" value={phone} onChange={(e)=>setPhone(e.target.value)} />
               </div>
 
               {/* Date Input Field */}
@@ -311,9 +341,27 @@ const Profile = () => {
           </div>
           <button
             className="save-btn"
-            onClick={() => alert(`Tanlangan sana: ${isSelDate}`)}
+            onClick={async () => {
+              const token = localStorage.getItem('token')
+              if (!token) { alert('Avval login qiling'); return; }
+              try {
+                const res = await fetch('/api/profile', {
+                  method: 'PUT',
+                  headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+                  body: JSON.stringify({ firstName, lastName, phone, country: curState, birthDate: isSelDate })
+                })
+                const data = await res.json()
+                if (!res.ok) {
+                  alert(data.message || 'Saqlash xatosi')
+                  return
+                }
+                alert('Profil saqlandi')
+              } catch (e) {
+                alert('Tarmoq xatosi')
+              }
+            }}
           >
-            Saqlash
+            {t('profilePage.saveBtn') || 'Saqlash'}
           </button>
         </div>
       </div>

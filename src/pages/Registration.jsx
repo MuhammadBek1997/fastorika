@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useGlobalContext } from '../Context'
 
 const Registration = () => {
-    let { t, theme, handleChange, languages, currentLang, currentLanguage, toggleTheme, cancelLogin } = useGlobalContext()
+    let { t, theme, handleChange, languages, currentLang, currentLanguage, toggleTheme, cancelLogin, navigate } = useGlobalContext()
     const [themeRegOpen, setThemeRegOpen] = useState(false)
     const [langRegOpen, setLangRegOpen] = useState(false)
     const [showReg1Psw, setShowReg1Psw] = useState(false)
@@ -178,7 +178,28 @@ const Registration = () => {
                         </p>
                     </div>
                 </div>
-                <button className='reg-clientBtn'>
+                <button className='reg-clientBtn' onClick={async ()=>{
+                    if(!mail || !psw || psw !== accPsw){
+                      alert('Maʼlumotlarni tekshiring');
+                      return;
+                    }
+                    try{
+                      const res = await fetch('/api/auth/register',{
+                        method:'POST',
+                        headers:{'Content-Type':'application/json'},
+                        body: JSON.stringify({email:mail, password:psw})
+                      })
+                      const data = await res.json()
+                      if(!res.ok){
+                        alert(data.message || 'Roʻyxatdan oʻtish xatosi')
+                        return
+                      }
+                      alert('Muvaffaqiyatli roʻyxatdan oʻtdingiz')
+                      navigate('/login')
+                    }catch(err){
+                      alert('Tarmoq xatosi')
+                    }
+                }}>
                     {t("reg-clientStep1")}
                 </button>
                 <div className='login-or'>
