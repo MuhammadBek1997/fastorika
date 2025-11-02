@@ -1624,10 +1624,11 @@ nav.scrolled {
     width: 17rem;
 }
 
-#aboutRoute.about-ourmission-list .ourmission-card{
+#aboutRoute.about-ourmission-list .ourmission-card {
     width: 17vw;
 }
-#aboutRoute.about-trust .about-trust-list .trust-card{
+
+#aboutRoute.about-trust .about-trust-list .trust-card {
     width: 23vw;
 }
 
@@ -2317,12 +2318,14 @@ nav.scrolled {
         font-size: 1.1rem;
         width: 100%;
     }
-    #aboutRoute.about-ourmission-list .ourmission-card{
-    width: 100%;
-}
-#aboutRoute.about-trust .about-trust-list .trust-card{
-    width: 100%;
-}
+
+    #aboutRoute.about-ourmission-list .ourmission-card {
+        width: 100%;
+    }
+
+    #aboutRoute.about-trust .about-trust-list .trust-card {
+        width: 100%;
+    }
 }
 
 @media (max-width: 500px) {
@@ -3813,7 +3816,8 @@ nav.scrolled {
 #dark .politics-body {
     background-color: var(--bg-dark);
 }
-.politics-body h2{
+
+.politics-body h2 {
     font-size: 1.3rem;
     font-weight: 600;
 }
@@ -3834,7 +3838,8 @@ nav.scrolled {
 #dark .politicsAml-body {
     background-color: var(--bg-dark);
 }
-.politicsAml-body h2{
+
+.politicsAml-body h2 {
     font-size: 1.3rem;
     font-weight: 500;
 }
@@ -3877,23 +3882,30 @@ nav.scrolled {
     .profile-verify {
         width: 100%;
     }
-    .settings-navbar-cont{
+
+    .settings-navbar-cont {
         padding: 0.7rem;
     }
-    .settings-navbar-cont h3{
-    font-size: 1rem;
-}
-.settings-back-btn .date-input-container{
-    padding: 0;
-    width: 3rem;
-    height: 2.5rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.settings-back-btn img{
-    width: 1.3rem;
-}
+
+    .settings-navbar-cont h3 {
+        font-size: 1rem;
+    }
+
+    .settings-back-btn .date-input-container {
+        padding: 0;
+        width: 3rem;
+        height: 2.5rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .settings-back-btn img {
+        width: 1.3rem;
+    }
+    .settings-body{
+        font-size: 0.7rem;
+    }
 }
 
 
