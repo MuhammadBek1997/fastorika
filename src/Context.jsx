@@ -3,94 +3,165 @@ import { apiFetch } from './api';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-// AppContext
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
-
-
-  const [openIndex, setOpenIndex] = useState(null);
-
-
   const { t, i18n } = useTranslation();
-  const currentLanguage = localStorage.getItem("i18nextLng")
+  const navigate = useNavigate();
 
+  // Auth State
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  // UI State
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem('theme') || 'light';
+  });
+  const [openIndex, setOpenIndex] = useState(null);
+  const [selPayment, setSelPayment] = useState("currency");
 
-  // Language options
+  // Language State
+  const currentLanguage = localStorage.getItem("i18nextLng");
   const languages = [
     { code: 'ru', name: 'Русский', flag: '/images/russia.png' },
     { code: 'en', name: 'English', flag: '/images/us.png' }
-  ]
+  ];
+  const currentLang = languages.find(lang => lang.code === currentLanguage);
 
-  const currentLang = languages.find(lang => lang.code === currentLanguage)
+  // Check authentication on mount
+  useEffect(() => {
+    const checkAuth = async () => {
+      const token = localStorage.getItem('token');
+      
+      if (token) {
+        try {
+          const res = await apiFetch('/api/auth/verify', {
+            headers: { 
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          });
 
+          if (res.ok) {
+            const userData = await res.json();
+            setUser(userData);
+            setIsAuthenticated(true);
+          } else {
+            // Token invalid - clear storage
+            localStorage.removeItem('token');
+            localStorage.removeItem('logged');
+            setIsAuthenticated(false);
+          }
+        } catch (error) {
+          console.error('Auth verification failed:', error);
+          localStorage.removeItem('token');
+          localStorage.removeItem('logged');
+          setIsAuthenticated(false);
+        }
+      } else {
+        setIsAuthenticated(false);
+      }
+      
+      setIsLoading(false);
+    };
 
+    checkAuth();
+  }, []);
+
+  // Theme Effect
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  // Language Handler
   const handleChange = (langCode) => {
     i18n.changeLanguage(langCode);
     localStorage.setItem('language', langCode);
-  }
-  const navigate = useNavigate()
+  };
 
-  const [theme, setTheme] = useState(() => {
-    const savedTheme = localStorage.getItem('theme');
-    return savedTheme || 'light';
-  });
+  // Theme Toggle
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
 
-
-  const [clientPage, setClientPage] = useState(false)
-
-  // Loginga o'tish uchun
-
-
-
-
+  // Navigate to Login
   const handleNavigateLogin = () => {
-    localStorage.setItem("login", true)
-    navigate('/login')
-  }
+    localStorage.setItem("login", "true");
+    navigate('/login');
+  };
+
+  // Cancel Login Flow
   const cancelLogin = () => {
-    localStorage.removeItem("login")
-    navigate('/')
-  }
+    localStorage.removeItem("login");
+    navigate('/');
+  };
 
-
-
+  // Login Handler
   const handleLogin = async (email, password) => {
     try {
       const res = await apiFetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
-      })
-      const data = await res.json()
+      });
+
+      const data = await res.json();
+
       if (!res.ok) {
-        // Toastify for login errors
         try {
-          const { toast } = await import('react-toastify')
-          toast.error(data.message || t('toast.login.error'))
+          const { toast } = await import('react-toastify');
+          toast.error(data.message || t('toast.login.error'));
         } catch { }
-        return
+        return false;
       }
-      localStorage.setItem('token', data.token)
-      localStorage.removeItem("login")
-      localStorage.setItem("logged", true)
+
+      // Set auth state
+      localStorage.setItem('token', data.token);
+      localStorage.setItem("logged", "true");
+      localStorage.removeItem("login");
+      
+      setUser(data.user || { email });
+      setIsAuthenticated(true);
+
       try {
-        const { toast } = await import('react-toastify')
-        toast.success(t('toast.login.success'))
+        const { toast } = await import('react-toastify');
+        toast.success(t('toast.login.success'));
       } catch { }
-      navigate('/transactions')
+
+      navigate('/transactions');
+      return true;
     } catch (err) {
+      console.error('Login error:', err);
       try {
-        const { toast } = await import('react-toastify')
-        toast.error(t('toast.networkError'))
+        const { toast } = await import('react-toastify');
+        toast.error(t('toast.networkError'));
       } catch { }
+      return false;
     }
-  }
+  };
 
+  // Logout Handler
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('logged');
+    setUser(null);
+    setIsAuthenticated(false);
+    navigate('/');
+    
+    try {
+      const { toast } = import('react-toastify');
+      toast.then(module => module.toast.info(t('toast.logout.success')));
+    } catch { }
+  };
 
-
-
+  // FAQ Data
   const faqData = [
     {
       question: "Как отправить деньги?",
@@ -118,31 +189,39 @@ export const AppProvider = ({ children }) => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
-
-
-
-  useEffect(() => {
-    const root = document.documentElement;
-    if (theme === 'dark') {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
-    localStorage.setItem('theme', theme);
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme(prev => prev === 'light' ? 'dark' : 'light');
-  };
-
   return (
     <AppContext.Provider value={{
-      theme, toggleTheme,
-      handleChange, currentLanguage,
-      t, navigate, clientPage, setClientPage,
-      handleNavigateLogin, currentLang, languages,
-      cancelLogin, handleLogin, faqData, toggleAccordion,
-      openIndex
+      // Auth
+      user,
+      isAuthenticated,
+      isLoading,
+      handleLogin,
+      handleLogout,
+      
+      // Navigation
+      navigate,
+      handleNavigateLogin,
+      cancelLogin,
+      
+      // Theme
+      theme,
+      toggleTheme,
+      
+      // Language
+      handleChange,
+      currentLanguage,
+      currentLang,
+      languages,
+      t,
+      
+      // UI State
+      openIndex,
+      toggleAccordion,
+      selPayment,
+      setSelPayment,
+      
+      // Data
+      faqData
     }}>
       {children}
     </AppContext.Provider>
@@ -150,5 +229,9 @@ export const AppProvider = ({ children }) => {
 };
 
 export const useGlobalContext = () => {
-  return useContext(AppContext)
-}
+  const context = useContext(AppContext);
+  if (!context) {
+    throw new Error('useGlobalContext must be used within AppProvider');
+  }
+  return context;
+};

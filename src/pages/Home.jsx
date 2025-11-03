@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useGlobalContext } from '../Context'
 import { ChevronDown, ChevronRight } from 'lucide-react';
 
 const Home = () => {
 
-  let { t, theme, faqData,toggleAccordion,openIndex } = useGlobalContext()
+  let { t, theme, faqData,toggleAccordion,openIndex,navigate } = useGlobalContext()
 
   let currency = [
     {
@@ -177,7 +177,11 @@ const Home = () => {
                 1005 USD
               </h4>
             </div>
-            <button>
+            <button onClick={()=>{
+              // Start transfer flow without wiping storage
+              localStorage.setItem("pending", true)
+              navigate('/currency')
+            }}>
               {t("transferBtn")}
             </button>
           </div>

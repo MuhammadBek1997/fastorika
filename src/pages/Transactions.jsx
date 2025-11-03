@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useGlobalContext } from '../Context'
 
 const Transactions = () => {
-  let {t,theme} = useGlobalContext()
+  let {t,theme,navigate} = useGlobalContext()
   let currency = [
     {
       flag: '/images/us.png',
@@ -104,7 +104,11 @@ const Transactions = () => {
               </div>
             </div>
           </div>
-        <button className='transactions-transferBtn'>
+        <button className='transactions-transferBtn' onClick={()=>{
+            // Start transfer flow regardless of login, do not clear auth
+            localStorage.setItem('pending', true)
+            navigate('/currency')
+        }}>
             {t("transBtn")}
         </button>
       </div>
