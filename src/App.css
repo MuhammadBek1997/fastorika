@@ -3175,6 +3175,63 @@ nav.scrolled {
     background-color: #009966;
 }
 
+.addCardModal {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+.addCardModal-cont{
+    width: 400px;
+    padding: 1rem;
+    border-radius: 2rem;
+    z-index: 100;
+}
+
+
+#light .addCardModal-cont {
+    background-color: var(--bg-light);
+    border: 1px solid var(--border-light);
+}
+
+#dark .addCardModal-cont {
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border-dark);
+}
+
+.addCardModal-navbar {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 2rem;
+    gap: 1rem;
+}
+
+.addCardModal-head {
+    font-size: 1.3rem;
+    font-weight: 500;
+}
+
+.addCardModalBtn {
+    padding: 1rem;
+    border-radius: 1rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.3s ease;
+    font-size: 0.8rem;
+}
+
+
+
 
 
 
@@ -3880,6 +3937,12 @@ nav.scrolled {
     background-color: var(--bg-dark);
 }
 
+.currency-head{
+    padding: 1rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
 .currency-transfer-cont {
     display: flex;
     justify-content: center;
@@ -3956,7 +4019,117 @@ nav.scrolled {
     }
 }
 
+.currency-payMethod{
+    padding: 1rem;
+    font-weight: 500;
+}
+.currency-bottom{
+    padding: 1rem;
+}
+.currency-nomethod{
+    width: 90%;
+    display: flex;
+    align-items: center;
+}
+.currency-nomethod .cardInfoIcon{
+    width: 4rem;
+    height: 3.5rem;
+    background-color: var(--bg-light) !important;
+}
+.currency-selected-method {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
 
+.methodIcon {
+    width: 3.5rem;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6rem;
+    background-color: var(--bg-light);
+}
+
+.methodIcon img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+.methodInfo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.methodInfo h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.methodInfo p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+/* Dark theme uchun */
+#dark .methodIcon {
+    background-color: var(--bg-dark);
+}
+.currency-continueBtn {
+    width: 100%;
+    background-color: #00D796;
+    color: #000000F2;
+    padding: 1rem;
+    border-radius: 1rem;
+    border: none;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 1rem;
+}
+
+.currency-continueBtn:hover {
+    background-color: #00c788;
+}
+
+.currency-continueBtn:disabled {
+    background-color: #e0e0e0;
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+#dark .currency-continueBtn:disabled {
+    background-color: #404040;
+}
+
+.currency-fee,
+.currency-feeCount {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1rem;
+    margin-top: 0.5rem;
+}
+
+.currency-fee p,
+.currency-feeCount p {
+    font-size: 0.9rem;
+    opacity: 0.7;
+}
+
+.currency-fee h4,
+.currency-feeCount h4 {
+    font-size: 1rem;
+    font-weight: 600;
+}
 
 
 
@@ -3981,14 +4154,42 @@ nav.scrolled {
     }
     .currency-transfer-top-cash p,
     .currency-transfer-bottom-cash p{
-        font-size: 0.7rem;
+        font-size: 1.2vw;
     }
     .currency-transfer-cont input{
-        font-size: 1rem;
+        font-size: 1.5vw;
     }
     .currency-transfer-cont .currToggle{
         font-size: 0.8rem;
         padding: 0.7rem 1rem;
+    }
+    .currency-transfer-cont .currDropdown{
+        font-size: 0.5rem;
+        padding: 0rem;
+    }
+    .currency-transfer-cont .currToggle{
+        font-size: 0.5rem;
+        padding: 0.5rem 0.7rem;
+    }
+    .currency-bottom h3{
+        font-size: 1.5vw;
+    }
+    .currency-bottom p{
+        font-size: 1vw;
+    }
+    .currency-bottom .date-input-container .country-select-btn{
+        padding: 0.5rem;
+    }
+    .currency-bottom .country-dropdown-menu{
+        width: 77%;
+    }
+    .currency-fee p,
+    .currency-feeCount p{
+        font-size: 1vw;
+    }
+    .currency-fee h4,
+    .currency-feeCount h4{
+        font-size: 1.2vw;
     }
     .unreg-navbar .settings-navbar-cont{
         font-size: 0.7rem;
@@ -4053,6 +4254,10 @@ nav.scrolled {
     .currency-transfer-top-cash p,
     .currency-transfer-bottom-cash p{
         font-size: 0.7rem;
+    }
+    .currency-transfer-top-cash input,
+    .currency-transfer-bottom-cash input{
+        font-size: 0.9rem;
     }
 
 }
@@ -4149,14 +4354,47 @@ nav.scrolled {
     .changeTransBtn {
         transform: rotateZ(0deg);
     }
+    .currency-head h2{
+        font-size: 1.2rem;
+    }
     .currency-body{
         width: 90%;
+    }
+    .currency-body .date-input-container{
+        padding: 0.5rem;
     }
     .currency-transfer-cont .changeBtn{
         right: auto;
         left: auto;
     }
-
+    .currency-transfer-cont .currDropdown{
+        font-size: 0.5rem;
+        padding: 0rem;
+    }
+    .currency-transfer-cont .currToggle{
+        font-size: 0.5rem;
+        padding: 0.5rem 0.7rem;
+    }
+    .currency-bottom .date-input-container .country-select-btn{
+        padding: 0.5rem;
+    }
+    .currency-bottom .country-dropdown-menu{
+        width: 77%;
+    }
+    .currency-bottom h3{
+        font-size: 0.9rem;
+    }
+    .currency-bottom p{
+        font-size: 0.7rem;
+    }
+    .currency-fee p,
+    .currency-feeCount p{
+        font-size: 0.7rem;
+    }
+    .currency-fee h4,
+    .currency-feeCount h4{
+        font-size: 0.8rem;
+    }
 }
 
 
@@ -4261,7 +4499,11 @@ nav.scrolled {
     .registration-cont-form-psw img {
         left: 85%;
     }
-
+    .addCardModal-cont{
+        width: 90%;
+        height: 80%;
+        overflow: auto;
+    }
 }
 
 @media (max-width:450px) {

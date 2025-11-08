@@ -103,6 +103,23 @@
     "title": "My cards",
     "addButton": "Add card"
   },
+  "addCardModal": {
+    "title": "Add card",
+    "closeButton": "Close",
+    "country": "Country",
+    "cardNumber": "Card number",
+    "expireDate": "Expiry",
+    "bankName": "Bank name",
+    "phoneNumber": "Phone number",
+    "cancel": "Cancel",
+    "addCard": "Add",
+    "placeholders": {
+      "cardNumber": "0000 0000 0000 0000",
+      "expire": "MM/YY",
+      "bankName": "",
+      "phoneNumber": "+998"
+    }
+  },
   "settingsPage": {
     "title": "Settings",
     "contactSupport": "Contact Support",

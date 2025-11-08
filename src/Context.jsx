@@ -20,6 +20,7 @@ export const AppProvider = ({ children }) => {
   });
   const [openIndex, setOpenIndex] = useState(null);
   const [selPayment, setSelPayment] = useState("currency");
+  const [addCardModal,setAddCardModal] = useState(false)
 
   // Language State
   const currentLanguage = localStorage.getItem("i18nextLng");
@@ -33,31 +34,50 @@ export const AppProvider = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       const token = localStorage.getItem('token');
-      
+
       if (token) {
         try {
-          const res = await apiFetch('/api/auth/verify', {
-            headers: { 
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
+          // Retry small number of times to absorb transient network/CORS blips
+          const fetchProfileWithRetry = async (retries = 2) => {
+            for (let i = 0; i <= retries; i++) {
+              try {
+                const res = await apiFetch('/api/profile', {
+                  method: 'GET',
+                  headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                  },
+                  mode: 'cors',
+                  cache: 'no-store'
+                });
+                return res;
+              } catch (err) {
+                if (i === retries) throw err;
+                await new Promise(r => setTimeout(r, 500));
+              }
             }
-          });
+          };
+
+          const res = await fetchProfileWithRetry();
 
           if (res.ok) {
             const userData = await res.json();
             setUser(userData);
             setIsAuthenticated(true);
-          } else {
-            // Token invalid - clear storage
+          } else if (res.status === 401 || res.status === 403) {
+            // Token invalid
             localStorage.removeItem('token');
             localStorage.removeItem('logged');
             setIsAuthenticated(false);
+          } else {
+            // Non-auth server error or CORS issue: keep session, avoid forced logout
+            setIsAuthenticated(true);
           }
         } catch (error) {
           console.error('Auth verification failed:', error);
-          localStorage.removeItem('token');
-          localStorage.removeItem('logged');
-          setIsAuthenticated(false);
+          // Network/CORS failure: keep token and session to avoid redirect loop
+          setIsAuthenticated(true);
         }
       } else {
         setIsAuthenticated(false);
@@ -219,6 +239,8 @@ export const AppProvider = ({ children }) => {
       toggleAccordion,
       selPayment,
       setSelPayment,
+      addCardModal,
+      setAddCardModal,
       
       // Data
       faqData

@@ -25,7 +25,7 @@ const Transactions = () => {
                 <p>
                   {t("yousend")}
                 </p>
-                <input type="text" value="1000" />
+                <input type="text" value="1000" readOnly />
               </div>
               <div className="currTransDropdown">
                 <button
@@ -68,7 +68,7 @@ const Transactions = () => {
                 <p>
                   {t("willtake")}
                 </p>
-                <input type="text" value={"12 560 000"} />
+                <input type="text" value={"12 560 000"} readOnly />
               </div>
               <div className="currTransDropdown">
                 <button

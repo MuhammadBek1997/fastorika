@@ -104,6 +104,23 @@
     "title": "Мои карты",
     "addButton": "Добавить карту"
   },
+  "addCardModal": {
+    "title": "Добавить карту",
+    "closeButton": "Закрыть",
+    "country": "Страна",
+    "cardNumber": "Номер карты",
+    "expireDate": "Срок действия",
+    "bankName": "Название банка",
+    "phoneNumber": "Номер телефона",
+    "cancel": "Отмена",
+    "addCard": "Добавить",
+    "placeholders": {
+      "cardNumber": "0000 0000 0000 0000",
+      "expire": "MM/ГГ",
+      "bankName": "",
+      "phoneNumber": "+998"
+    }
+  },
   "settingsPage": {
     "title": "Настройки",
     "contactSupport": "Обратиться в поддержку",
@@ -163,5 +180,10 @@
       "saveSuccess": "Профиль сохранён",
       "saveError": "Ошибка сохранения"
     }
+  },
+  "methods":{
+    "debit":"Дебетовая карта",
+    "crypto":"Криптовалюта",
+    "bank":"Банковский перевод"
   }
 }

@@ -1,9 +1,12 @@
 import connectDb from './_db.js';
 import { requireAuth } from './_jwt.js';
+import { handleCors, setCors } from './_cors.js';
 import User from '../server/models/User.js';
 
 export default async function handler(req, res) {
   try {
+    // CORS preflight
+    if (handleCors(req, res)) return;
     await connectDb();
     const payload = requireAuth(req);
     const userId = payload.uid;
@@ -50,6 +53,8 @@ export default async function handler(req, res) {
 
     res.status(405).json({ message: 'Method Not Allowed' });
   } catch (err) {
+    // Ensure CORS headers on errors too
+    setCors(res);
     const code = err.statusCode || 500;
     res.status(code).json({ message: err.message || 'Server error' });
   }
