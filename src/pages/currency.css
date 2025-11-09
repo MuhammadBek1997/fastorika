@@ -1,4 +1,4 @@
-.currency { width: 100%; height: 80vh; display: flex; justify-content: center; align-items: center; }
+/* .currency { width: 100%; height: 80vh; display: flex; justify-content: center; align-items: center; }
 .currency-body { width: 35%; padding: 1rem; border-radius: 2rem; background-color: var(--bg-light); }
 #dark .currency-body { background-color: var(--bg-dark); }
 .currency-head { padding: 1rem; font-size: 1.5rem; font-weight: 600; }
@@ -8,7 +8,7 @@
 .currency-transfer-top-cash p { font-size: 12px; }
 .currency-transfer-bottom-cash p { font-size: 10px; }
 
-.changeBtn { position: relative; padding: 0.25rem; border-radius: 50%; border: none; cursor: pointer; }
+.changeBtn { padding: 0.25rem; border-radius: 50%; border: none; cursor: pointer; }
 .changeBtn img { border-radius: 50%; padding: 0.5rem; }
 #dark .changeBtn img { background-color: var(--bg-dark); }
 #light .changeBtn img { background-color: var(--bg-light); }
@@ -38,4 +38,4 @@
   .currency-feeCount p { font-size: 1vw; }
   .currency-fee h4, .currency-feeCount h4 { font-size: 1.2vw; }
   .unreg-navbar .settings-navbar-cont { font-size: 0.7rem; }
-}
+} */
