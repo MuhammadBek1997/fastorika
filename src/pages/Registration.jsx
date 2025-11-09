@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
+import './registration.css'
 import { Link } from 'react-router-dom'
 import { useGlobalContext } from '../Context'
 import { apiFetch } from '../api'
 import { toast } from 'react-toastify'
+import VerifyModal from './VerifyModal'
 
 const Registration = () => {
     let { t, theme, handleChange, languages, currentLang, currentLanguage, toggleTheme, cancelLogin, navigate } = useGlobalContext()
@@ -10,21 +12,24 @@ const Registration = () => {
     const [langRegOpen, setLangRegOpen] = useState(false)
     const [showReg1Psw, setShowReg1Psw] = useState(false)
     const [showReg2Psw, setShowReg2Psw] = useState(false)
-    const [mail,setMail] = useState('')
-    const [psw,setPsw] = useState('')
-    const [accPsw,setAccPsw] = useState('')
+    const [mail, setMail] = useState('')
+    const [psw, setPsw] = useState('')
+    const [accPsw, setAccPsw] = useState('')
+    const [showVerifyModal, setShowVerifyModal] = useState(false)
 
 
-    const checkPsw = (rule) =>{
-        if(rule == "case" && psw.split('').find((item)=>item == item.toUpperCase())) return true
-        if(rule == "length" && psw.split('').length >= 8) return true
-        if(rule == "match" && psw === accPsw && accPsw > '') return true
+    const checkPsw = (rule) => {
+        if (rule == "case" && psw.split('').find((item) => item == item.toUpperCase())) return true
+        if (rule == "length" && psw.split('').length >= 8) return true
+        if (rule == "match" && psw === accPsw && accPsw > '') return true
     }
 
-    
-    useEffect(()=>{
+    let forNum = new Date().getTime()
 
-    },[psw,accPsw])
+
+    useEffect(() => {
+
+    }, [psw, accPsw])
 
     return (
         <div className='registration-client' style={{
@@ -144,25 +149,25 @@ const Registration = () => {
                     <label htmlFor="">
                         {t("login-clientForm1")}
                     </label>
-                    <input type="text" value={mail} onChange={(e)=>setMail(e.target.value)} />
+                    <input type="text" value={mail} onChange={(e) => setMail(e.target.value)} />
                     <label htmlFor="">
                         {t("reg-clientForm2")}
                     </label>
                     <div className='login-cont-form-psw'>
-                        <input type={showReg1Psw ? "text" : "password"}  value={psw} onChange={(e)=>setPsw(e.target.value)}  />
+                        <input type={showReg1Psw ? "text" : "password"} value={psw} onChange={(e) => setPsw(e.target.value)} />
                         <img src={!showReg1Psw ? `/images/visible${theme}.png` : `/images/hide${theme}.png`} alt="" onClick={() => setShowReg1Psw(!showReg1Psw)} />
                     </div>
                     <div>
                         <div className='pswrule'>
-                            <img src={checkPsw("length") ? `/images/ruleDone${theme}.png`:`/images/ruleUdone${theme}.png`} alt="" />
+                            <img src={checkPsw("length") ? `/images/ruleDone${theme}.png` : `/images/ruleUdone${theme}.png`} alt="" />
                             <p>
-                            {t("reg-clientRule1")}
+                                {t("reg-clientRule1")}
                             </p>
                         </div>
                         <div className='pswrule'>
-                            <img src={checkPsw("case") ? `/images/ruleDone${theme}.png`:`/images/ruleUdone${theme}.png`} alt="" />
+                            <img src={checkPsw("case") ? `/images/ruleDone${theme}.png` : `/images/ruleUdone${theme}.png`} alt="" />
                             <p>
-                            {t("reg-clientRule2")}
+                                {t("reg-clientRule2")}
                             </p>
                         </div>
                     </div>
@@ -170,36 +175,34 @@ const Registration = () => {
                         {t("reg-clientForm3")}
                     </label>
                     <div className='login-cont-form-psw'>
-                        <input type={showReg2Psw ? "text" : "password"} value={accPsw} onChange={(e)=>setAccPsw(e.target.value)}  />
+                        <input type={showReg2Psw ? "text" : "password"} value={accPsw} onChange={(e) => setAccPsw(e.target.value)} />
                         <img src={!showReg2Psw ? `/images/visible${theme}.png` : `/images/hide${theme}.png`} alt="" onClick={() => setShowReg2Psw(!showReg2Psw)} />
                     </div>
                     <div className='pswrule'>
-                        <img src={checkPsw("match") ? `/images/ruleDone${theme}.png`:`/images/ruleUdone${theme}.png`} alt="" />
+                        <img src={checkPsw("match") ? `/images/ruleDone${theme}.png` : `/images/ruleUdone${theme}.png`} alt="" />
                         <p>
-                        {t("reg-clientRule3")}
+                            {t("reg-clientRule3")}
                         </p>
                     </div>
                 </div>
-                <button className='reg-clientBtn' onClick={async ()=>{
-                    if(!mail || !psw || psw !== accPsw){
-                      toast.error(t('toast.registration.validationError'));
-                      return;
-                    }
-                    try{
-                      const res = await apiFetch('/api/auth/register',{
-                        method:'POST',
-                        headers:{'Content-Type':'application/json'},
-                        body: JSON.stringify({email:mail, password:psw})
-                      })
-                      const data = await res.json()
-                      if(!res.ok){
-                        toast.error(data.message || t('toast.registration.error'))
-                        return
-                      }
-                      toast.success(t('toast.registration.success'))
-                      navigate('/login')
-                    }catch(err){
-                      toast.error(t('toast.networkError'))
+                <button className='reg-clientBtn' onClick={async () => {
+                    try {
+                        const res = await apiFetch('auth/registr', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                name: "",
+                                email: mail,
+                                phone: "+"+forNum,
+                                password: psw,
+                                country_id: 1,
+                                date_of_birth: "2000-01-01"  // <-- "date_of_birth" to'g'ri yozilgan ekanligini tasdiqlang
+                            })
+                        })
+                        if (!res.ok) throw new Error('Registration failed')
+                        setShowVerifyModal(true)
+                    } catch (err) {
+                        toast.error(t('toast.registration.error'))
                     }
                 }}>
                     {t("reg-clientStep1")}
@@ -221,6 +224,9 @@ const Registration = () => {
                     </button>
                 </div>
             </div>
+            {showVerifyModal && (
+                <VerifyModal email={mail} onClose={() => setShowVerifyModal(false)} />
+            )}
         </div>
     )
 }

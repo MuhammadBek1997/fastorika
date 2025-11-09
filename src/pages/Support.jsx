@@ -1,4 +1,5 @@
 import React from 'react'
+import './settings.css'
 import { useGlobalContext } from '../Context'
 
 const Support = () => {

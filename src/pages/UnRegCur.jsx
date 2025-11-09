@@ -1,4 +1,5 @@
 import { useState } from "react"
+import './currency.css'
 import { useNavigate } from "react-router-dom"
 import { useGlobalContext } from "../Context"
 import { ChevronRight } from "lucide-react"

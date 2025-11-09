@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import './login.css'
 import { useGlobalContext } from '../Context'
 import { Link } from 'react-router-dom'
 

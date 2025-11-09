@@ -6,7 +6,7 @@ const Sidebar = () => {
     const [themeSideOpen, setThemeSideOpen] = useState(false)
     const [langSideOpen, setLangSideOpen] = useState(false)
     const [isSideMobileMenuOpen, setIsSideMobileMenuOpen] = useState(false)
-    let { t, theme, navigate, toggleTheme, languages, currentLang, currentLanguage, handleChange } = useGlobalContext()
+    let { t, theme, navigate, toggleTheme, languages, currentLang, currentLanguage, handleChange, handleLogout } = useGlobalContext()
 
 
 
@@ -140,8 +140,7 @@ const Sidebar = () => {
                         </NavLink>
                     </div>
                     <button onClick={() => {
-                        localStorage.removeItem("logged")
-                        navigate('/')
+                        handleLogout()
                         setIsSideMobileMenuOpen(false)
                     }} className='forM'>
                         <div style={{
@@ -249,8 +248,7 @@ const Sidebar = () => {
                     </div>
                 </div>
                 <button onClick={() => {
-                    localStorage.removeItem("logged")
-                    navigate('/')
+                    handleLogout()
                 }} className='forD'>
                     <div style={{
                         color: theme == "dark" ? "rgba(255, 255, 255, 0.5)" : "rgba(0, 0, 0, 0.5)",

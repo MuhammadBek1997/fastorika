@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import './transactions.css'
 import { useGlobalContext } from '../Context'
 
 const Transactions = () => {

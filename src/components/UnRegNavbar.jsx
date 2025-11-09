@@ -156,15 +156,10 @@ const UnRegNavbar = () => {
                             </div>
                         </div>
                         <button onClick={() => {
-                            // Cancel pending flow
                             localStorage.removeItem('pending')
-                            // If logged in, go to transactions; else return to home
                             if (localStorage.getItem('logged')) {
-                                // Ensure login flag does not force login page
-                                localStorage.removeItem('login')
                                 navigate('/transactions')
                             } else {
-                                localStorage.removeItem('login')
                                 navigate('/')
                             }
                         }}

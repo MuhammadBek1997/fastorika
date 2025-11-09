@@ -1,4 +1,5 @@
 import { ChevronRight } from "lucide-react"
+import './settings.css'
 import { Link } from "react-router-dom"
 import { useGlobalContext } from "../Context"
 

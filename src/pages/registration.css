@@ -1,0 +1,66 @@
+#light .registration-client nav,
+#dark .registration-client nav {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  width: 100vw;
+  padding: 1rem 2rem;
+  z-index: 30;
+}
+
+#dark .registration-client nav { background: none; }
+#light .registration-client nav { background: none; }
+
+.registration-client { position: relative; }
+
+.registration-cont {
+  min-width: 27rem;
+  position: absolute;
+  left: 37%;
+  top: 10%;
+  padding: 1.5rem;
+  border-radius: 2rem;
+  font-size: 0.8rem;
+}
+
+#dark .registration-cont { background-color: var(--bg-dark); }
+#light .registration-cont { background-color: var(--bg-light); }
+
+.registration-cont h1 { font-size: 1.8rem; font-weight: 600; }
+
+.registration-cont-form {
+  padding: 0.5rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
+  gap: 0.8rem;
+}
+
+.registration-cont-form input {
+  padding: 0.8rem;
+  border-radius: 1rem;
+  width: 100%;
+  margin: -0.5rem 0;
+}
+
+#dark .registration-cont-form input { background-color: var(--bg-body-dark); }
+#light .registration-cont-form input { background-color: var(--bg-body-light); }
+
+.registration-cont-form-psw {
+  width: 100%;
+  padding: 0;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}
+
+.registration-cont-form-psw img { width: 1.5rem; position: absolute; left: 85%; }
+
+@media (max-width:768px) {
+  .registration-cont { min-width: 5rem; width: 90%; left: 5%; font-size: 0.8rem; }
+  .registration-cont h1 { font-size: 1.2rem; }
+  .registration-cont-form input { padding: 0.7rem; }
+  .reg-clientBtn { padding: 0.5rem; }
+  .registration-cont-form-psw img { padding-top: 5vh; width: 100%; }
+}

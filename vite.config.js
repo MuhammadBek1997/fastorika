@@ -8,9 +8,17 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://fastorika.vercel.app',
+        target: 'https://fastorikabackend-production.up.railway.app',
         changeOrigin: true,
-        secure: true
+        secure: true,
+        configure: (proxy) => {
+          proxy.on('proxyRes', (proxyRes) => {
+            // Prevent browser Basic Auth prompt caused by backend 'WWW-Authenticate'
+            if (proxyRes.headers && proxyRes.headers['www-authenticate']) {
+              delete proxyRes.headers['www-authenticate']
+            }
+          })
+        }
       }
     }
   }

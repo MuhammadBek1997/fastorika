@@ -1,40 +1,44 @@
-import { useEffect, useState } from "react"
+import './profile.css'
 import { useGlobalContext } from "../Context"
 import { apiFetch } from "../api"
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react"
 import { toast } from 'react-toastify'
 
 const Profile = () => {
-  let { t, theme } = useGlobalContext()
-  let date = new Date()
-  const [isSelDate, setIsSelDate] = useState('')
-  const [isDateOpen, setIsDateOpen] = useState(false)
-  const [curMonth, setCurMonth] = useState(new Date(date.getFullYear(), date.getMonth()))
-  const [number, setNumber] = useState("")
-  const [isMonthDropOpen, setIsMonthDropOpen] = useState(false)
-  const [isYearDropOpen, setIsYearDropOpen] = useState(false)
-  const [isStateDropOpen, setIsStateDropOpen] = useState(false)
-  const [curState, setCurState] = useState("")
-  const [firstName, setFirstName] = useState("")
-  const [lastName, setLastName] = useState("")
-  const [phone, setPhone] = useState("")
-  const [email, setEmail] = useState("")
-  const [initial, setInitial] = useState(null)
-  const [status, setStatus] = useState({ type: null, message: '' })
+  const {
+    t,
+    theme,
+    // Profile states from global context
+    profileIsSelDate, setProfileIsSelDate,
+    profileIsDateOpen, setProfileIsDateOpen,
+    profileCurMonth, setProfileCurMonth,
+    profileIsMonthDropOpen, setProfileIsMonthDropOpen,
+    profileIsYearDropOpen, setProfileIsYearDropOpen,
+    profileIsStateDropOpen, setProfileIsStateDropOpen,
+    profileCurState, setProfileCurState,
+    profileCountryId, setProfileCountryId,
+    profileBackendCountryName, setProfileBackendCountryName,
+    profileUserId, setProfileUserId,
+    profileCountriesList, setProfileCountriesList,
+    profileFirstName, setProfileFirstName,
+    profileLastName, setProfileLastName,
+    profilePhone, setProfilePhone,
+    profileEmail, setProfileEmail,
+    profileInitial, setProfileInitial,
+    profileStatus, setProfileStatus,
+  } = useGlobalContext()
   const months = [
     'Yanvar', 'Fevral', 'Mart', 'April', 'May', 'Iyun',
     'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'
   ];
   const weekDays = ['Du', 'Se', 'Ch', 'Pa', 'Ju', 'Sh', 'Ya'];
 
-  const countries = [
-    t('profilePage.countries.uzbekistan'),
-    t('profilePage.countries.russia')
-  ]
+  // Countries will be loaded from backend: /api/country/all
 
-  const handleStateSelect = (state) => {
-    setCurState(state)
-    setIsStateDropOpen(false)
+  const handleStateSelect = (stateName, stateId) => {
+    setProfileCurState(stateName)
+    setProfileCountryId(stateId ?? null)
+    setProfileIsStateDropOpen(false)
   }
 
   const getDaysInMonth = (date) => {
@@ -78,29 +82,29 @@ const Profile = () => {
   };
 
   const handleDateSelect = (day) => {
-    const year = curMonth.getFullYear();
-    const month = curMonth.getMonth();
+    const year = profileCurMonth.getFullYear();
+    const month = profileCurMonth.getMonth();
     const formattedDate = `${String(day).padStart(2, '0')}.${String(month + 1).padStart(2, '0')}.${year}`;
-    setIsSelDate(formattedDate);
-    setIsDateOpen(false);
+    setProfileIsSelDate(formattedDate);
+    setProfileIsDateOpen(false);
   };
 
   const previousMonth = () => {
-    setCurMonth(new Date(curMonth.getFullYear(), curMonth.getMonth() - 1));
+    setProfileCurMonth(new Date(profileCurMonth.getFullYear(), profileCurMonth.getMonth() - 1));
   };
 
   const nextMonth = () => {
-    setCurMonth(new Date(curMonth.getFullYear(), curMonth.getMonth() + 1));
+    setProfileCurMonth(new Date(profileCurMonth.getFullYear(), profileCurMonth.getMonth() + 1));
   };
 
   const handleMonthSelect = (monthIndex) => {
-    setCurMonth(new Date(curMonth.getFullYear(), monthIndex));
-    setIsMonthDropOpen(false);
+    setProfileCurMonth(new Date(profileCurMonth.getFullYear(), monthIndex));
+    setProfileIsMonthDropOpen(false);
   };
 
   const handleYearSelect = (year) => {
-    setCurMonth(new Date(year, curMonth.getMonth()));
-    setIsYearDropOpen(false);
+    setProfileCurMonth(new Date(year, profileCurMonth.getMonth()));
+    setProfileIsYearDropOpen(false);
   };
 
   const generateYearRange = () => {
@@ -112,69 +116,51 @@ const Profile = () => {
     return years;
   };
 
-  const days = getDaysInMonth(curMonth);
+  const days = getDaysInMonth(profileCurMonth);
 
-  // Load profile info
-  useEffect(() => {
-    const token = localStorage.getItem('token')
-    if (!token) return;
-    (async () => {
-      try {
-        const res = await apiFetch('/api/profile', {
-          headers: { Authorization: 'Bearer ' + token }
-        })
-        const data = await res.json()
-        if (!res.ok) {
-          console.warn('Profile load failed:', data.message)
-          setStatus({ type: 'error', message: data.message || '' })
-          // initialize baseline to current (empty) values to allow change detection
-          setInitial({
-            email: '',
-            firstName: '',
-            lastName: '',
-            phone: '',
-            country: '',
-            birthDate: ''
-          })
-          return
-        }
-        setEmail(data.email || '')
-        setFirstName(data.firstName || '')
-        setLastName(data.lastName || '')
-        setPhone(data.phone || '')
-        setCurState(data.country || '')
-        setIsSelDate(data.birthDate || '')
-        setInitial({
-          email: data.email || '',
-          firstName: data.firstName || '',
-          lastName: data.lastName || '',
-          phone: data.phone || '',
-          country: data.country || '',
-          birthDate: data.birthDate || ''
-        })
-        setStatus({ type: null, message: '' })
-      } catch (e) {
-        console.warn('Profile load network error')
-        setStatus({ type: 'error', message: 'Profilni yuklashda tarmoq xatosi' })
-        setInitial({
-          email: '',
-          firstName: '',
-          lastName: '',
-          phone: '',
-          country: '',
-          birthDate: ''
-        })
-      }
-    })()
-  }, [])
+  // Helpers: name split/join and date format conversions
+  const splitName = (full) => {
+    const parts = (full || '').trim().split(/\s+/).filter(Boolean);
+    const first = parts[0] || '';
+    const last = parts.length > 1 ? parts.slice(1).join(' ') : '';
+    return { firstName: first, lastName: last };
+  };
+
+  const joinName = (first, last) => {
+    return `${(first || '').trim()} ${(last || '').trim()}`.trim().replace(/\s+/g, ' ');
+  };
+
+  const isoToDisplay = (iso) => {
+    if (!iso) return '';
+    const [y, m, d] = (iso || '').split('-');
+    if (!y || !m || !d) return '';
+    return `${String(d).padStart(2, '0')}.${String(m).padStart(2, '0')}.${y}`;
+  };
+
+  const displayToIso = (display) => {
+    if (!display) return '';
+    const [d, m, y] = (display || '').split('.')
+    if (!y || !m || !d) return '';
+    return `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+  };
+
+  const toLocalCountryName = (backendName) => {
+    if (!backendName) return '';
+    const name = String(backendName).toLowerCase();
+    if (name.includes('uzbek')) return t('profilePage.countries.uzbekistan');
+    if (name.includes('russ') || name.includes('russia')) return t('profilePage.countries.russia');
+    return backendName;
+  };
+
+  // Profile and countries are now loaded in global context on auth
 
   const norm = (v) => (typeof v === 'string' ? v.trim() : (v ?? ''))
-  const hasChanges = initial ? (
-    norm(firstName) !== norm(initial.firstName) ||
-    norm(lastName) !== norm(initial.lastName) ||
-    norm(phone) !== norm(initial.phone) ||
-    norm(curState) !== norm(initial.country) ||
-    norm(isSelDate) !== norm(initial.birthDate)
+  const hasChanges = profileInitial ? (
+    norm(profileFirstName) !== norm(profileInitial.firstName) ||
+    norm(profileLastName) !== norm(profileInitial.lastName) ||
+    norm(profilePhone) !== norm(profileInitial.phone) ||
+    norm(profileCurState) !== norm(profileInitial.country) ||
+    norm(profileIsSelDate) !== norm(profileInitial.birthDate)
   ) : false
 
   return (
@@ -210,34 +196,34 @@ const Profile = () => {
                 {t('profilePage.labels.firstName')}
               </label>
               <div className="date-input-container">
-                <input type="text" className="date-input-field" value={firstName} onChange={(e)=>setFirstName(e.target.value)} />
+                <input type="text" className="date-input-field" value={profileFirstName} onChange={(e)=>setProfileFirstName(e.target.value)} />
               </div>
               <label className="date-input-label">
                 {t('profilePage.labels.email')}
               </label>
               <div className="date-input-container">
-                <input type="text" className="date-input-field" value={email} readOnly />
+                <input type="text" className="date-input-field" value={profileEmail} readOnly />
               </div>
               <label className="date-input-label">
                 {t('profilePage.labels.country')}
               </label>
               <div className="date-input-container" style={{ padding: "0" }}>
                 <button
-                  onClick={() => setIsStateDropOpen(!isStateDropOpen)}
+                  onClick={() => setProfileIsStateDropOpen(!profileIsStateDropOpen)}
                   className="country-select-btn"
                 >
-                  {curState}
-                  <ChevronRight size={16} style={{ transform: isStateDropOpen ? 'rotate(90deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }} />
+                  {profileCurState}
+                  <ChevronRight size={16} style={{ transform: profileIsStateDropOpen ? 'rotate(90deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }} />
                 </button>
-                {isStateDropOpen && (
+                {profileIsStateDropOpen && (
                   <div className="country-dropdown-menu">
-                    {countries.map((state, index) => (
+                    {profileCountriesList.map((c) => (
                       <button
-                        key={index}
-                        onClick={() => handleStateSelect(state)}
-                        className={`country-option ${curState === state ? 'active' : ''}`}
+                        key={c.countryId ?? c.name}
+                        onClick={() => handleStateSelect(c.name, c.countryId)}
+                        className={`country-option ${profileCurState === c.name ? 'active' : ''}`}
                       >
-                        {state}
+                        {c.name}
                       </button>
                     ))}
                   </div>
@@ -250,22 +236,22 @@ const Profile = () => {
                 {t('profilePage.labels.lastName')}
               </label>
               <div className="date-input-container">
-                <input type="text" className="date-input-field" value={lastName} onChange={(e)=>setLastName(e.target.value)} />
+                <input type="text" className="date-input-field" value={profileLastName} onChange={(e)=>setProfileLastName(e.target.value)} />
               </div>
               <label className="date-input-label">
                 {t('profilePage.labels.phone')}
               </label>
               <div className="date-input-container">
-                <input type="text" className="date-input-field" value={phone} onChange={(e)=>setPhone(e.target.value)} />
+                <input type="text" className="date-input-field" value={profilePhone} onChange={(e)=>setProfilePhone(e.target.value)} />
               </div>
 
               {/* Date Input Field */}
               <div className="date-input-wrapper">
                 <label className="date-input-label">{t('profilePage.labels.date')}</label>
-                <div className="date-input-container" onClick={() => setIsDateOpen(!isDateOpen)}>
+                <div className="date-input-container" onClick={() => setProfileIsDateOpen(!profileIsDateOpen)}>
                   <input
                     type="text"
-                    value={isSelDate}
+                    value={profileIsSelDate}
                     readOnly
                     placeholder={t('profilePage.placeholders.selectDate')}
                     className="date-input-field"
@@ -276,7 +262,7 @@ const Profile = () => {
               </div>
 
               {/* Calendar Picker */}
-              {isDateOpen && (
+              {profileIsDateOpen && (
                 <div className="calendar-picker">
                   {/* Month Navigation */}
                   {/* Month Navigation */}
@@ -284,19 +270,19 @@ const Profile = () => {
                     <div className="calendar-month-year-selector">
                       <div className="month-dropdown">
                         <button
-                          onClick={() => setIsMonthDropOpen(!isMonthDropOpen)}
+                          onClick={() => setProfileIsMonthDropOpen(!profileIsMonthDropOpen)}
                           className="month-year-btn"
                         >
-                          {months[curMonth.getMonth()]}
-                          <ChevronRight size={16} style={{ transform: isMonthDropOpen ? 'rotate(90deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }} />
+                          {months[profileCurMonth.getMonth()]}
+                          <ChevronRight size={16} style={{ transform: profileIsMonthDropOpen ? 'rotate(90deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }} />
                         </button>
-                        {isMonthDropOpen && (
+                        {profileIsMonthDropOpen && (
                           <div className="month-dropdown-menu">
                             {months.map((month, index) => (
                               <button
                                 key={index}
                                 onClick={() => handleMonthSelect(index)}
-                                className={`month-option ${curMonth.getMonth() === index ? 'active' : ''}`}
+                                className={`month-option ${profileCurMonth.getMonth() === index ? 'active' : ''}`}
                               >
                                 {month}
                               </button>
@@ -307,19 +293,19 @@ const Profile = () => {
 
                       <div className="year-dropdown">
                         <button
-                          onClick={() => setIsYearDropOpen(!isYearDropOpen)}
+                          onClick={() => setProfileIsYearDropOpen(!profileIsYearDropOpen)}
                           className="month-year-btn"
                         >
-                          {curMonth.getFullYear()}
-                          <ChevronRight size={16} style={{ transform: isYearDropOpen ? 'rotate(90deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }} />
+                          {profileCurMonth.getFullYear()}
+                          <ChevronRight size={16} style={{ transform: profileIsYearDropOpen ? 'rotate(90deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }} />
                         </button>
-                        {isYearDropOpen && (
+                        {profileIsYearDropOpen && (
                           <div className="year-dropdown-menu">
                             {generateYearRange().map((year) => (
                               <button
                                 key={year}
                                 onClick={() => handleYearSelect(year)}
-                                className={`year-option ${curMonth.getFullYear() === year ? 'active' : ''}`}
+                                className={`year-option ${profileCurMonth.getFullYear() === year ? 'active' : ''}`}
                               >
                                 {year}
                               </button>
@@ -353,7 +339,7 @@ const Profile = () => {
                   {/* Calendar Days */}
                   <div className="calendar-days-grid">
                     {days.map((dayObj, index) => {
-                      const isSelected = dayObj.isCurMonth && isSelDate === `${String(dayObj.day).padStart(2, '0')}.${String(curMonth.getMonth() + 1).padStart(2, '0')}.${curMonth.getFullYear()}`;
+                      const isSelected = dayObj.isCurMonth && profileIsSelDate === `${String(dayObj.day).padStart(2, '0')}.${String(profileCurMonth.getMonth() + 1).padStart(2, '0')}.${profileCurMonth.getFullYear()}`;
 
                       let btnClass = 'calendar-day-btn';
                       if (!dayObj.isCurMonth) {
@@ -388,42 +374,69 @@ const Profile = () => {
               cursor: hasChanges ? 'pointer' : 'not-allowed'
             }}
             onClick={async () => {
-              const token = localStorage.getItem('token')
-              if (!token) { setStatus({ type: 'error', message: t('toast.authRequired') }); toast.error(t('toast.authRequired')); return; }
+              const token = sessionStorage.getItem('token')
+              if (!token) { setProfileStatus({ type: 'error', message: t('toast.authRequired') }); toast.error(t('toast.authRequired')); return; }
               if (!hasChanges) { return; }
               try {
-                const res = await apiFetch('/api/profile', {
+                // Resolve country id/name for backend
+                const uiCountry = (profileCurState || '').toLowerCase();
+                let resolvedCountryId = profileCountryId;
+                if (!resolvedCountryId && profileCountriesList.length) {
+                  const match = profileCountriesList.find(c => c.name.toLowerCase() === uiCountry)
+                  if (match) resolvedCountryId = match.countryId;
+                }
+
+                const countryNameFromId = (id) => {
+                  const found = profileCountriesList.find(c => c.countryId === id)
+                  if (found) return found.name
+                  return profileBackendCountryName || profileCurState || ''
+                };
+
+                const finalCountryId = resolvedCountryId ?? profileCountryId ?? null;
+                const finalCountryName = countryNameFromId(finalCountryId);
+
+                const payload = {
+                  userId: profileUserId ?? undefined,
+                  name: joinName(profileFirstName, profileLastName),
+                  email: norm(profileEmail),
+                  phone: norm(profilePhone),
+                  dateOfBirth: displayToIso(profileIsSelDate),
+                  countryResponse: finalCountryId ? { countryId: finalCountryId, name: finalCountryName } : undefined,
+                };
+
+                const res = await apiFetch('user/update', {
                   method: 'PUT',
                   headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
-                  body: JSON.stringify({ firstName, lastName, phone, country: curState, birthDate: isSelDate })
+                  body: JSON.stringify(payload)
                 })
                 const data = await res.json()
                 if (!res.ok) {
-                  setStatus({ type: 'error', message: data.message || t('toast.profile.saveError') })
+                  setProfileStatus({ type: 'error', message: data.message || t('toast.profile.saveError') })
                   toast.error(data.message || t('toast.profile.saveError'))
                   return
                 }
-                setStatus({ type: 'success', message: t('toast.profile.saveSuccess') })
+                setProfileStatus({ type: 'success', message: t('toast.profile.saveSuccess') })
                 toast.success(t('toast.profile.saveSuccess'))
                 // update baseline after successful save
-                setInitial({
-                  email,
-                  firstName: norm(firstName),
-                  lastName: norm(lastName),
-                  phone: norm(phone),
-                  country: norm(curState),
-                  birthDate: norm(isSelDate)
+                setProfileInitial({
+                  email: profileEmail,
+                  firstName: norm(profileFirstName),
+                  lastName: norm(profileLastName),
+                  phone: norm(profilePhone),
+                  country: norm(profileCurState),
+                  birthDate: norm(profileIsSelDate),
+                  countryId: resolvedCountryId ?? null
                 })
               } catch (e) {
-                setStatus({ type: 'error', message: t('toast.networkError') })
+                setProfileStatus({ type: 'error', message: t('toast.networkError') })
                 toast.error(t('toast.networkError'))
               }
             }}
           >
             {t('profilePage.saveBtn') || 'Saqlash'}
           </button>
-          {status.type && (
-            <div className={`status-msg ${status.type}`}>{status.message}</div>
+          {profileStatus.type && (
+            <div className={`status-msg ${profileStatus.type}`}>{profileStatus.message}</div>
           )}
         </div>
       </div>

@@ -1,0 +1,114 @@
+.login-client {
+  position: relative;
+}
+
+#light .login-client nav,
+#dark .login-client nav {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  width: 100vw;
+  padding: 1rem 2rem;
+  z-index: 30;
+}
+
+#dark .login-client nav { background: none; }
+#light .login-client nav { background: none; }
+
+.login-cont {
+  position: absolute;
+  left: 37%;
+  top: 13%;
+  padding: 2rem;
+  border-radius: 2rem;
+  min-width: 27rem;
+  font-size: 0.8rem;
+}
+
+#dark .login-cont { background-color: var(--bg-dark); }
+#light .login-cont { background-color: var(--bg-light); }
+
+.login-cont h1 { font-size: 1.7rem; font-weight: 600; }
+.login-cont-top { display: flex; align-items: center; gap: 0.2rem; }
+#light .login-cont-top { color: var(--text-secondary-light); }
+#dark .login-cont-top { color: var(--text-secondary-dark); }
+
+.login-cont-form {
+  padding: 0.7rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
+  gap: 1rem;
+}
+
+.login-cont-form input {
+  padding: 0.8rem;
+  border-radius: 1rem;
+  width: 100%;
+  margin: -0.4rem 0;
+}
+
+#dark .login-cont-form input { background-color: var(--bg-body-dark); }
+#light .login-cont-form input { background-color: var(--bg-body-light); }
+
+.login-cont-form-psw {
+  width: 100%;
+  padding: 0;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}
+
+.login-cont-form-psw img { width: 1.5rem; position: absolute; left: 85%; }
+
+.login-clientBtn {
+  width: 100%;
+  background-color: #00D796;
+  color: #000000F2;
+  padding: 0.8rem;
+  border-radius: 1rem;
+  margin: 0.7rem 0;
+}
+.login-clientBtn:hover { background-color: #009966; }
+
+.login-clientProviders {
+  width: 100%;
+  height: 7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.login-clientProviders button {
+  width: 100%;
+  border-radius: 1rem;
+  padding: 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+#dark .login-clientProviders button { border: 1px solid var(--border-btn-dark); }
+#light .login-clientProviders button { border: 1px solid var(--border-btn-light); }
+
+.login-or {
+  width: 100%;
+  height: 2.5rem;
+  position: relative;
+  padding-top: 1rem;
+  opacity: 0.7;
+}
+.login-or p { position: absolute; top: 10%; left: 42%; padding: 0 1rem; }
+#light .login-or p { background-color: var(--bg-light); }
+#dark .login-or p { background-color: var(--bg-dark); }
+
+@media (max-width:768px) {
+  .login-cont { min-width: 5rem; width: 90%; left: 5%; font-size: 0.8rem; }
+  .login-cont h1 { font-size: 1.2rem; }
+  .login-cont-top p { display: none; }
+  .login-cont-form input { padding: 0.7rem; }
+  .login-clientBtn { padding: 0.5rem; }
+  .login-cont-form-psw img { padding-top: 5vh; width: 100%; }
+}

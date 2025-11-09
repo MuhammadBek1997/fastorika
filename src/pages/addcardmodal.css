@@ -1,0 +1,77 @@
+/* Add Card Modal - extracted styles to avoid inline styling */
+.addCardModal-navbar {
+  padding: 0;
+}
+
+.addCardModal-body {
+  margin-top: 0.5rem;
+}
+
+.addCardModal-form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.currDropdown .currToggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.currDropdownMenu {
+  width: 100%;
+}
+
+.currOption {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.date-input-container input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: none;
+  font-size: 1rem;
+}
+
+.actionsRow {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+}
+
+.btnCancel {
+  padding: 0.9rem 1.2rem;
+  border-radius: 1rem;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+#light .btnCancel {
+  background-color: var(--bg-body-light);
+}
+
+#dark .btnCancel {
+  background-color: var(--bg-body-dark);
+}
+
+.btnSubmit {
+  background-color: #00D796;
+  padding: 0.9rem 1.2rem;
+  border-radius: 1rem;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  color: #fff;
+}
+
+.btnSubmit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
