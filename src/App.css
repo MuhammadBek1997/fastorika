@@ -1791,6 +1791,7 @@ nav.scrolled {
     /* Hero section */
     .hero {
         padding: 1rem;
+        margin-top: 4rem;
         width: 100%;
         overflow-x: hidden;
         display: block;
