@@ -187,7 +187,7 @@ const Registration = () => {
                 </div>
                 <button className='reg-clientBtn' onClick={async () => {
                     try {
-                        const res = await apiFetch('auth/register', {
+                        const res = await apiFetch('auth/registr', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
