@@ -14,6 +14,7 @@
     /* Dark mode ranglar */
     --bg-body-dark: #363636;
     --bg-dark: #202020;
+    --bg-dark-secondary: #2A2A2A;
     --text-dark: #FFFFFF;
     --text-secondary-dark: #B0B0B0;
     --textp-secondary-dark: rgba(255, 255, 255, 0.75);

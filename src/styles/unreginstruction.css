@@ -1,0 +1,137 @@
+/* UnRegInstruction page styles */
+.instruction-container {
+    min-height: 100vh;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.instruction-card {
+    width: 100%;
+    max-width: 540px;
+    padding: 2rem;
+    border-radius: 1.5rem;
+    background: var(--bg-light);
+}
+
+#dark .instruction-card {
+    background: var(--bg-dark);
+    border: 1px solid var(--border-dark);
+}
+
+.instruction-header {
+    margin-bottom: 2rem;
+}
+
+.instruction-back {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary-light);
+    margin-bottom: 1.5rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+}
+
+#dark .instruction-back {
+    color: var(--text-secondary-dark);
+}
+
+.instruction-back:hover {
+    color: var(--btn-primary);
+}
+
+.instruction-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.instruction-subtitle {
+    color: var(--text-secondary-light);
+    font-size: 0.875rem;
+}
+
+#dark .instruction-subtitle {
+    color: var(--text-secondary-dark);
+}
+
+.instruction-steps {
+    margin-bottom: 2rem;
+}
+
+.instruction-step {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.step-number {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-secondary-light);
+}
+
+#dark .step-number {
+    color: var(--text-secondary-dark);
+}
+
+.step-text {
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+.instruction-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.checkbox-input {
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid var(--text-secondary-light);
+    border-radius: 0.25rem;
+    cursor: pointer;
+}
+
+#dark .checkbox-input {
+    border-color: var(--text-secondary-dark);
+}
+
+.checkbox-input:checked {
+    background-color: var(--btn-primary);
+    border-color: var(--btn-primary);
+}
+
+.checkbox-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary-light);
+}
+
+#dark .checkbox-label {
+    color: var(--text-secondary-dark);
+}
+
+.continue-button {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+    font-weight: 500;
+    background: var(--btn-primary);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.continue-button:hover {
+    background: var(--btn-primary-hover);
+}
+
+.continue-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}

@@ -1,0 +1,22 @@
+{
+  "paymentSystem": "Payment System",
+  "selectPaymentSystem": "Select a payment system for your transfer",
+  "commission": "Commission",
+  "providerName": "Provider name",
+  "step1Instructions": "After creating a transfer, you will receive the address of your cryptocurrency wallet",
+  "step2Instructions": "Go to the cryptocurrency transfer application",
+  "step3Instructions": "In the transfer section, select one of the specified networks",
+  "step4Instructions": "Enter the transfer amount, making sure it matches",
+  "step5Instructions": "Confirm the transaction by clicking the 'Confirm Transfer' button with the specified transaction key",
+  "back": "Back",
+  "howToPay": "How to pay the transfer?",
+  "followSteps": "Follow these steps to complete the payment",
+  "agreeWithInstructions": "I confirm that I have read and agree with the payment instructions and terms",
+  "continue": "Continue",
+  "login": "Log In",
+  "aboutUs": "About Us",
+  "faq": "Questions and answers",
+  "heroHead": "Send money worldwide",
+  "heroSecond": "Money arrives in 5 minutes. No hidden fees."
+  // ... qolgan mavjud tarjimalar ...
+}
