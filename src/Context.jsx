@@ -278,10 +278,21 @@ export const AppProvider = ({ children }) => {
       sessionStorage.setItem('token', data.token);
       localStorage.setItem("logged", "true");
       
-      setUser(data.user || { email });
+      // Fetch full profile to get stable userId immediately
+      let fullUser = null;
+      try {
+        const profileRes = await apiFetch('user/getOne', { method: 'GET' });
+        if (profileRes.ok) {
+          fullUser = await profileRes.json();
+        }
+      } catch (e) {
+        // Ignore and fallback to login payload
+      }
+      const nextUser = fullUser || (data.user || { email });
+      setUser(nextUser);
       setIsAuthenticated(true);
-      // Preload cards on successful login
-      try { await loadUserCards(data?.user?.userId) } catch {}
+      // Preload cards on successful login using resolved userId
+      try { await loadUserCards(nextUser?.userId) } catch {}
 
       try {
         const { toast } = await import('react-toastify');

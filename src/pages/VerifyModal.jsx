@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { useGlobalContext } from "../Context"
 import { apiFetch } from "../api"
 import { toast } from "react-toastify"
+import { X, Clock, Mail } from "lucide-react"
 
 const VerifyModal = ({ email, onClose }) => {
   const { t, theme } = useGlobalContext()
@@ -105,21 +106,25 @@ const VerifyModal = ({ email, onClose }) => {
   }
 
   return (
-    <div className="addCardModal" data-theme={theme}>
+    <div className="addCardModal" data-theme={theme} style={{
+      background:`url(/images/BG${theme}.png) 100% 0px no-repeat,${theme=="light" ? "#FFFFFF" : "#5B5B5B"}`
+    }}>
       <div className="addCardModal-cont verify-modal-cont">
         <div className="verify-modal-header">
           <h2>{t('verifyModal.title')}</h2>
           <button className='verify-modal-close' onClick={onClose} aria-label={t('verifyModal.close')}>
-            <img src={`/images/back${theme}.png`} alt="close" />
+            <X size={18} />
           </button>
         </div>
         
         <div className="verify-modal-body">
-          <p className="verify-modal-desc">
+          <p className="verify-modal-desc verify-inline">
+            <span className="verify-inline-icon"><Mail size={16} /></span>
             {t('verifyModal.desc')} <strong>{maskEmail(email) || t('verifyModal.unknownEmail')}</strong>
           </p>
           {!canResend && (
-            <p className="verify-modal-countdown">
+            <p className="verify-modal-countdown verify-inline">
+              <span className="verify-inline-icon"><Clock size={16} /></span>
               {(t('verifyModal.resendAvailableIn') || 'Получить новый можно через')} {formatTime(countdown)}
             </p>
           )}

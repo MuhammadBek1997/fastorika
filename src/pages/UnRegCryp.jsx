@@ -108,7 +108,7 @@ const UnRegCryp = () => {
                 type="text"
                 value={phoneNumber}
                 onChange={handlePhoneNumberChange}
-                placeholder="+998"
+                placeholder={t('addCardModal.placeholders.phoneNumber') || t('placeholders.phone')}
                 style={{
                   width: '100%',
                   border: 'none',
@@ -135,7 +135,7 @@ const UnRegCryp = () => {
                 type="text"
                 value={cardNumber}
                 onChange={handleCardNumberChange}
-                placeholder="0000 0000 0000 0000"
+                placeholder={t('addCardModal.placeholders.cardNumber') || t('placeholders.cardNumber')}
                 style={{
                   width: '100%',
                   border: 'none',

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useGlobalContext } from '../Context'
 import { Link, useLocation } from 'react-router-dom'
+import { ClosedCaption, X } from 'lucide-react'
 
 const UnRegNavbar = () => {
     let { t, theme, navigate, currentLang, currentLanguage, handleChange, languages, toggleTheme, selPayment } = useGlobalContext()
@@ -15,6 +16,17 @@ const UnRegNavbar = () => {
         setIsUnavMobileMenuOpen(false)
         setThemeUnavOpen(false)
         setLangUnavOpen(false)
+        // Sync active tab with current route so back/forward updates classes
+        const path = location.pathname || ''
+        if (path.startsWith('/currency')) {
+            setIsActive(1)
+        } else if (path.startsWith('/cardnumber') || path.startsWith('/crypto')) {
+            setIsActive(2)
+        } else if (path.startsWith('/provider')) {
+            setIsActive(3)
+        } else if (path.startsWith('/instruction')) {
+            setIsActive(4)
+        }
     }, [location])
 
     useEffect(() => {
@@ -43,22 +55,22 @@ const UnRegNavbar = () => {
                     <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0">
                         <li className={isActive == 1 ? 'nav-item active' : 'nav-item'}>
                             <Link to={'/currency'} onClick={()=>setIsActive(1)}>
-                                Summa
+                                {t('unregNav.summa')}
                             </Link>
                         </li>
                         <li  className={isActive == 2 ? 'active' : ''}>
                             <Link to={selPayment == "currency" ? '/cardnumber' : '/crypto'} onClick={()=>setIsActive(2)}>
-                                Recipient
+                                {t('unregNav.recipient')}
                             </Link>
                         </li>
                         <li className={isActive == 3 ? 'active' : ''}>
                             <Link to={'/provider'} onClick={()=>setIsActive(3)}>
-                                Payment system
+                                {t('unregNav.paymentSystem')}
                             </Link>
                         </li>
                         <li className={isActive == 4 ? 'active' : ''}>
                             <Link to={'/instruction'} onClick={()=>setIsActive(4)}>
-                                Instructions
+                                {t('unregNav.instructions')}
                             </Link>
                         </li>
 
@@ -101,7 +113,7 @@ const UnRegNavbar = () => {
                                             <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                                 <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd"></path>
                                             </svg>
-                                            <span>Light</span>
+                                            <span>{t('theme.light')}</span>
                                         </button>
                                         <button
                                             onClick={() => {
@@ -113,7 +125,7 @@ const UnRegNavbar = () => {
                                             <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
                                             </svg>
-                                            <span>Dark</span>
+                                            <span>{t('theme.dark')}</span>
                                         </button>
                                     </div>
                                 )}
@@ -164,7 +176,7 @@ const UnRegNavbar = () => {
                             }
                         }}
                         className='logoutBtn'>
-                            <img src={`/images/back${theme}.png`} alt="" />
+                            <X/>
                         </button>
 
                     </div>

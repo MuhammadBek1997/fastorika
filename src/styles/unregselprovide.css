@@ -1,11 +1,5 @@
 /* UnRegSelProvide page styles */
-.payment-container {
-    min-height: 100vh;
-    padding: 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+
 
 .payment-card {
     width: 100%;
@@ -13,6 +7,7 @@
     padding: 2rem;
     border-radius: 1.5rem;
     background: var(--bg-light);
+    margin: 0 auto;
 }
 
 #dark .payment-card {
@@ -107,19 +102,45 @@
     height: 1.25rem;
     border-radius: 50%;
     border: 2px solid var(--text-secondary-light);
+    position: relative;
 }
 
-.radio-button.active {
-    border-color: var(--btn-primary);
+.radio-button::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: var(--btn-primary);
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.2s ease;
 }
 
-#dark .radio-button {
+.radio-button.active { border-color: var(--btn-primary); }
+.radio-button.active::after { transform: translate(-50%, -50%) scale(1); }
+
+#dark .radio-button { 
     border-color: var(--text-secondary-dark);
 }
 
 #dark .radio-button.active {
     border-color: var(--btn-primary);
 }
+
+/* Scrollable provider list */
+.payment-list {
+    height: 280px; /* fixed height so overall layout doesn’t grow */
+    overflow-y: auto;
+    padding-right: 0.25rem; /* space for scrollbar */
+}
+
+/* optional: make scrollbar subtle */
+.payment-list::-webkit-scrollbar { width: 8px; }
+.payment-list::-webkit-scrollbar-track { background: transparent; }
+.payment-list::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 8px; }
+#dark .payment-list::-webkit-scrollbar-thumb { background: var(--border-dark); }
 
 .continue-button {
     width: 100%;
@@ -156,4 +177,10 @@
 
 #dark .continue-button.secondary:hover {
     background: var(--border-dark);
+}
+
+@media (max-width:768px) {
+    .payment-card{
+        padding: 1rem;
+    }
 }

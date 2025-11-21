@@ -315,7 +315,6 @@ nav.scrolled {
 
 #light .themeOption.active {
     background-color: var(--btn-primary);
-    color: white;
 }
 
 #dark .themeOption {
@@ -328,7 +327,6 @@ nav.scrolled {
 
 #dark .themeOption.active {
     background-color: var(--btn-primary);
-    color: white;
 }
 
 /* ============================================
@@ -445,7 +443,6 @@ nav.scrolled {
 
 #light .langOption.active {
     background-color: var(--btn-primary);
-    color: white;
 }
 
 #dark .langOption {
@@ -458,7 +455,6 @@ nav.scrolled {
 
 #dark .langOption.active {
     background-color: var(--btn-primary);
-    color: white;
 }
 
 /* ============================================
@@ -2751,6 +2747,12 @@ nav.scrolled {
     height: 18px;
 }
 
+/* Lucide React icons inherit currentColor; match image sizing */
+.sidebar-link svg {
+    width: 18px;
+    height: 18px;
+}
+
 #dark .sidebar-link.active,
 #light .sidebar-link.active {
     background-color: var(--btn-primary);
@@ -3194,11 +3196,12 @@ nav.scrolled {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.5);
+    padding-left: 2%;
+    
 }
 
 .addCardModal-cont {
-    width: 400px;
+    min-width: 27rem;
     padding: 1rem;
     border-radius: 2rem;
     z-index: 100;
@@ -3473,10 +3476,12 @@ nav.scrolled {
 
 #light .date-input-container {
     background-color: var(--bg-body-light);
+    border: 1px solid var(--border-light);
 }
 
 #dark .date-input-container {
     background-color: var(--bg-body-dark);
+    border: 1px solid var(--border-dark);
 }
 
 .date-input-container:hover {
@@ -3914,8 +3919,6 @@ nav.scrolled {
 
 
 
-
-
 .unreg-navbar .settings-navbar-cont {
     justify-content: space-between;
     font-size: 1rem;
@@ -3937,9 +3940,7 @@ nav.scrolled {
 .currency {
     width: 100%;
     height: 80vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    position: relative;
 }
 
 
@@ -3949,16 +3950,25 @@ nav.scrolled {
     padding: 1rem;
     border-radius: 2rem;
     background-color: var(--bg-light);
+    margin: 0 auto;
 }
 
 #dark .currency-body {
     background-color: var(--bg-dark);
 }
 
-.currency-head {
+.currency-head-back {
+    width: 35%;
     padding: 1rem;
     font-size: 1.5rem;
     font-weight: 600;
+    margin: 0 auto;
+}
+
+.currency-head{
+    font-size: 1.5rem;
+    font-weight: 600;
+    padding: 1rem;
 }
 
 .currency-transfer-cont {
@@ -4038,6 +4048,9 @@ nav.scrolled {
     img {
         width: 0.7rem;
     }
+}
+#dark .logoutBtn{
+    background-color: var(--bg-body-dark);
 }
 
 .currency-payMethod {
@@ -4157,6 +4170,41 @@ nav.scrolled {
     font-weight: 600;
 }
 
+/* Segmented selector */
+.segmented {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.15rem;
+    border-radius: 1rem;
+}
+#light .segmented {
+    background-color: var(--bg-body-light);
+}
+#dark .segmented {
+    background-color: var(--bg-body-dark);
+}
+.seg-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 1rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.7rem;
+}
+.seg-btn.active {
+    background-color: var(--bg-light);
+}
+#dark .seg-btn.active{
+    background-color: var(--bg-dark);
+    
+}
+
 
 
 .card-cont {
@@ -4199,26 +4247,16 @@ nav.scrolled {
     background: none;
     border: none;
     cursor: pointer;
-    padding: 0.5rem;
+    padding: 0.25rem;
     border-radius: 0.5rem;
-    transition: background-color 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
-#light .verify-modal-close {
-    background-color: var(--bg-body-light);
-}
-
-#dark .verify-modal-close {
-    background-color: var(--bg-body-dark);
-}
-
-.verify-modal-close:hover {
-    opacity: 0.8;
-}
-
-.verify-modal-close img {
-    width: 1.2rem;
-    height: 1.2rem;
+.verify-modal-close svg {
+    width: 1.1rem;
+    height: 1.1rem;
 }
 
 .verify-modal-body {
@@ -4232,6 +4270,18 @@ nav.scrolled {
     line-height: 1.5;
     opacity: 0.8;
     margin: 0;
+}
+
+.verify-inline {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.verify-inline-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .verify-modal-desc strong {

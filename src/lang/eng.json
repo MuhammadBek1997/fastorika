@@ -24,6 +24,7 @@
   "banktransfer": "Bank Account Transfers",
   "yousend": "You send",
   "willtake": "The recipient will receive",
+  "specifyAmount": "Please specify the transfer amount",
   "payMethod": "Payment Method",
   "noCard": "Debit Card",
   "fee": "Fee",
@@ -157,10 +158,11 @@
   "lastName": "Last name",
   "nameWarning": "Recipient’s first and last name must be in Latin letters",
   "termsAccept": "Terms confirmation",
-  "confirmTerms": "I confirm the recipient is verified and trusted, and I accept the",
-  "terms": "Terms and Conditions",
+  "confirmTerms": "I confirm the recipient is ",
+  "terms": "verified",
   "and": "and",
-  "policy": "Privacy Policy",
+  "policy": "trusted",
+  "policy2":"",
   "continue": "Continue",
   "walletAddress": "Recipient wallet",
   "network": "Network",
@@ -233,4 +235,35 @@
     }
   },
   "noData":"No information"
+  ,
+  "theme": {
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "unregNav": {
+    "summa": "Amount",
+    "recipient": "Recipient",
+    "paymentSystem": "Payment system",
+    "instructions": "Instructions"
+  },
+  "transferViaFastorika": "Transfer via Fastorika",
+  "cardsListDesc": "Visa, Mastercard, Maestro…",
+  "cryptoListDesc": "Bitcoin, Ethereum, USDT…",
+  "bankTransferDesc": "Bank wire via SEPA/SWIFT",
+  "byCardNumber": "By card number",
+  "byUserId": "By Fastorika ID",
+  "userId": "Fastorika ID",
+  "recipientFullName": "Recipient full name",
+  "fullName": "Full Name",
+  "nameWarningMessage": "Recipient’s first and last name must be in Latin letters",
+  "confirmRecipient": "I confirm recipient is",
+  "verified": "verified",
+  "trusted": "trusted",
+  "person": "person",
+  "fillAllFields": "Please fill in all fields",
+  "placeholders": {
+    "firstName": "First name",
+    "lastName": "Last name",
+    "userId": "FAST-000000"
+  }
 }

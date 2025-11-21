@@ -43,7 +43,7 @@ const UnRegCur = () => {
             <div className="currency-body">
                 <div className="currency-head">
                     <h2>
-                        Please specify the transfer amount
+                        {t('specifyAmount')}
                     </h2>
                 </div>
                 <div className='currency-transfer-cont' style={{ flexDirection: !changeCurrencyCards ? "column" : "column-reverse" }}>
@@ -132,7 +132,7 @@ const UnRegCur = () => {
                 </div>
                 <div className="currency-payMethod">
                     <h3>
-                        Payment method
+                        {t('payMethod')}
                     </h3>
                 </div>
                 <div className="currency-bottom">
@@ -160,10 +160,10 @@ const UnRegCur = () => {
                                                 {curMethod}
                                             </h3>
                                             {curMethod === t('methods.debit') && (
-                                                <p>Visa, Mastercard, Maestro…</p>
+                                                <p>{t('cardsListDesc')}</p>
                                             )}
                                             {curMethod === t('methods.crypto') && (
-                                                <p>Bitcoin, Ethereum, USDT…</p>
+                                                <p>{t('cryptoListDesc')}</p>
                                             )}
                                             {curMethod === t('methods.bank') && (
                                                 <p>{t("bankTransferDesc")}</p>
@@ -180,7 +180,7 @@ const UnRegCur = () => {
                                                 {t("noCard")}
                                             </h3>
                                             <p>
-                                                Visa, Mastercard, Maestro…
+                                                {t('cardsListDesc')}
                                             </p>
                                         </div>
                                     </div>

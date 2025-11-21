@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { useGlobalContext } from '../Context'
+import { ArrowRightCircle, CreditCard, User, Settings as SettingsIcon, MessageCircle, LogOut } from 'lucide-react'
 
 const Sidebar = () => {
     const [themeSideOpen, setThemeSideOpen] = useState(false)
@@ -69,10 +70,9 @@ const Sidebar = () => {
                             onClick={() => setIsSideMobileMenuOpen(false)}
                         >
                             {({ isActive }) => {
-                                const imgSrc = isActive ? '/images/sidebarTrans.png' : `/images/sidebarTransoff${theme}.png`;
                                 return (
                                     <>
-                                        <img src={imgSrc} alt="" />
+                                        <ArrowRightCircle className="sidebar-icon" />
                                         {t('nav.transactions')}
                                     </>
                                 );
@@ -84,10 +84,9 @@ const Sidebar = () => {
                             onClick={() => setIsSideMobileMenuOpen(false)}
                         >
                             {({ isActive }) => {
-                                const imgSrc = isActive ? '/images/sidebarCards.png' : `/images/sidebarCardsoff${theme}.png`;
                                 return (
                                     <>
-                                        <img src={imgSrc} alt="" />
+                                        <CreditCard className="sidebar-icon" />
                                         {t('nav.cards')}
                                     </>
                                 );
@@ -99,10 +98,9 @@ const Sidebar = () => {
                             onClick={() => setIsSideMobileMenuOpen(false)}
                         >
                             {({ isActive }) => {
-                                const imgSrc = isActive ? '/images/sidebarProfile.png' : `/images/sidebarProfileoff${theme}.png`;
                                 return (
                                     <>
-                                        <img src={imgSrc} alt="" />
+                                        <User className="sidebar-icon" />
                                         {t('nav.profile')}
                                     </>
                                 );
@@ -114,10 +112,9 @@ const Sidebar = () => {
                             onClick={() => setIsSideMobileMenuOpen(false)}
                         >
                             {({ isActive }) => {
-                                const imgSrc = isActive ? '/images/sidebarSettings.png' : `/images/sidebarSettingsoff${theme}.png`;
                                 return (
                                     <>
-                                        <img src={imgSrc} alt="" />
+                                        <SettingsIcon className="sidebar-icon" />
                                         {t('nav.settings')}
                                     </>
                                 );
@@ -129,10 +126,9 @@ const Sidebar = () => {
                             onClick={() => setIsSideMobileMenuOpen(false)}
                         >
                             {({ isActive }) => {
-                                const imgSrc = isActive ? '/images/sidebarChats.png' : `/images/sidebarChatsoff${theme}.png`;
                                 return (
                                     <>
-                                        <img src={imgSrc} alt="" />
+                                        <MessageCircle className="sidebar-icon" />
                                         {t('nav.support')}
                                     </>
                                 );
@@ -149,7 +145,7 @@ const Sidebar = () => {
                             alignItems: "center",
                             gap: "0.5rem"
                         }}>
-                            <img src={`/images/logout${theme}.png`} alt="" />
+                            <LogOut className='sidebar-icon' />
                             logout
                         </div>
                     </button>

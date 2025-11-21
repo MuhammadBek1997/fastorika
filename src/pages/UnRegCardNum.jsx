@@ -1,17 +1,30 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import './currency.css'
 import { useNavigate } from "react-router-dom"
 import { useGlobalContext } from "../Context"
-import { ChevronLeft } from "lucide-react"
+import { ChevronLeft, CreditCard, User, AlertCircle, Phone, ArrowBigLeft, ArrowLeft } from "lucide-react"
 
 const UnRegCardNum = () => {
-    let { t, theme } = useGlobalContext()
+    let { t, theme, user, profilePhone } = useGlobalContext()
     const navigate = useNavigate()
 
+    const [mode, setMode] = useState('card')
     const [cardNumber, setCardNumber] = useState("")
-    const [phoneNumber, setPhoneNumber] = useState("")
+    const [phonePrefix, setPhonePrefix] = useState('+998')
+    const [phoneRest, setPhoneRest] = useState('')
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
+    const [userId, setUserId] = useState("")
+
+    const extractDialCode = (phone) => {
+        const match = String(phone || '').match(/^\+(\d{1,3})/)
+        return match ? `+${match[1]}` : '+998'
+    }
+
+    useEffect(() => {
+        const prefix = extractDialCode(profilePhone || user?.phone)
+        setPhonePrefix(prefix)
+    }, [user, profilePhone])
 
     const formatCardNumber = (value) => {
         const numbers = value.replace(/\s/g, '')
@@ -27,177 +40,147 @@ const UnRegCardNum = () => {
     }
 
     const handlePhoneNumberChange = (e) => {
-        const value = e.target.value.replace(/\D/g, '')
-        if (value.length <= 12) {
-            setPhoneNumber(value)
-        }
+        const rawDigits = e.target.value.replace(/\D/g, '')
+        const prefixDigits = phonePrefix.replace('+', '')
+        let afterPrefix = rawDigits.startsWith(prefixDigits) ? rawDigits.slice(prefixDigits.length) : rawDigits
+        const maxRestLen = Math.max(0, 12 - prefixDigits.length)
+        setPhoneRest(afterPrefix.slice(0, maxRestLen))
     }
+
+    const fullPhoneNumber = `${phonePrefix}${phoneRest}`
+    const isPhoneValid = phoneRest.length > 0
 
     return (
         <div className="currency">
+            <div className="currency-head-back">
+                <button
+                    onClick={() => navigate(-1)}
+                    className="back-btn"
+                >
+                    <ArrowLeft size={24} />
+                    {t("back")}
+                </button>
+
+            </div>
             <div className="currency-body">
-                <div className="currency-head" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <button 
-                        onClick={() => navigate(-1)}
-                        style={{ 
-                            background: 'none', 
-                            border: 'none', 
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center'
-                        }}
-                    >
-                        <ChevronLeft size={24} />
-                    </button>
-                    <h2 style={{ margin: 0 }}>
-                        {t("recipientDetails")}
-                    </h2>
-                </div>
-                <p style={{ 
-                    padding: '0 1rem', 
-                    fontSize: '0.9rem',
-                    opacity: 0.7,
-                    marginBottom: '1.5rem'
-                }}>
+
+                <h2 className="currency-head-title">
+                    {t("recipientDetails")}
+                </h2>
+                <p className="currency-desc">
                     {t("fillRecipientInfo")}
                 </p>
 
-                <div style={{ padding: '0 1rem' }}>
-                    <div style={{ marginBottom: '1rem' }}>
-                        <label style={{ 
-                            display: 'block', 
-                            marginBottom: '0.5rem',
-                            fontSize: '0.9rem',
-                            fontWeight: 500
-                        }}>
-                            {t("cardNumber")}
-                        </label>
-                        <div className="date-input-container">
-                            <input
-                                type="text"
-                                value={cardNumber}
-                                onChange={handleCardNumberChange}
-                                placeholder="0000 0000 0000 0000"
-                                style={{
-                                    width: '100%',
-                                    border: 'none',
-                                    outline: 'none',
-                                    background: 'none',
-                                    fontSize: '1rem'
-                                }}
-                            />
-                        </div>
+                <div className="currency-inner">
+                    {/* Segmented selection */}
+                    <div className="segmented segmented-area">
+                        <button
+                            type="button"
+                            className={`seg-btn ${mode === 'card' ? 'active' : ''}`}
+                            onClick={() => setMode('card')}
+                        >
+                            <CreditCard />
+                            <span>{t('byCardNumber') || t('cardNumber')}</span>
+                        </button>
+                        <button
+                            type="button"
+                            className={`seg-btn ${mode === 'user' ? 'active' : ''}`}
+                            onClick={() => setMode('user')}
+                        >
+                            <User />
+                            <span>{t('byUserId') || 'Fastorika ID'}</span>
+                        </button>
                     </div>
+                    <div className="input-labels-cont">
 
-                    <div style={{ marginBottom: '1rem' }}>
-                        <label style={{ 
-                            display: 'block', 
-                            marginBottom: '0.5rem',
-                            fontSize: '0.9rem',
-                            fontWeight: 500
-                        }}>
-                            {t("phoneNumber")}
-                        </label>
-                        <div className="date-input-container">
-                            <input
-                                type="text"
-                                value={phoneNumber}
-                                onChange={handlePhoneNumberChange}
-                                placeholder="+998"
-                                style={{
-                                    width: '100%',
-                                    border: 'none',
-                                    outline: 'none',
-                                    background: 'none',
-                                    fontSize: '1rem'
-                                }}
-                            />
-                        </div>
-                    </div>
-
-                    <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
-                        <div style={{ flex: 1 }}>
-                            <label style={{ 
-                                display: 'block', 
-                                marginBottom: '0.5rem',
-                                fontSize: '0.9rem',
-                                fontWeight: 500
-                            }}>
-                                {t("firstName")}
-                            </label>
-                            <div className="date-input-container">
-                                <input
-                                    type="text"
-                                    value={firstName}
-                                    onChange={(e) => setFirstName(e.target.value)}
-                                    style={{
-                                        width: '100%',
-                                        border: 'none',
-                                        outline: 'none',
-                                        background: 'none',
-                                        fontSize: '1rem'
-                                    }}
-                                />
+                        {mode === 'card' && (
+                            <div className="mb-1">
+                                <div className="input-label-row">
+                                    <span className="label-icon"><CreditCard /></span>
+                                    <span className="label-text">{t("cardNumber")}</span>
+                                </div>
+                                <div className="currency-input-container">
+                                    <input
+                                        type="text"
+                                        value={cardNumber}
+                                        onChange={handleCardNumberChange}
+                                        placeholder={t('addCardModal.placeholders.cardNumber') || t('placeholders.cardNumber')}
+                                    />
+                                </div>
                             </div>
-                        </div>
-                        <div style={{ flex: 1 }}>
-                            <label style={{ 
-                                display: 'block', 
-                                marginBottom: '0.5rem',
-                                fontSize: '0.9rem',
-                                fontWeight: 500
-                            }}>
-                                {t("lastName")}
-                            </label>
-                            <div className="date-input-container">
-                                <input
-                                    type="text"
-                                    value={lastName}
-                                    onChange={(e) => setLastName(e.target.value)}
-                                    style={{
-                                        width: '100%',
-                                        border: 'none',
-                                        outline: 'none',
-                                        background: 'none',
-                                        fontSize: '1rem'
-                                    }}
-                                />
+                        )}
+
+                        {mode === 'user' && (
+                            <div className="mb-1">
+                                <label className="field-label">
+                                    {t("userId") || 'Fastorika ID'}
+                                </label>
+                                <div className="currency-input-container">
+                                    <input
+                                        type="text"
+                                        value={userId}
+                                        onChange={(e) => setUserId(e.target.value)}
+                                        placeholder={t('placeholders.userId') || 'FAST-000000'}
+                                    />
+                                </div>
                             </div>
+                        )}
+
+                        {mode === 'card' && (
+                            <div className="mb-1">
+                                <div className="input-label-row">
+                                    <span className="label-icon"><Phone /></span>
+                                    <span className="label-text">{t("phoneNumber")}</span>
+                                </div>
+                                <div className="currency-input-container">
+                                    <input
+                                        type="text"
+                                        value={fullPhoneNumber}
+                                        onChange={handlePhoneNumberChange}
+                                        placeholder={phonePrefix}
+                                    />
+                                </div>
+                            </div>
+                        )}
+
+                        {mode === 'card' && (
+                            <div className="two-cols mb-1">
+                                <div className="col">
+                                    <label className="field-label">
+                                        {t("firstName")}
+                                    </label>
+                                    <div className="currency-input-container">
+                                        <input
+                                            type="text"
+                                            value={firstName}
+                                            onChange={(e) => setFirstName(e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="col">
+                                    <label className="field-label">
+                                        {t("lastName")}
+                                    </label>
+                                    <div className="currency-input-container">
+                                        <input
+                                            type="text"
+                                            value={lastName}
+                                            onChange={(e) => setLastName(e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        <div className="info-card">
+                            <div className="info-icon"><AlertCircle size={16} /></div>
+                            <p className="info-text">{t("nameWarningMessage")}</p>
                         </div>
                     </div>
-
-                    <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.5rem',
-                        padding: '1rem',
-                        borderRadius: '1rem',
-                        marginBottom: '1rem',
-                        backgroundColor: theme === 'dark' ? 'var(--bg-body-dark)' : 'var(--bg-body-light)'
-                    }}>
-                        <input
-                            type="checkbox"
-                            id="nameWarning"
-                            style={{ width: '1.2rem', height: '1.2rem' }}
-                        />
-                        <label htmlFor="nameWarning" style={{ fontSize: '0.85rem', opacity: 0.8 }}>
-                            {t("nameWarning")}
-                        </label>
-                    </div>
-
-                    <div style={{ marginTop: '2rem' }}>
-                        <div style={{ 
-                            display: 'flex', 
-                            justifyContent: 'space-between',
-                            marginBottom: '0.5rem',
-                            fontSize: '0.9rem'
-                        }}>
-                            <p>{t("termsAccept")}</p>
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-                            <input type="checkbox" id="terms" style={{ width: '1.2rem', height: '1.2rem' }} />
-                            <label htmlFor="terms" style={{ fontSize: '0.85rem', opacity: 0.8 }}>
-                                {t("confirmTerms")} <span style={{ color: '#00D796', cursor: 'pointer' }}>{t("terms")}</span> {t("and")} <span style={{ color: '#00D796', cursor: 'pointer' }}>{t("policy")}</span>
+                    <div className="terms-block">
+                        <div className="terms-accept">
+                            <input type="checkbox" id="terms" className="terms-checkbox" />
+                            <label htmlFor="terms" className="terms-label">
+                                {t("confirmTerms")} <span className="link-accent">{t("terms")}</span> {t("and")} <span className="link-accent">{t("policy")}</span>{t("policy2")}
                             </label>
                         </div>
                     </div>
@@ -205,9 +188,12 @@ const UnRegCardNum = () => {
                     <button
                         className="currency-continueBtn"
                         onClick={() => {
-                            // Navigate to next step
-                            console.log('Continue with card payment')
+                            const payload = mode === 'card'
+                                ? { cardNumber, phoneNumber: fullPhoneNumber, firstName, lastName }
+                                : { userId }
+                            navigate('/provider', { state: { recipient: payload } })
                         }}
+                        disabled={mode === 'card' ? (!cardNumber || !isPhoneValid) : (!userId)}
                     >
                         {t('continue')}
                     </button>
