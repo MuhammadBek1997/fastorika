@@ -2855,14 +2855,6 @@ nav.scrolled {
     background-color: var(--bg-body-dark);
 }
 
-.changeTransBtn {
-    position: absolute;
-    left: 47.7%;
-    padding: 0.25rem;
-    border-radius: 50%;
-    transform: rotateZ(90deg);
-}
-
 .changeTransBtn img {
     border-radius: 50%;
     padding: 0.5rem;
@@ -3099,7 +3091,7 @@ nav.scrolled {
 .changeTransBtn {
     position: absolute;
     left: 50%;
-    transform: translateX(-50%) rotateZ(90deg);
+    transform: translateX(-50%);
     padding: 0.25rem;
     border-radius: 50%;
     border: none;
@@ -5166,9 +5158,6 @@ nav.scrolled {
         flex-direction: column-reverse;
     }
 
-    .changeTransBtn {
-        transform: rotateZ(0deg);
-    }
 
     .currency-head h2 {
         font-size: 1.2rem;
@@ -5284,7 +5273,7 @@ nav.scrolled {
 
     .changeTransBtn {
         padding: 0.5rem;
-        transform: translateX(-50%) rotateZ(0deg);
+        transform: translateX(-50%) rotateZ(90deg);
         top: 35%;
         left: 50%;
     }

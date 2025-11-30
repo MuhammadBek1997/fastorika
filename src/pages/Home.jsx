@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useGlobalContext } from '../Context'
-import { ChevronDown, ChevronRight } from 'lucide-react';
+import { ArrowUpDown, ChevronDown, ChevronRight } from 'lucide-react';
 
 const Home = () => {
 
@@ -100,7 +100,7 @@ const Home = () => {
               </div>
             </div>
             <button type='button' className='changeBtn' onClick={() => { setChangeCards(!changeCards) }}>
-              <img src={`/images/changeBtn${theme}.png`} alt="" />
+              <ArrowUpDown/>
             </button>
             <div className='hero-transfer-bottom'>
               <div className='hero-transfer-bottom-cash'>

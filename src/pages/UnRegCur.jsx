@@ -2,7 +2,7 @@ import { useState } from "react"
 import './currency.css'
 import { useNavigate } from "react-router-dom"
 import { useGlobalContext } from "../Context"
-import { ChevronRight } from "lucide-react"
+import { ArrowUpDown, ChevronRight } from "lucide-react"
 
 
 const UnRegCur = () => {
@@ -86,7 +86,7 @@ const UnRegCur = () => {
                         </div>
                     </div>
                     <button type='button' className='changeBtn' onClick={() => { setChangeCurrencyCards(!changeCurrencyCards) }}>
-                        <img src={`/images/changeBtn${theme}.png`} alt="" />
+                        <ArrowUpDown/>
                     </button>
                     <div className='currency-transfer-bottom'>
                         <div className='currency-transfer-bottom-cash'>

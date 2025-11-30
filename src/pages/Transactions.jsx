@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import './transactions.css'
 import { useGlobalContext } from '../Context'
-import { Check, Clock, List, MessagesSquare, MinusCircle } from 'lucide-react'
+import { ArrowLeftRight, Check, Clock, List, MessagesSquare, MinusCircle } from 'lucide-react'
 
 const Transactions = () => {
   let { t, theme, navigate, transactions } = useGlobalContext()
@@ -81,7 +81,7 @@ const Transactions = () => {
             </div>
           </div>
           <button type='button' className='changeTransBtn' onClick={() => { setChangeTransCards(!changeTransCards) }}>
-            <img src={`/images/changeBtn${theme}.png`} alt="" />
+           <ArrowLeftRight/>
           </button>
           <div className='transactions-transfer-bottom'>
             <div className='transactions-transfer-bottom-cash'>
