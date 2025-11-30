@@ -50,7 +50,7 @@ const UnRegNavbar = () => {
             <div className="unreg-navbar">
                 <div className="settings-navbar-cont">
                     <div className='logo'>
-                        <img src={`/images/logo${theme}.png`} alt="" />
+                        <img src={`/images/logo${theme}.svg`} alt="" />
                     </div>
                     <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0">
                         <li className={isActive == 1 ? 'nav-item active' : 'nav-item'}>

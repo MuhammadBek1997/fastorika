@@ -39,6 +39,7 @@ import UnRegCardNum from './pages/UnRegCardNum';
 import UnRegSelProvide from './pages/UnRegSelProvide';
 import UnRegCryp from './pages/UnRegCryp';
 import UnRegInstruction from './pages/UnRegInstruction';
+import TransactionInfo from './pages/TransactionInfo';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -74,7 +75,7 @@ const PublicRoute = ({ children }) => {
   if (isAuthenticated) {
     return <Navigate to="/transactions" replace />;
   }
-
+  
   return children;
 };
 
@@ -96,7 +97,6 @@ function App() {
         autoClose={3000} 
         theme={theme === 'dark' ? 'dark' : 'light'} 
       />
-
       <Routes>
         {/* Pending Transfer Flow - Highest Priority */}
         {hasPendingTransfer && (
@@ -228,6 +228,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <PrivateLayout><ServiceTerm /></PrivateLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/transaction/:id"
+              element={
+                <ProtectedRoute>
+                  <PrivateLayout><TransactionInfo/></PrivateLayout>
                 </ProtectedRoute>
               }
             />

@@ -1,0 +1,96 @@
+PRIVACY POLICY
+
+
+
+1. Introduction
+
+Fastorika Limited (the "Company", "we", "us") respects your privacy. This Privacy Policy explains what data we collect, how we use it, and what rights users have.
+
+
+
+2. The data we collect
+
+Fastorika Limited collects the following categories of information/data:
+
+2.1 Identification data – name, date of birth, passport data, customer IDs.
+
+2.2. Contact information – address, phone number, email, social media accounts.
+
+2.3. Payment and transaction information – partial data of cards/bank accounts/accounts in payment systems, transaction history.
+
+2.4. Technical information – IP address, cookies, device information, log files.
+
+
+
+3. How we use the data
+
+Your data is processed exclusively for the following purposes:
+
+3.1. Fulfillment of contractual obligations (transfer processing, verification, account maintenance).
+
+3.2. Compliance with legal requirements (AML/KYC/CFT).
+
+3.3. Ensuring the security of the service and fraud prevention.
+
+3.4. Sending information messages (with the possibility of refusal).
+
+3.5. Use for marketing and promotion purposes (with the possibility of opt-out only).
+
+
+
+4. Transfer of data to third parties
+
+We transfer data only in the following cases:
+
+4.1. Payment providers and banks for processing transfers.
+
+4.2. Government agencies, if there is a legal requirement.
+
+4.3. Contractors providing technical infrastructure, KYC services and anti-fraud systems.
+
+
+
+5. Data retention periods
+
+5.1. In accordance with 4AMLD, 5AMLD, 6AMLD and local laws, your data will be stored for at least 5 years and may be stored for up to 10 years after the end of the business relationship.
+
+5.2. If the legislation requires longer storage (for example, for investigations), the period may be extended.
+
+5.3. After the expiration of the storage period, the data will be deleted or anonymized.
+
+ 
+
+6. User rights (in accordance with GDPR)
+
+You have the right:
+
+6.1. The right of access is to request a copy of your data.
+
+6.2. The right to rectification is to make changes or corrections to the data.
+
+6.3. Right to erasure ("right to be forgotten") – you can request the deletion of data, however, if their storage is required in accordance with AML/CFT, we are required to store them for 5-10 years.
+
+6.4. The right to restrict processing is to suspend the use of your data for certain purposes (for example, marketing).
+
+6.5. The right to data portability is to receive a copy of your data in a machine–readable format.
+
+6.6. Right to object – to refuse processing for marketing or mailing.
+
+6.7. The right to complain is to contact the national data protection supervisory authority.
+
+ 
+
+7. Contacts
+
+On issues related to data processing:
+
+Support: support@fastorika.com
+
+
+
+8. Conclusion
+
+By using the Fastorika service, you confirm that you have read and agree to this Privacy Policy.
+
+
+

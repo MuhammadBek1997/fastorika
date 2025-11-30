@@ -1,13 +1,27 @@
 import { useEffect, useState } from 'react'
 import './registration.css'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useGlobalContext } from '../Context'
 import { apiFetch } from '../api'
 import { toast } from 'react-toastify'
 import VerifyModal from './VerifyModal'
 
 const Registration = () => {
-    let { t, theme, handleChange, languages, currentLang, currentLanguage, toggleTheme, cancelLogin, navigate } = useGlobalContext()
+    let { 
+        t, 
+        theme, 
+        handleChange, 
+        languages, 
+        currentLang, 
+        currentLanguage, 
+        toggleTheme, 
+        cancelLogin, 
+        navigate,
+        handleGoogleLogin,  // ← Qo'shing
+        handleAppleLogin    // ← Qo'shing
+    } = useGlobalContext()
+    
+    const location = useLocation()
     const [themeRegOpen, setThemeRegOpen] = useState(false)
     const [langRegOpen, setLangRegOpen] = useState(false)
     const [showReg1Psw, setShowReg1Psw] = useState(false)
@@ -17,6 +31,17 @@ const Registration = () => {
     const [accPsw, setAccPsw] = useState('')
     const [showVerifyModal, setShowVerifyModal] = useState(false)
 
+    // Google/Apple dan kelgan ma'lumotlarni olish
+    useEffect(() => {
+        if (location.state) {
+            setMail(location.state.email || '')
+            
+            // Agar Google/Apple dan kelgan bo'lsa, verification modal ochish
+            if (location.state.needsVerification) {
+                setShowVerifyModal(true)
+            }
+        }
+    }, [location.state])
 
     const checkPsw = (rule) => {
         if (rule == "case" && psw.split('').find((item) => item == item.toUpperCase())) return true
@@ -26,10 +51,31 @@ const Registration = () => {
 
     let forNum = new Date().getTime()
 
-
-    useEffect(() => {
-
-    }, [psw, accPsw])
+    // Verification modal yopilganda avtomatik login
+    const handleVerifyClose = async () => {
+        setShowVerifyModal(false)
+        
+        // Agar Google/Apple dan kelgan bo'lsa
+        if (location.state?.fromGoogle || location.state?.fromApple) {
+            const email = location.state.email
+            const password = location.state.firebaseUid
+            
+            if (email && password) {
+                try {
+                    const { handleLogin } = useGlobalContext()
+                    const success = await handleLogin(email, password)
+                    if (success) {
+                        navigate('/transactions')
+                    }
+                } catch (error) {
+                    console.error('Auto login failed:', error)
+                }
+            }
+        } else {
+            // Oddiy registratsiya uchun login sahifasiga yo'naltirish
+            navigate('/login')
+        }
+    }
 
     return (
         <div className='registration-client' style={{
@@ -133,7 +179,28 @@ const Registration = () => {
                     </div>
                 </div>
             </nav>
+            
             <div className='registration-cont'>
+                {/* Google/Apple dan kelgan notification */}
+                {(location.state?.fromGoogle || location.state?.fromApple) && (
+                    <div style={{
+                        background: '#e3f2fd',
+                        padding: '12px',
+                        borderRadius: '8px',
+                        marginBottom: '16px',
+                        textAlign: 'center'
+                    }}>
+                        <p style={{ color: '#1976d2', fontSize: '14px', margin: 0 }}>
+                            ✓ {location.state?.fromGoogle ? 'Google' : 'Apple'} ma'lumotlari olindi
+                        </p>
+                        {location.state?.needsVerification && (
+                            <p style={{ color: '#1565c0', fontSize: '13px', margin: '4px 0 0 0' }}>
+                                📧 Tasdiqlash kodi emailingizga yuborildi
+                            </p>
+                        )}
+                    </div>
+                )}
+                
                 <h1>
                     {t("reg-client")}
                 </h1>
@@ -149,7 +216,12 @@ const Registration = () => {
                     <label htmlFor="">
                         {t("login-clientForm1")}
                     </label>
-                    <input type="text" value={mail} onChange={(e) => setMail(e.target.value)} />
+                    <input 
+                        type="text" 
+                        value={mail} 
+                        onChange={(e) => setMail(e.target.value)}
+                        disabled={location.state?.fromGoogle || location.state?.fromApple}
+                    />
                     <label htmlFor="">
                         {t("reg-clientForm2")}
                     </label>
@@ -185,28 +257,40 @@ const Registration = () => {
                         </p>
                     </div>
                 </div>
-                <button className='reg-clientBtn' onClick={async () => {
-                    try {
-                        const res = await apiFetch('auth/registr', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                                name: "",
-                                email: mail,
-                                phone: "+"+forNum,
-                                password: psw,
-                                country_id: 1,
-                                date_of_birth: "2000-01-01"  // <-- "date_of_birth" to'g'ri yozilgan ekanligini tasdiqlang
+                
+                {/* Agar Google/Apple dan kelgan bo'lsa, faqat verify button ko'rsatish */}
+                {(location.state?.fromGoogle || location.state?.fromApple) ? (
+                    <button 
+                        className='reg-clientBtn' 
+                        onClick={() => setShowVerifyModal(true)}
+                    >
+                        Emailni tasdiqlash
+                    </button>
+                ) : (
+                    <button className='reg-clientBtn' onClick={async () => {
+                        try {
+                            const res = await apiFetch('auth/registr', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    name: "",
+                                    email: mail,
+                                    phone: "+"+forNum,
+                                    password: psw,
+                                    country_id: 1,
+                                    date_of_birth: "2000-01-01"
+                                })
                             })
-                        })
-                        if (!res.ok) throw new Error('Registration failed')
-                        setShowVerifyModal(true)
-                    } catch (err) {
-                        toast.error(t('toast.registration.error'))
-                    }
-                }}>
-                    {t("reg-clientStep1")}
-                </button>
+                            if (!res.ok) throw new Error('Registration failed')
+                            setShowVerifyModal(true)
+                        } catch (err) {
+                            toast.error(t('toast.registration.error'))
+                        }
+                    }}>
+                        {t("reg-clientStep1")}
+                    </button>
+                )}
+                
                 <div className='login-or'>
                     <hr />
                     <p>
@@ -214,18 +298,24 @@ const Registration = () => {
                     </p>
                 </div>
                 <div className='login-clientProviders'>
-                    <button>
+                    {/* Google orqali registratsiya */}
+                    <button onClick={handleGoogleLogin}>
                         <img src="/images/Google.png" alt="" />
                         {t("login-clientwithG")}
                     </button>
-                    <button>
+                    {/* Apple orqali registratsiya */}
+                    <button onClick={handleAppleLogin}>
                         <img src={`/images/apple${theme}.png`} alt="" />
                         {t("login-clientwithA")}
                     </button>
                 </div>
             </div>
+            
             {showVerifyModal && (
-                <VerifyModal email={mail} onClose={() => setShowVerifyModal(false)} />
+                <VerifyModal 
+                    email={mail} 
+                    onClose={handleVerifyClose}
+                />
             )}
         </div>
     )

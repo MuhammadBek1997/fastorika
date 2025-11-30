@@ -12,7 +12,7 @@ const UnRegCur = () => {
 
     let currency = [
         {
-            flag: '/images/us.png',
+            flag: 'https://img.icons8.com/color/96/usa-circular.png',
             currencyName: 'USD'
         }
     ]
@@ -36,7 +36,7 @@ const UnRegCur = () => {
     const [otherCurrency, setOtherCurrency] = useState(currency[0])
     const [changeCurrencyCards, setChangeCurrencyCards] = useState(false)
 
-    
+    if(localStorage.getItem("verified") != "verified") return <VerifyAskModal/>
 
     return (
         <div className="currency">

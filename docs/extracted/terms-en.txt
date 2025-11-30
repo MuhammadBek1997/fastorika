@@ -1,0 +1,486 @@
+Terms & Conditions of Fastorika Limited ServiceIntroductionThese Terms of Use (hereinafter referred to as the "Terms") govern the access to and use of the website, software solutions, and other services provided by Fastorika Limited, incorporated under the laws of Belize (registration number 000050785), hereinafter referred to as the "Company" or "Fastorika".By using the Fastorika website, software or services, you (hereinafter referred to as the "User" or "Client") confirm that you have read these Terms, understand their content and agree to comply with them in full.If you do not agree with any of the provisions of these Terms, you must immediately stop using the Fastorika website and servicesThis agreement is a public offer made in accordance with the laws of Belize and is legally binding from the moment you start using FastorikaA. General Terms of Use1. Right to use By using the Fastorika website and services, you acknowledge that:
+
+Are at least 18 years of age or the age of majority in your country of residence.
+
+have full legal capacity to enter into contracts and enter into legal obligations;
+
+use the service solely for lawful purposes and in accordance with our Terms.
+
+
+
+Fastorika does not provide services to persons who:
+
+reside in jurisdictions where the use of such services is prohibited by law;
+
+are under sanctions or restrictions imposed by international organizations or state bodies;
+
+act on behalf of third parties without proper authorization.
+
+
+
+2. Modification of TermsFastorika reserves the right to change, supplement or update these Terms at any time.
+
+
+
+Changes come into force from the moment they are published on the official Fastorika website (fastorika.com).
+
+By continuing to use the site or services after the publication of the updated Terms, the User confirms his consent to their new version.
+
+The Company recommends that you regularly familiarize yourself with the current version of the Terms.In case of disagreement with the changes, the User is obliged to stop using Fastorika services.
+
+3. Prohibited ActivitiesThe User agrees not to use the Fastorika website, software, or services for any illegal, fraudulent, or unauthorized activities, including but not limited to the following:1. Violation of the laws of Belize, the User's country of residence, as well as international norms, including AML/CFT rules and sanctions regimes.2. Providing false, incomplete, or misleading information when registering or using the service.3.  Attempts to interfere with the operation of the site, circumvent security measures, unauthorized access to data, systems or accounts of other users.4. Transmit, distribute, or upload viruses, malicious code, programs, or scripts that may disrupt the service or harm other users.5. Using the service to post, transmit or distribute spam, advertising messages, phishing links or other unwanted materials.6. Use of the service for transactions related to money laundering, terrorist financing, illegal trafficking in goods, gambling or other prohibited activities.7. Attempts to circumvent identification, identity verification (KYC), or transaction monitoring procedures established by Fastorika and its partners.8. Using the service on behalf of a third party without legal grounds and power of attorney.Fastorika reserves the right to restrict, suspend or completely terminate the user's access to the service in case of violations of these rules or if there is a reasonable suspicion of illegal activity.
+
+
+
+4. Intellectual property rightsAll materials posted on the website and in Fastorika services, including texts, logos, trademarks, graphic elements, designs, software, source code, databases, structure, and interface (hereinafter referred to as the "Content"), are the exclusive property of Fastorika Limited or are used legally on the basis of licenses and agreements with copyright holders. The User is granted a limited, non-renewable and non-transferable right to use the Content solely within the framework of personal access to the Fastorika service and only for the lawful purposes provided for in these Terms.
+
+The User is prohibited without the prior written consent of Fastorika:
+
+copy, distribute, modify, decompile or otherwise exploit elements of the Site, software or content;
+
+create derivative products based on Fastorika software solutions;
+
+use Fastorika's brand name, logo, or trademarks for commercial or promotional purposes.
+
+Violation of these provisions may result in civil and criminal liability under applicable Belizean law and international intellectual property treaties.
+
+
+
+5. Availability of the Service
+
+Fastorika strives to ensure the uninterrupted and stable operation of the website and software services. However, the Company does not guarantee their continuous availability, uninterrupted operation or the absence of errors.
+
+
+
+Access to the service may be temporarily restricted, suspended or terminated in the following cases, including, but not limited to:
+
+Platform maintenance, upgrades, or upgrades
+
+failures or malfunctions on the part of third-party providers, Internet service providers or payment systems;
+
+force majeure, including power outages, cyberattacks, natural disasters, strikes, or government actions.
+
+Fastorika is not responsible for damages, indirect losses, lost profits or other consequences caused by the temporary unavailability of the service, delays in processing transactions or disruption of communication with partner systems.
+
+The Company undertakes to suspend the operation of the platform for the minimum necessary time and, if possible, notify users about scheduled technical work in advance.6. Use of Third-Party Services 
+
+Fastorika uses third-party services, solutions, and infrastructure (including payment, cryptocurrency, and technology providers) to power its platform.
+
+By using the Fastorika service, the User agrees that:
+
+1. Certain functions and operations, including transfer processing, identification (KYC) or currency exchange, may be performed by external licensed partners.
+
+2. Such partners act within the framework of their own terms of use and privacy policies, which the User also undertakes to read 
+
+3. Fastorika is not responsible for the actions, errors, failures, commissions, refund policies, or other decisions made by these third parties.
+
+4. The User's interaction with any third-party services is carried out at his own risk and in accordance with the rules of the relevant provider.
+
+Fastorika selects and integrates third-party partners based on the principles of integrity, reputation, and compliance with international AML/CFT requirements, but does not guarantee the smooth operation of their systems or the completeness of the services they provide.
+
+B. Description and nature of the services provided
+
+1. Nature of services
+
+Fastorika provides users with access to an online platform that enables interaction between users and external licensed financial providers.
+
+The service allows the user to:
+
+initiate requests for transfers or transactions through connected providers;
+
+track the status of such transactions in real time;
+
+Receive reports, notifications, and supporting tools to manage the process.
+
+Fastorika is a provider of technological solutions (Software-as-a-Service) and does not provide payment, banking or investment services.
+
+The Company does not accept, store, transfer, convert or manage user funds.
+
+All financial transactions are carried out exclusively by licensed third parties with whom Fastorika has technological integration agreements.
+
+2. Refusal of licensed activities
+
+Fastorika Limited operates exclusively in the field of information technology, namely, it provides users with software and hardware solutions that allow interaction with external payment and financial providers.
+
+Fastorika is not:
+
+by a bank, credit institution or electronic money institution;
+
+a payment institution or money transfer operator;
+
+investment, trust or brokerage company;
+
+a provider of services for the storage or management of client funds.
+
+
+
+The Company does not accept or store user funds, does not maintain accounts, does not issue electronic money, does not provide currency exchange services and does not act as an intermediary in transfers.
+
+All financial transactions are carried out exclusively by external licensed institutions operating under their own rules and licenses.
+
+Fastorika does not operate in Belize and does not provide services to residents of Belize.
+
+In accordance with the International Financial Services Commission Act (Cap. 272, Laws of Belize) and the International Business Companies Act (Cap. 270), such activities do not require a license and are not subject to the regulation of the International Financial Services Commission of Belize (IFSC).
+
+
+
+3. Commissions and fees
+
+The use of Fastorika services may be associated with the payment of service fees for access to platform functions, processing requests, or providing technological services. Information about the applicable fees is always indicated to the user before confirming the transaction or placing an order.
+
+By performing an action or transaction through the Fastorika platform, the User confirms his/her consent to the established tariffs and undertakes to pay them.
+
+Fastorika does not charge fees for fund transfers made by third-party financial providers and does not receive remuneration for operations related to the movement of user funds.
+
+The User acknowledges that:
+
+commissions and costs of third-party organizations (banks, payment systems, exchange services, etc.) are set independently of Fastorika;
+
+such commissions may be automatically deducted by the respective providers;
+
+Fastorika does not control, modify or refund third-party fees, nor is it responsible for their amount or application.
+
+
+
+In some cases, providers may charge additional fees related to international transfers, foreign exchange transactions, or banking infrastructure. 
+
+Fastorika recommends that the user check the current commissions with the relevant partners in advance.
+
+
+
+4. Limits and LimitsFastorika and its partners have the right to set limit(s) on the use of the services, including but not limited to:
+
+the maximum amount of one transaction;
+
+the number of transactions during a certain period;
+
+limits by country, currency or user category.
+
+Such restrictions may be determined for the purposes of:
+
+compliance with the requirements of Belize legislation and international AML/CFT standards;
+
+prevent fraudulent or suspicious transactions;
+
+ensuring the technical stability and security of the platform.
+
+Information about the current limits can be communicated to the user through the platform interface, notification or upon request to the support service.
+
+
+
+Fastorika reserves the right to temporarily suspend or reject operations if:
+
+the established limits are exceeded;
+
+The transaction does not meet internal security criteria.
+
+Additional verification of the user or source of funds is required.
+
+The Company is not responsible for delays or inability to conduct transactions if the limit is set in accordance with the law, Fastorika's internal policies, or the rules of its partners.
+
+
+
+5. Responsibility for the accuracy of the data provided
+
+The User is fully responsible for the accuracy, reliability and relevance of all data provided during registration, use of the service and initiation of operations.
+
+
+
+Such data includes, but is not limited to:
+
+personal information of the user (name, surname, contact details, etc.);
+
+details of means of payment and bank accounts;
+
+data of the recipient of the transfer (name, country, account number and other parameters);
+
+amounts, currencies and purposes of operations.
+
+Fastorika and its partners process transactions solely on the basis of the data entered by the user.
+
+The Company is not responsible for:
+
+errors, typographical errors or inaccurate details provided by the user;
+
+delays, refunds or loss of funds caused by incorrectly entered information;
+
+consequences of incorrect instructions of the recipient, if the operation was technically executed in accordance with the user's request.
+
+In the event that the data provided is unreliable or contrary to legal requirements, Fastorika has the right to suspend the transaction and request supporting documents or additional information.
+
+
+
+6. Currency Conversion
+
+When making international transactions or transfers through connected Fastorika partners, automatic currency conversion may be used.
+
+
+
+The currency exchange rate applied to the transaction is determined by the licensed provider processing the transaction and is displayed to the user until the transaction is confirmed.
+
+Fastorika guarantees that the amount specified as the amount to be sent and credited will be transferred in full to the selected financial partner for the execution of the transaction.
+
+However, the User agrees and understands that:
+
+1. The amount actually credited to the beneficiary's account may differ in the following cases:
+
+the beneficiary's bank or payment provider withheld a commission when crediting;
+
+The amount was slightly rounded due to technical limitations or the peculiarities of the currency system.
+
+2. Fastorika does not control and is not responsible for the fees charged by banks, payment processors or other third parties involved in the processing of the transaction.
+
+3. The exchange rate and the final result of the conversion are generated by the licensed financial partner performing the exchange and may include a small service margin displayed in the interface.
+
+Fastorika undertakes to take all reasonable measures to ensure the transparency of the exchange rate and the accuracy of calculations, as well as to inform the user of all known fees before confirming the transfer.
+
+
+
+C. Refund Policy 
+
+1. General Provisions
+
+Fastorika's refund policy is designed to ensure transparency and protect the interests of users.
+
+Refunds are only possible in cases where the transaction was not successfully executed or confirmed by a third-party financial provider.
+
+
+
+Fastorika is not responsible for refunds of funds transferred through third-party systems if the operation has been technically completed and confirmed by the relevant provider.
+
+2. Successful translations
+
+After the transaction has received the status of successfully completed, and the amount has been transferred by the partner to the recipient, no refund is made.
+
+If the beneficiary's bank or correspondent bank has deducted its own commission when crediting, Fastorika is not responsible for reducing the total amount received by the recipient.
+
+3. Refund in case of unsuccessful operation
+
+If the transfer cannot be completed for technical reasons or at the discretion of a third-party provider, Fastorika initiates a refund to the same details from which the original payment was made. 
+
+Refunds are made only after an official confirmation from the partner that it is impossible to complete the transaction. The period for consideration and refund is up to 20 (twenty) working days from the date of such confirmation.
+
+
+
+4. Loss of the right to return
+
+If the user does not provide the necessary details or confirmations for the refund within 20 business days from the date of notification to Fastorika about the impossibility of delivery of the transfer, the right of return is considered lost.
+
+
+
+5. Refund in case of an erroneous or duplicate transaction
+
+In case the user mistakenly made a double or duplicate transfer, Fastorika has the right to return the excess amount only after confirmation from the partner that the second operation was not performed. All costs associated with the refund, including bank charges, are deducted from the amount refunded.
+
+
+
+D. Electronic Notifications and Communication
+
+1. Consent to receive notifications
+
+By using the Fastorika website and services, the User agrees to receive electronic notifications from the Company, including, but not limited to:
+
+confirmations of transactions and transaction statuses;
+
+AML/KYC policy notifications and policy updates;
+
+changes to these Terms or other legal documents of Fastorika;
+
+security and technical change announcements.
+
+These notices have the same legal effect as documents submitted in paper form.
+
+
+
+E. Privacy and data protection
+
+1. Collection and processing of personal data
+
+Fastorika collects, stores, and processes users' personal data in accordance with:
+
+General Data Protection Regulation (GDPR, Regulation (EU) 2016/679);
+
+Belize Data Protection Act, 2021;
+
+other applicable international data protection standards.
+
+Personal data is collected and used solely for the following purposes:
+
+registration and identification of the user;
+
+Complete transactions and support interactions with connected finance partners.
+
+compliance with AML/CFT and fraud prevention legislation;
+
+analytics and improvement of the quality of services provided.
+
+By using the Fastorika service, the User agrees to the processing of his/her personal data for the specified purposes.
+
+
+
+2. Transfer of data to third parties
+
+Fastorika may transfer the User's personal data to third parties, but only if it is necessary for the performance of the contract or legal requirements.
+
+Transfer is possible in the following cases:
+
+licensed financial providers involved in the execution of transactions;
+
+KYC/AML identity providers;
+
+state and supervisory authorities – if there are legal grounds;
+
+IT infrastructure providers who ensure the operation of the platform.
+
+All such third parties are required to comply with a confidentiality regime and data protection standards equivalent to the requirements of the GPDR.
+
+
+
+3. Account and access security
+
+The User is responsible for the safety of his logins, passwords and other data used to enter the account. Fastorika is not responsible for losses or unauthorized access caused by the user (e.g. password disclosure, phishing, use of untrusted devices).
+
+In case of suspicion of unauthorized access, the User is obliged to notify Fastorika immediately. The Company has the right to temporarily restrict access to the account until the verification is completed.
+
+
+
+4. Cookies and Tracking Technologies
+
+Fastorika uses cookies, analytics tags and similar technologies to:
+
+improving the stability and usability of the platform;
+
+analysis of traffic and site performance;
+
+personalization of user experience.
+
+The user can change the cookie settings in the browser, but this may affect the functionality of the service. More information about the use of cookies is specified in a separate Privacy Policy
+
+5. Data storage and protection
+
+All personal and operational data is stored in encrypted form on servers that comply with international security standards (ISO/IEC 27001).
+
+Fastorika complies with the principle of data minimization and retains user information for 5-10 years after the end of the business relationship, in accordance with AML/CFT and Belize tax requirements.
+
+
+
+F. Liability and Dispute Resolution
+
+1. Limitation of Liability 
+
+Fastorika shall be liable only up to the amount to be transferred within the framework of a particular transaction and only if the damage is caused by the direct fault of the Company.
+
+The Company is not responsible for:
+
+acts or omissions of third-party financial or technology providers;
+
+errors, delays or deviations caused by failures of banking systems, network infrastructure or communication providers;
+
+losses incurred as a result of incorrect indication of details by the user or violation of instructions;
+
+any indirect, consequential, punitive or non-pecuniary damages, including lost profits. 
+
+In any case, the aggregate liability of Fastorika may not exceed the amount of the fee paid by the user for the use of the service or the amount of the specific transaction in connection with which the dispute arose – whichever is less.
+
+
+
+2. Exclusion of liability 
+
+Fastorika provides its services "as is" and "as available" without any express or implied warranties.
+
+The Company does not guarantee that:
+
+the operation of the service will be uninterrupted and error-free;
+
+the information obtained through the platform will always be accurate, complete or up-to-date;
+
+Third-party partners will fulfill their obligations on time or in full.
+
+
+
+3. Force Majeure
+
+Fastorika is exempt from liability for partial or total non-performance of obligations if it is the result of force majeure, including:
+
+failures in the operation of Internet networks, payment systems, data centers;
+
+natural disasters, military actions, terrorist acts;
+
+government prohibitions, sanctions, regulatory restrictions;
+
+massive cyberattacks or other unforeseen technical incidents.
+
+In such cases, Fastorika undertakes to make reasonable efforts to restore the operation of the service as soon as possible.
+
+
+
+4. Dispute Resolution Procedure
+
+All disputes, claims, or disagreements arising in connection with the use of Fastorika services or these Terms shall be resolved in accordance with the laws of Belize.
+
+If no agreement is reached within 30 calendar days, the dispute shall be considered in  the courts of Belize or in arbitration, if the parties agree on such a procedure.
+
+The decision of a court or arbitral body of Belize is final and enforceable in the territory of other states in accordance with international treaties.
+
+
+
+
+
+5. Procedure for submitting complaints and reporting errors
+
+The User is obliged to notify Fastorika of the alleged error or dispute within 30 days of its occurrence or discovery.
+
+Complaints and requests are sent to the address: support@fastorika.com. The Company considers appeals within 20 business days from the date of receipt.
+
+G. Termination of Use 
+
+1. Termination initiated by the user
+
+The User has the right to stop using the Fastorika service and delete his/her account at any time by sending a written notice to the support team at support@fastorika.com.
+
+Deletion of the account does not release the User from the fulfillment of obligations that arose before the termination of the use of the service, including the payment of commissions or the completion of initiated transactions.
+
+
+
+2. Company-initiated termination
+
+Fastorika has the right to temporarily suspend, restrict or completely terminate the user's access to the service without prior notice if:
+
+violations of these Terms are revealed;
+
+there are signs of fraud, money laundering, terrorist financing or other illegal activities;
+
+the data provided turned out to be false, outdated or unreliable;
+
+This is required by law, regulator, law enforcement agency or court decision.
+
+Fastorika notifies the user of the blocking or deletion of the account within a reasonable period of time after such a decision is made, unless the notification is contrary to the law or the requirements of supervisory authorities.
+
+
+
+3. Consequences of Termination of Use
+
+After terminating your account:
+
+access to the personal account and transaction history can be limited or completely deleted;
+
+all incomplete transactions are canceled;
+
+the user loses the ability to use the Fastorika service, including the API, interface, and related functions.
+
+Fastorika reserves the right to store certain user data after termination of service to the extent necessary to comply with AML/CFT requirements, as well as in accordance with  the Belize Data Protection Act, 2021 and international FATF standards.
+
+The data retention period after account deletion is up to five (5) years, unless otherwise required by Belizean law.
+
+
+
+4. Reactivation
+
+The User may request the reactivation of the account by sending a written request to the Fastorika support team.The Company considers the possibility of restoring access at its own discretion, depending on the reasons for blocking and in accordance with internal security and compliance policies.
+
+
+
+
+
+
+

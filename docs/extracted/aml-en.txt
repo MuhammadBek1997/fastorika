@@ -1,0 +1,128 @@
+ANTI MONEY LAUNDERING, COMBATING TERRORIST FINANCING & PROLIFERATION FINANCING POLICY OF FASTORIKA LIMITED
+
+1. General Provisions
+
+
+
+About Fastorika Limited 
+
+
+
+Fastorika Limited (hereinafter referred to as “the Company”, “we”, “our”, “us”) is a private limited company incorporated in Belize under registration number 2532141. The Company provides software-based financial infrastructure solutions that allow businesses and users to initiate, manage, and monitor transactions through connected financial partners.
+
+Fastorika Limited operates as a technology provider, not as a financial institution.We do not hold, store, or manage client’s funds directly. All payments, exchanges, and settlements are executed by licensed third-party providers integrated into our platform.
+
+1.2. Definition of Transaction
+
+
+
+For the purpose of this Policy, a Transaction refers to any transfer of value, payment requires, or exchange operation initiated by a user through the Fastorika platform and processed by an external financial partner.
+
+A transaction in the context of Fastorika’s services is considered a technical operation, where Fastorika provides the interface and communication layer between the user and the regulated payment or exchange provider.
+
+1.3. Purpose of the Policy
+
+The purpose of thin Anti-Money Laundering, Combating Terrorist Financing & Proliferation Financing Policy (“the Policy”) is to establish principles and internal procedures aimed at preventing the use of Fastorika’s services for money laundering, terrorist financing, or proliferation financing.Fastorika Limited adheres to international AML/CFT standards, including the FATF recommendations, the EU AML Directives (4AMLD, 5AMLD, 6AMLD), and relevant Belizean AML legislation.
+
+2. Scope and Objective
+
+2.1 Scope of the policy
+
+This Policy applies to all employees, directors, contractors, agents, and business partners of Fastorika Limited. It also extends to all users of Fastorika’s platform and any third parties involved in the processing of transactions initiated through Fastorika’s software.
+
+The principles outlined herein apply to every interaction, service, and process where Fastorika’s technological infrastructure is used to facilitate a financial transaction or data exchange between clients and regulated financial providers.
+
+
+
+
+
+2.2 Objectives
+
+The main objectives of this Policy are to:
+
+
+
+Prevent Fastorika’s infrastructure from being used for money laundering, terrorist financing, or proliferation financing;
+
+Ensure compliance with the FATF standards, EU AML Directives, and Belize AML legislation;
+
+Implement effective procedures for Customer Due Diligence (CDD) and Enhanced Due Diligence (EDD);
+
+Maintain clear and auditable records of transactions and client verifications;
+
+Cooperate with financial institutions, regulators, and law enforcement authorities by law;
+
+Protect the reputation and integrity of Fastorika and its partners.
+
+
+
+2.3 Commitment to Compliance 
+
+Fastorika Limited is committed to full compliance with anti-money laundering and counter-terrorist financing requirements applicable to its business model and jurisdiction. We continuously review and improve our internal systems, training, and monitoring mechanisms to ensure that the Company’s operations remain transparent and aligned with international AML/CFT obligations.3. Risk-Based Approach
+
+3.1. General Principle 
+
+Fastorika Limited adopts a risk-based approach (RBA) to identify, assess, and mitigate the risks of money laundering, terrorist financing, and proliferation financing associated with its services.
+
+This approach allows the Company to allocate compliance recourses efficiently, focusing on clients, transactions, and geographies that pose higher risk levels, while maintaining proportionate controls for low-risk categories.
+
+3.2. Risk Factors
+
+The Company evaluates the following categories of risk:
+
+Customer Risk – based on the nature of the client, their business model, and reputation.
+
+Geographical Risk – based on the jurisdiction of the client or their counterparties, including high-risk or sanctioned countries.
+
+Product/Service Risk – based on the type of service provided (e.g., wallet services, API integrations, compliance modules).
+
+Transactional Risk – based on the size, frequency, and the pattern of transactions.
+
+ Delivery Chanel Risk – based on whether the client relationship is established online, through intermediaries, or directly.
+
+
+
+3.3. Risk ClassificationEach client and transaction are assigned a risk level:
+
+
+
+Low risk: verified clients with transparent backgrounds and activity within regulated regions.
+
+Medium Risk: clients with limited documentation or operations in multiple jurisdictions.
+
+High Risk: PEPs (Politically Exposed Persons), clients from sanctioned countries, or transactions involving anonymous or privacy-enhancing technologies.
+
+Enhanced monitoring and due diligence measures are applied to all high-risk clients.3.4 Ongoing Risk Review 
+
+Fastorika Limited regularly reviews its risk assessment methodology and updates risk profiles of clients based on new information, behavioral changes, or regulatory developments.Periodic reviews ensure that AML/CFT controls remain relevant and effective.4. Customer Due Diligence (CDD) and Enhanced Due Diligence
+
+4.1. General Principles
+
+ Fastorika Limited performs Customer Due Diligence (CDD) on all clients before establishing a business relationship or processing any transaction through its platform. The purpose of CDD is to ensure that the Company knows the true identity of its customers, the nature of their businesses, and the legitimacy of their financial activities.
+
+No anonymous accounts or unverified clients are permitted to use Fastorika’s services.4.2. Minimum CDD Requirements
+
+Fastorika Limited provides services exclusively to individual clients (natural persons).The Company does not onboard or serve corporate entities.Customer identification is performed directly by Fastorika or through regulated financial partners, who are required to comply with equivalent or higher AML/KYC standards.When a client has successfully completed verification with one of Fastorika’s licensed payment or exchange providers, the Company may rely on such verification without duplicating the KYC process.In such cases, Fastorika ensures that the partner’s verification process meets international AML standards and that all relevant customer data can be accessed upon request by the competent authorities.5. Sanctions and prohibited activities 
+
+Fastorika strictly prohibits:
+
+Any business with individuals or entities under OFAC, UN, EU, or UK sanctions;
+
+Transactions linked to terrorism, weapons, narcotics, gambling, or fraud.
+
+Use of Fastorika for privacy coins or anonymous crypto mixing.
+
+6. Monitoring and reporting The company continuously monitor users’ activity and transactions. Suspicious patterns trigger review by the MLRO, who decides whether to file a Suspicious Activity Report (SAR).
+
+
+
+7. Record keeping and Data protection
+
+All client information and transaction records are retained for at least 5 years after end of the relationship. Fastorika stores data securely and ensures compliance with GPDR and applicable Belizean data protection laws. Access is restricted to authorized personnel only.8. MLRO and Staff training 
+
+Fastorika appoints a Money Laundering Reporting Officer (MLRO) responsible for compliance and reporting. All staff receive annual AML/CFT training on identifying and reporting suspicious activities.9. Review and amendments 
+
+This policy is reviewed annually or whenever legal or operational changes occur. Any amendments must be approved by the Director and MLRO of Fastorika Limited.
+
+
+

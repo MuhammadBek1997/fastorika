@@ -8,8 +8,12 @@ const Home = () => {
 
   let currency = [
     {
-      flag: '/images/us.png',
+      flag: 'https://img.icons8.com/color/96/usa-circular.png',
       currencyName: 'USD'
+    },
+    {
+      flag:'https://img.icons8.com/color/96/uzbekistan-circular.png',
+      currencyName:'UZS'
     }
   ]
 

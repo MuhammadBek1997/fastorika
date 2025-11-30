@@ -33,7 +33,7 @@ const PoliticsAML = () => {
                     {t("privacytitle")}
                 </h2>
                 <p>
-                    <Trans i18nKey="politics" />
+                    <Trans i18nKey="privacy" />
                 </p>
             </div>
         </div>

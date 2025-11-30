@@ -27,6 +27,20 @@ export const apiFetch = async (path, options = {}) => {
   return fetch(`${API_BASE}${path}`, mergedOptions);
 };
 
+
+// Async funksiya ichida
+const fetchUsers = async () => {
+  try {
+    const response = await apiFetch('admin/users?page=0&size=10');
+    const dataAdmins = await response.json();
+    console.log(dataAdmins);
+    return dataAdmins;
+  } catch (error) {
+    console.error('Error:', error);
+  }
+};
+
+
 // Fetch cards by userId
 export const getUserCards = async (userId) => {
   if (!userId) throw new Error('userId is required');

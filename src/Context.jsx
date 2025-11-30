@@ -2,6 +2,8 @@ import { createContext, useState, useEffect, useContext } from 'react';
 import { apiFetch, getUserCards } from './api';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { signInWithPopup } from 'firebase/auth';
+import { auth, googleProvider, appleProvider } from './firebaseConfig';
 
 const AppContext = createContext();
 
@@ -45,6 +47,9 @@ export const AppProvider = ({ children }) => {
       setCardsLoading(false)
     }
   }
+
+
+
 
   // ================= Profile State (moved from Profile.jsx) =================
   const now = new Date()
@@ -159,8 +164,8 @@ export const AppProvider = ({ children }) => {
   // Language State
   const currentLanguage = localStorage.getItem("i18nextLng");
   const languages = [
-    { code: 'ru', name: 'Русский', flag: '/images/russia.png' },
-    { code: 'en', name: 'English', flag: '/images/us.png' }
+    { code: 'ru', name: 'Русский', flag: 'https://img.icons8.com/color/96/russian-federation-circular.png' },
+    { code: 'en', name: 'English', flag: 'https://img.icons8.com/color/96/usa-circular.png' }
   ];
   const currentLang = languages.find(lang => lang.code === currentLanguage);
 
@@ -311,6 +316,247 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+
+ // Google Login Handler - verification modal bilan
+const handleGoogleLogin = async () => {
+  try {
+    // Firebase bilan Google login
+    const result = await signInWithPopup(auth, googleProvider);
+    const firebaseUser = result.user;
+    
+    const email = firebaseUser.email;
+    const name = firebaseUser.displayName || '';
+    
+    console.log('Firebase User:', { email, name, uid: firebaseUser.uid });
+    
+    // 1. Avval login qilib ko'ramiz (agar user avval ro'yxatdan o'tgan bo'lsa)
+    try {
+      const loginRes = await apiFetch('auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          email: email, 
+          password: firebaseUser.uid
+        })
+      });
+
+      if (loginRes.ok) {
+        const data = await loginRes.json();
+        console.log('Login muvaffaqiyatli:', data);
+        
+        sessionStorage.setItem('token', data.token);
+        localStorage.setItem("logged", "true");
+        
+        let fullUser = null;
+        try {
+          const profileRes = await apiFetch('user/getOne', { method: 'GET' });
+          if (profileRes.ok) {
+            fullUser = await profileRes.json();
+          }
+        } catch (e) {
+          console.error('Profile fetch error:', e);
+        }
+        
+        const nextUser = fullUser || { email, name };
+        setUser(nextUser);
+        setIsAuthenticated(true);
+        
+        try { 
+          await loadUserCards(nextUser?.userId);
+        } catch {}
+
+        try {
+          const { toast } = await import('react-toastify');
+          toast.success(t('toast.login.success'));
+        } catch { }
+
+        navigate('/transactions');
+        return true;
+      }
+    } catch (loginError) {
+      console.log('Login failed, user not registered. Trying register...', loginError);
+    }
+    
+    // 2. Login ishlamasa - yangi user, register qilamiz
+    console.log('Starting registration for new Google user');
+    
+    try {
+      const registerRes = await apiFetch('auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email,
+          name: name,
+          password: firebaseUser.uid,
+          // phone: '' // agar backend talab qilsa
+        })
+      });
+
+      if (!registerRes.ok) {
+        const errorData = await registerRes.json();
+        console.error('Register error:', errorData);
+        try {
+          const { toast } = await import('react-toastify');
+          toast.error(errorData.message || "Ro'yxatdan o'tishda xatolik");
+        } catch { }
+        return false;
+      }
+
+      console.log('Register successful, verification code sent to email');
+      
+      // 3. Register muvaffaqiyatli - verification modal ochish
+      // Register sahifasiga yo'naltirish va verification modal ko'rsatish
+      try {
+        const { toast } = await import('react-toastify');
+        toast.success("Tasdiqlash kodi emailingizga yuborildi");
+      } catch { }
+      
+      navigate('/register', { 
+        state: { 
+          email: email,
+          name: name,
+          photoURL: firebaseUser.photoURL || '',
+          firebaseUid: firebaseUser.uid,
+          fromGoogle: true,
+          needsVerification: true // Verification modal ochish uchun
+        } 
+      });
+      
+      return true;
+
+    } catch (err) {
+      console.error('Register network error:', err);
+      try {
+        const { toast } = await import('react-toastify');
+        toast.error('Tarmoq xatosi');
+      } catch { }
+      return false;
+    }
+
+  } catch (err) {
+    console.error('Google login error:', err);
+    try {
+      const { toast } = await import('react-toastify');
+      toast.error('Google bilan kirishda xatolik');
+    } catch { }
+    return false;
+  }
+};
+
+// Apple Login - xuddi shunday
+const handleAppleLogin = async () => {
+  try {
+    const result = await signInWithPopup(auth, appleProvider);
+    const firebaseUser = result.user;
+    
+    const email = firebaseUser.email;
+    const name = firebaseUser.displayName || 'Apple User';
+    
+    // 1. Login urinish
+    try {
+      const loginRes = await apiFetch('auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          email: email, 
+          password: firebaseUser.uid
+        })
+      });
+
+      if (loginRes.ok) {
+        const data = await loginRes.json();
+        
+        sessionStorage.setItem('token', data.token);
+        localStorage.setItem("logged", "true");
+        
+        let fullUser = null;
+        try {
+          const profileRes = await apiFetch('user/getOne', { method: 'GET' });
+          if (profileRes.ok) {
+            fullUser = await profileRes.json();
+          }
+        } catch (e) {
+          console.error('Profile fetch error:', e);
+        }
+        
+        const nextUser = fullUser || { email, name };
+        setUser(nextUser);
+        setIsAuthenticated(true);
+        
+        try { 
+          await loadUserCards(nextUser?.userId);
+        } catch {}
+
+        try {
+          const { toast } = await import('react-toastify');
+          toast.success(t('toast.login.success'));
+        } catch { }
+
+        navigate('/transactions');
+        return true;
+      }
+    } catch (loginError) {
+      console.log('Login failed, trying register...', loginError);
+    }
+    
+    // 2. Register
+    try {
+      const registerRes = await apiFetch('auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email,
+          name: name,
+          password: firebaseUser.uid,
+        })
+      });
+
+      if (!registerRes.ok) {
+        const errorData = await registerRes.json();
+        try {
+          const { toast } = await import('react-toastify');
+          toast.error(errorData.message || "Ro'yxatdan o'tishda xatolik");
+        } catch { }
+        return false;
+      }
+      
+      try {
+        const { toast } = await import('react-toastify');
+        toast.success("Tasdiqlash kodi emailingizga yuborildi");
+      } catch { }
+      
+      navigate('/register', { 
+        state: { 
+          email: email,
+          name: name,
+          firebaseUid: firebaseUser.uid,
+          fromApple: true,
+          needsVerification: true
+        } 
+      });
+      
+      return true;
+
+    } catch (err) {
+      console.error('Register error:', err);
+      try {
+        const { toast } = await import('react-toastify');
+        toast.error('Tarmoq xatosi');
+      } catch { }
+      return false;
+    }
+
+  } catch (err) {
+    console.error('Apple login error:', err);
+    try {
+      const { toast } = await import('react-toastify');
+      toast.error('Apple bilan kirishda xatolik');
+    } catch { }
+    return false;
+  }
+};
+
+
   // Logout Handler
   const handleLogout = () => {
     sessionStorage.removeItem('token');
@@ -353,6 +599,110 @@ export const AppProvider = ({ children }) => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
+
+
+  let countries = [
+    {
+      flag: 'https://img.icons8.com/color/96/russian-federation-circular.png',
+      name:"Russia"
+    },
+    {
+      flag:'https://img.icons8.com/color/96/uzbekistan-circular.png',
+      name:"Uzbekistan"
+    },
+    {
+      flag: 'https://img.icons8.com/color/96/usa-circular.png',
+      name:"USA"
+    },
+  ]
+
+
+let transactions = [
+    {
+      id: 1,
+      date: "2023-08-15",
+      time: "10:30 AM",
+      amount: 1000,
+      amountInOther: 850,
+      currency: "USD",
+      currencyInOther: "UZS",
+      status: "success",
+      type: "send",
+      description: "Payment for services",
+      senderState:"Uzbekistan",
+      sanderName: "John Doe",
+      senderCardNumber: "4567-8901-2345-6789",
+      receiverState:"Russia",
+      receiverName: "Jane Doe",
+      receiverCardNumber: "1234-5678-9012-3456",
+      receiverPhoneNumber: "+998901234567",
+      transactionFee: 0,
+    },
+    {
+      id: 2,
+      date: "2023-08-16",
+      time: "02:15 PM",
+      amount: 500,
+      amountInOther: 425,
+      currency: "USD",
+      currencyInOther: "UZS",
+      status: "cancelled",
+      type: "receive",
+      description: "Refund for services",
+      senderState:"Russia",
+      sanderName: "Jane Doe",
+      senderCardNumber: "1234-5678-9012-3456",
+      receiverState:"Uzbekistan",
+      receiverName: "John Doe",
+      receiverCardNumber: "4567-8901-2345-6789",
+      receiverPhoneNumber: "+998901234567",
+      transactionFee: 0,
+    },
+    {
+      id: 3,
+      date: "2023-08-17",
+      time: "08:45 AM",
+      amount: 200,
+      amountInOther: 170,
+      currency: "USD",
+      currencyInOther: "UZS",
+      status: "waiting",
+      type: "send",
+      description: "Payment for services",
+      senderState:"USA",
+      sanderName: "John Doe",
+      senderCardNumber: "4567-8901-2345-6789",
+      receiverState:"Russia",
+      receiverName: "Jane Doe",
+      receiverCardNumber: "1234-5678-9012-3456",
+      receiverPhoneNumber: "+998901234567",
+      transactionFee: 0,
+    },
+    {
+      id: 4,
+      date: "2023-08-18",
+      time: "11:30 PM",
+      amount: 300,
+      amountInOther: 260,
+      currency: "USD",
+      currencyInOther: "UZS",
+      status: "support",
+      type: "receive",
+      description: "Payment for services",
+      senderState:"Russia",
+      sanderName: "Jane Doe",
+      senderCardNumber: "1234-5678-9012-3456",
+      receiverState:"Uzbekistan",
+      receiverName: "John Doe",
+      receiverCardNumber: "4567-8901-2345-6789",
+      receiverPhoneNumber: "+998901234567",
+      transactionFee: 0,
+    }
+  ]
+
+
+
+
   return (
     <AppContext.Provider value={{
       // Auth
@@ -361,6 +711,8 @@ export const AppProvider = ({ children }) => {
       isLoading,
       handleLogin,
       handleLogout,
+      handleAppleLogin,
+      handleGoogleLogin,
       
       // Navigation
       navigate,
@@ -414,7 +766,9 @@ export const AppProvider = ({ children }) => {
       loadCountries,
 
       // Data
-      faqData
+      faqData,
+      transactions,
+      countries
     }}>
       {children}
     </AppContext.Provider>

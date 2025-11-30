@@ -1,6 +1,7 @@
 
 import { Link } from 'react-router-dom'
 import { useGlobalContext } from '../Context'
+import { Trans } from 'react-i18next'
 
 const ServiceTerm = () => {
     let {t,theme} = useGlobalContext()
@@ -28,7 +29,12 @@ const ServiceTerm = () => {
                 </div>
             </div>
             <div className='serviceTerm-body'>
-                
+                <h2>
+                    {t('termsTitle')}
+                </h2>
+                <p>
+                    <Trans i18nKey="terms" />
+                </p>
             </div>
         </div>
     )

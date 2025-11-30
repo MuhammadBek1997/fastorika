@@ -426,7 +426,7 @@ nav.scrolled {
 }
 
 .langImg {
-    width: 16px;
+    width: 1.2rem;
 }
 
 .langOption .langFlag {
@@ -729,7 +729,7 @@ nav.scrolled {
 }
 
 .currImg {
-    width: 16px;
+    width: 2rem;
 }
 
 .currOption .currFlag {
@@ -1859,9 +1859,6 @@ nav.scrolled {
         font-size: 12px;
     }
 
-    .langImg {
-        width: 14px;
-    }
 
     /* Hero right section */
     .hero-right {
@@ -2001,6 +1998,9 @@ nav.scrolled {
 
     .forM {
         display: inline;
+    }
+    .forM img{
+        width: 8rem;
     }
 
     .transferanywere-img {
@@ -2714,11 +2714,14 @@ nav.scrolled {
     flex-direction: column;
     justify-content: space-between;
 }
-
+.sidebar-logo .forM{
+    width: 8rem;
+}
 .sidebar-list {
     width: 100%;
     display: flex;
     flex-direction: column;
+    margin-top: 1rem;
 }
 
 .sidebar-link {
@@ -3003,9 +3006,6 @@ nav.scrolled {
     text-align: left;
 }
 
-.currImg {
-    width: 16px;
-}
 
 .currOption .currFlag {
     flex-shrink: 0;
@@ -3127,11 +3127,448 @@ nav.scrolled {
     background-color: #009966;
 }
 
+.transaction-registr-offer{
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 1.5rem;
+    background-color: #009966;
+}
+.transaction-reg-of-top {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.transaction-reg-of-img {
+  width: fit-content;
+  font-size: 0.8rem;
+  padding: 0.1rem 0.3rem;
+  border-radius: 0.5rem;
+  text-transform: uppercase;
+  background-color: var(--bg-light);
+  color: #0BC2FF;
+}
+.transaction-reg-of-bottom{
+    display: flex;
+    align-items: center;
+    padding: 0.2rem 0;
+    color: var(--text-dark);
+    font-weight: 300;
+}
+.transaction-reg-of-left{
+    flex: 1;
+}
+.transaction-reg-of-right{
+    flex: 1;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    gap: 1rem;
+}
+.transaction-reg-of-right button{
+    border: 1px solid var(--text-dark);
+    padding: 0.5rem 1rem;
+    border-radius: 1rem;
+    font-size: 1rem;
+    font-weight: 300;
+}
+.transaction-reg-of-right button:nth-child(2){
+    background-color: var(--text-dark);
+    color: var(--text-light);
+    font-weight: 400;
+}
+
+.transaction-list{
+    background-color: var(--bg-light);
+    border-radius: 2rem;
+    margin: 1rem 0;
+    padding-top: 1px;
+}
+
+#dark .transaction-list{
+    background-color: var(--bg-dark);
+}
+.transaction-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.transaction-table th {
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 500;
+    font-size: 14px;
+    color: #666;
+    border-bottom: 1px solid #e0e0e0;
+}
+.transaction-table tbody tr {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.transaction-table td {
+  padding: 16px;
+  font-size: 14px;
+  color: #333;
+}
+
+.no-transactions {
+  text-align: center;
+  padding: 60px 20px !important;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.empty-state-icon {
+  padding: 1rem;
+  background-color: var(--bg-body-light);
+  border-radius: 50%;
+}
+#dark .empty-state-icon{
+    background-color: var(--bg-body-dark);
+}
+.empty-state p {
+  font-size: 16px;
+  color: #999;
+  margin: 0;
+}
+
+
+
+#dark .transaction-table th {
+  color: #aaa;
+  border-bottom-color: #444;
+}
+
+#dark .transaction-table tbody tr {
+  border-bottom-color: #333;
+}
+
+#dark .transaction-table td {
+  color: #ddd;
+}
+
+#dark .empty-state p {
+  color: #666;
+}
+
+.transaction-list-rowD{
+    cursor: pointer;
+}
+.transaction-list-name{
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+.transaction-list-name img{
+    width: 2.5rem;
+}
+.transaction-list-name h4{
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+.transaction-list-currency,
+.transaction-list-otherCur{
+    font-weight: 600;
+}
+
+.transaction-list-status{
+    width: fit-content;
+}
+
+.transaction-list-status div{
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.7rem;
+    font-size: 0.8rem;
+}
+.transaction-list-status.success div{
+    color: #00D796;
+    border: 1px solid #00D796;
+    background-color: #0099661A;
+}
+.transaction-list-status.cancel div{
+    color: #E9033A;
+    border: 1px solid #E9033A;
+    background-color: #E9033A1A;
+}
+.transaction-list-status.waiting div{
+    color: #0BC2FF;
+    border: 1px solid #0BC2FF;
+    background-color: #0BC2FF1A;
+}
+.transaction-list-status.support div{
+    color: #844DBB;
+    border: 1px solid #844DBB;
+    background-color: #8F52CC26;
+}
+
+.transaction-list-rowM{
+    display: none;
+}
+.transaction-list-rowM .transaction-list-date h5{
+    font-weight: 600;
+}
+.transaction-list-rowM .transaction-list-date{
+    padding-left: 0;
+}
+.transaction-list-rowM .transaction-list-status {
+    display: flex;
+    gap: 0.5rem;
+}
+.transaction-list-rowM .transaction-list-status div {
+    height: fit-content;
+    padding: 0.1rem;
+    border-radius: 0.45rem;
+}
 
 
 
 
 
+
+.transaction-info-nav{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+}
+.transaction-info-nav h3{
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+.transaction-info-body{
+    width: 50%;
+    padding: 1rem;
+    border-radius: 2rem;
+}
+#light .transaction-info-body{
+    background-color: var(--bg-light);
+}
+#dark .transaction-info-body{
+    background-color: var(--bg-dark);
+}
+
+.transaction-info-cash{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1.5rem;
+    border-radius: 1rem;
+}
+#light .transaction-info-cash{
+    background-color: var(--bg-body-light);
+}
+#dark .transaction-info-cash{
+    background-color: var(--bg-body-dark);
+}
+.transaction-info-cash p{
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+.info-cash-icons{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1rem;
+    padding: 0.1rem;
+}
+#light .info-cash-icons{
+    background-color: var(--bg-light);
+}
+#dark .info-cash-icons{
+    background-color: var(--bg-dark);
+}
+.info-cash-icons img{
+    width: 2rem;
+}
+.transaction-info-data{
+    width: 100%;
+}
+.transaction-info-statusbar{
+    width: 95%;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem;
+    border-radius: 1rem;
+    margin: 1rem auto;
+    font-size: 0.8rem;
+}
+.transaction-info-statusbar h1{
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.transaction-info-statusbar.success{
+    color: #00D796;
+    background-color: #0099661A;
+}
+.transaction-info-statusbar.cancel{
+    color: #E9033A;
+    background-color: #E9033A1A;
+}
+.transaction-info-statusbar.waiting{
+    color: #0BC2FF;
+    background-color: #0BC2FF1A;
+}
+.transaction-info-statusbar.support{
+    color: #844DBB;
+    background-color: #8F52CC26;
+}
+.transaction-info-datalist{
+    width: 95%;
+    margin: 0 auto;
+}
+.transaction-info-datalist-item{
+    width: 100%;
+    margin: 0.5rem auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.info-item-left,
+.info-item-right{
+    flex: 1;
+}
+.info-item-left p{
+    font-size: 0.9rem;
+    color: #000000BF;
+}
+.info-item-right{
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.transaction-info-btns{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+.transaction-info-btns button{
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem;
+    background-color: var(--bg-body-light);
+    border-radius: 1rem;
+}
+#dark .transaction-info-btns button{
+    background-color: var(--bg-body-dark);
+}
+.transaction-info-btns .repeatbtn{
+    background-color: #00D796;
+}
+
+
+.transaction-info-support{
+    width: 50%;
+    margin: 1rem 0;
+    padding: 1rem;
+    border-radius: 2rem;
+    display: flex;
+}
+#light .transaction-info-support{
+    background-color: var(--bg-light);
+}
+#dark .transaction-info-support{
+    background-color: var(--bg-dark);
+}
+.transaction-info-support div{
+    flex: 3;
+}
+.transaction-info-support button{
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 1rem;
+    padding: 0 0.5rem;
+}
+
+#light .transaction-info-support button{
+    background-color: var(--bg-body-light);
+}
+#dark .transaction-info-support button{
+    background-color: var(--bg-body-dark);
+}
+
+
+@media (max-width:768px) {
+    .transaction-reg-of-right button{
+        font-size: 0.8rem;
+    }
+    .transaction-table thead{
+        display: none;
+    }
+    .transaction-list-rowD{
+        display: none;
+    }
+    .transaction-list-rowM{
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem;
+    }
+    .transaction-list-name p{
+        font-size: 0.8rem;
+    }
+    .transaction-list-date h5{
+        font-size: 0.85rem;
+    }
+    .transaction-list-date p{
+        font-size: 0.7rem;
+    }
+    .transaction-table td{
+        padding: 0;
+    }
+    .transaction-info-support,
+    .transaction-info-body{
+        width: 100%;
+
+    }
+    .transaction-info-cash{
+        flex-direction: column;
+        position: relative;
+        gap: 0.5rem;
+    }
+    #light .transaction-info-cash{
+        background-color: var(--bg-light);
+    }
+    #dark .transaction-info-cash{
+        background-color: var(--bg-dark);
+    }
+     .info-cash-send,
+     .info-cash-receive{
+        width: 100%;
+        padding: 0.5rem;
+        border-radius: 1.5rem;
+    }
+
+    #light .info-cash-send,
+    #light .info-cash-receive{
+        background-color: var(--bg-body-light);
+        
+    }
+    .info-cash-icons{
+        position: absolute;
+        top: 35%;
+    }
+}
 
 
 
@@ -3917,7 +4354,22 @@ nav.scrolled {
     font-weight: 500;
 }
 
-
+.termService-body{
+    font-size: 0.8rem;
+    font-weight: 400;
+}
+.termService-body h2{
+    font-size: 1.3rem;
+    font-weight: 500;
+}
+.serviceTerm-body{
+    font-size: 0.8rem;
+    font-weight: 400;
+}
+.serviceTerm-body h2{
+    font-size: 1.3rem;
+    font-weight: 500;
+}
 
 .unreg-navbar .settings-navbar-cont {
     justify-content: space-between;
@@ -3942,9 +4394,6 @@ nav.scrolled {
     height: 80vh;
     position: relative;
 }
-
-
-
 .currency-body {
     width: 35%;
     padding: 1rem;
@@ -4125,14 +4574,14 @@ nav.scrolled {
     width: 100%;
     background-color: #00D796;
     color: #000000F2;
-    padding: 1rem;
+    padding: 0.7rem;
     border-radius: 1rem;
     border: none;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 0.8rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    margin-top: 1rem;
+    margin-top: 0.5rem;
 }
 
 .currency-continueBtn:hover {
@@ -4383,6 +4832,69 @@ nav.scrolled {
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+
+
+
+
+
+
+.support-body{
+    width: 100%;
+    border-radius: 2rem;
+    height: 85vh;
+    margin: 1rem 0;
+    padding: 0.5rem;
+}
+#dark .support-body{
+    background-color: var(--bg-dark);
+}
+#light .support-body{
+    background-color: var(--bg-light);
+}
+.support-conversations{
+    width: 100%;
+    height: 75vh;
+}
+.support-input-cont{
+    width: 100%;
+    height: 7vh;
+    border: 1px solid var(--border-color);
+    border-radius: 1.5rem;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+#dark .support-input-cont{
+    border: 1px solid var(--border-dark);
+}
+.support-input-cont input{
+    width: 95%;
+    font-size: 1.5rem;
+}
+.support-input-cont button{
+    padding: 0.5rem;
+    background-color: #00D796;
+    border-radius: 1rem;
+}
+#light .support-input-cont input{
+    background-color: var(--bg-body-light);
+}
+#dark .support-input-cont input{
+    background-color: var(--bg-body-dark);
+}
+#light .support-input-cont{
+    background-color: var(--bg-body-light);
+}
+#dark .support-input-cont{
+    background-color: var(--bg-body-dark);
+}
+
+
+
+
+
 
 /* Responsive */
 @media (max-width: 768px) {
@@ -4661,7 +5173,9 @@ nav.scrolled {
     .currency-head h2 {
         font-size: 1.2rem;
     }
-
+    .currency-head-back{
+        margin: 0;
+    }
     .currency-body {
         width: 90%;
     }
@@ -4809,6 +5323,9 @@ nav.scrolled {
     .addCardModal-cont .date-input-container {
         padding: 0.6rem;
         border-radius: 0.7rem;
+    }
+    .transaction-reg-of-bottom{
+        flex-direction: column;
     }
 }
 

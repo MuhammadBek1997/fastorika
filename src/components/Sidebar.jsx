@@ -52,10 +52,10 @@ const Sidebar = () => {
                 </button>
                 <div className='sidebar-logo'>
                     <div className='forD'>
-                        <img src={`/images/logoside${theme}.png`} alt="Logo" />
+                        <img src={`/images/logoside${theme}.svg`} alt="Logo" />
                     </div>
                     <div className='forM'>
-                        <img src={`/images/logo${theme}.png`} alt="Logo" />
+                        <img src={`/images/logo${theme}.svg`} alt="Logo" />
 
                     </div>
                 </div>

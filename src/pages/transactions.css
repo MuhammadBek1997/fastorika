@@ -1,4 +1,4 @@
-.transactions { padding: 1rem; }
+/* .transactions { padding: 1rem; }
 
 .transactions-navbar {
   width: 100%;
@@ -130,7 +130,6 @@
   text-align: left;
 }
 
-.currImg { width: 16px; }
 .currOption .currFlag { flex-shrink: 0; }
 #light .currOption { color: var(--text-light); }
 #light .currOption:hover { background-color: var(--border-light); }
@@ -151,4 +150,4 @@
   .currTransToggle { width: 100%; padding: 0.5rem; }
   .transactions-transfer-cont input { font-size: 15px; }
   .transactions-transfer-cont p { font-size: 12px; }
-}
+} */

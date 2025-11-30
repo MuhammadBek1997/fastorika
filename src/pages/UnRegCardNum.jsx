@@ -2,7 +2,8 @@ import { useState, useEffect } from "react"
 import './currency.css'
 import { useNavigate } from "react-router-dom"
 import { useGlobalContext } from "../Context"
-import { ChevronLeft, CreditCard, User, AlertCircle, Phone, ArrowBigLeft, ArrowLeft } from "lucide-react"
+import { ChevronLeft, CreditCard, User, AlertCircle, Phone, ArrowBigLeft, ArrowLeft, AlertCircleIcon, Share2 } from "lucide-react"
+import UnRegCopyModal from "./UnRegCopyModal"
 
 const UnRegCardNum = () => {
     let { t, theme, user, profilePhone } = useGlobalContext()
@@ -15,6 +16,7 @@ const UnRegCardNum = () => {
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
     const [userId, setUserId] = useState("")
+    const [userverify,setUserverify] = useState(false)
 
     const extractDialCode = (phone) => {
         const match = String(phone || '').match(/^\+(\d{1,3})/)
@@ -120,7 +122,7 @@ const UnRegCardNum = () => {
                                         type="text"
                                         value={userId}
                                         onChange={(e) => setUserId(e.target.value)}
-                                        placeholder={t('placeholders.userId') || 'FAST-000000'}
+                                        placeholder={t('placeholders.userId')}
                                     />
                                 </div>
                             </div>
@@ -172,15 +174,17 @@ const UnRegCardNum = () => {
                             </div>
                         )}
                         <div className="info-card">
-                            <div className="info-icon"><AlertCircle size={16} /></div>
-                            <p className="info-text">{t("nameWarningMessage")}</p>
+                            <p className="info-text">
+                                <div className="info-icon">!</div>
+                                {mode === 'card' ? t("nameWarning") : t("nameWarningUserID")}
+                            </p>
                         </div>
                     </div>
                     <div className="terms-block">
                         <div className="terms-accept">
                             <input type="checkbox" id="terms" className="terms-checkbox" />
                             <label htmlFor="terms" className="terms-label">
-                                {t("confirmTerms")} <span className="link-accent">{t("terms")}</span> {t("and")} <span className="link-accent">{t("policy")}</span>{t("policy2")}
+                                {t("confirmTerms")} <span className="link-accent">{t("termsT")}</span> {t("and")} <span className="link-accent">{t("policy")}</span>{t("policy2")}
                             </label>
                         </div>
                     </div>
@@ -197,8 +201,28 @@ const UnRegCardNum = () => {
                     >
                         {t('continue')}
                     </button>
-                </div>
+                </div>    
             </div>
+            {mode === 'user' && (
+                <div className="currency-share">
+                    <div className="currency-share-top">
+                        Fastorika
+                        <div className="currency-share-img">
+                            id
+                        </div>
+                    </div>
+                    <p>
+                        Поделитесь ссылкой на регистрацию Fastorika ID и отправляйте переводы мгновенно!
+                    </p>
+                    <button onClick={()=>setUserverify(true)}>
+                        <Share2 size={"1rem"}/>
+                        Поделиться
+                    </button>
+                </div>
+            )}
+            {
+                userverify && <UnRegCopyModal setUserverify={setUserverify}/>
+            }
         </div>
     )
 }

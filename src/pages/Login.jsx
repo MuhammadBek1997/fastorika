@@ -1,11 +1,10 @@
 import { useState } from 'react'
-import './login.css'
 import { useGlobalContext } from '../Context'
 import { Link } from 'react-router-dom'
 
 const Login = () => {
 
-    let { t, theme, toggleTheme, handleChange, currentLang, currentLanguage, languages, cancelLogin, handleLogin } = useGlobalContext()
+    let { t, theme, toggleTheme, handleChange, currentLang, currentLanguage, languages, cancelLogin, handleLogin, handleGoogleLogin, handleAppleLogin } = useGlobalContext()
 
     const [themeOpen, setThemeOpen] = useState(false)
     const [langOpen, setLangOpen] = useState(false)
@@ -26,7 +25,7 @@ const Login = () => {
         }}>
             <nav className='fixed flex justify-between p-5'>
                 <button onClick={() => cancelLogin()} className='logo'>
-                    <img src={`/images/logo${theme}.png`} alt="" />
+                    <img src={`/images/logo${theme}.svg`} alt="" />
                 </button>
                 <div className="dropdowns-cont" style={{ top: "1rem" }}>
                     {/* Theme Dropdown */}
@@ -159,11 +158,13 @@ const Login = () => {
 
                 </div>
                 <div className='login-clientProviders'>
-                    <button>
+                    {/* Google orqali login */}
+                    <button onClick={handleGoogleLogin}>
                         <img src="/images/Google.png" alt="" />
                         {t("login-clientwithG")}
                     </button>
-                    <button>
+                    {/* Apple orqali login */}
+                    <button onClick={()=>handleAppleLogin()}>
                         <img src={`/images/apple${theme}.png`} alt="" />
                         {t("login-clientwithA")}
                     </button>
