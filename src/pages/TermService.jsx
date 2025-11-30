@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { useGlobalContext } from '../Context'
 import { Trans } from 'react-i18next'
+import { ArrowLeft } from 'lucide-react'
 
 const TermService = () => {
     let { t, theme } = useGlobalContext()
@@ -13,7 +14,7 @@ const TermService = () => {
                     <div className='settings-back-btn'>
                         <Link to={'/docs'}>
                             <div className='date-input-container'>
-                                <img src={`/images/left${theme}.png`} alt="" />
+                                <ArrowLeft/>
                             </div>
                         </Link>
                     </div>

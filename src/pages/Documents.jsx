@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useGlobalContext } from '../Context'
-import { ChevronRight } from 'lucide-react'
+import { ArrowLeft, ChevronRight } from 'lucide-react'
 
 const Documents = () => {
     let { t, theme } = useGlobalContext()
@@ -13,7 +13,7 @@ const Documents = () => {
                     <div className='settings-back-btn'>
                         <Link to={'/settings'}>
                             <div className='date-input-container'>
-                                <img src={`/images/left${theme}.png`} alt="" />
+                                <ArrowLeft/>
                             </div>
                         </Link>
                     </div>
