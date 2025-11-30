@@ -98,6 +98,7 @@
   "login-clientwithG": "Войти через Google",
   "login-clientwithA": "Войти через Apple",
   "or": "или",
+  "at": " в ",
   "reg-client": "Регистрация",
   "reg-clientToptext": "У вас уже есть учетная запись?",
   "reg-clientForm2": "Придумайте пароль",
@@ -107,6 +108,57 @@
   "reg-clientRule2": "Минимум одна заглавная буква",
   "reg-clientRule3": "Пароли совпадают",
   "transBtn": "Отправить",
+  "transactions": {
+    "regOffer": {
+      "desc": "Подтвердите аккаунт через Fastorika ID, чтобы совершать переводы",
+      "close": "Закрыть",
+      "verify": "Подтвердить"
+    },
+    "table": {
+      "recipient": "Получатель",
+      "created": "Создано",
+      "amountToSend": "Сумма к отправке",
+      "amountToReceive": "Сумма к получению",
+      "status": "Статус"
+    },
+    "status": {
+      "waiting": "В обработке",
+      "support": "Поддержка",
+      "success": "Доставлено",
+      "cancel": "Отклонено",
+      "cancelled": "Отклонено"
+    },
+    "toCard": "на карту ****",
+    "noTransactions": "Нет транзакций"
+  },
+  "global": {
+    "toCard": "на карту ****"
+  },
+  "transactionInfo": {
+    "title": "Номер транзакции",
+    "status": {
+      "waiting": "В обработке",
+      "support": "Поддержка",
+      "success": "Доставлено",
+      "cancel": "Отклонено",
+      "cancelled": "Отклонено"
+    },
+    "operationNumber": "Номер операции",
+    "operationDate": "Дата операции",
+    "commission": "Комиссия",
+    "withoutFee": "Без комиссии",
+    "delivery": "Доставка",
+    "recipient": "Получатель",
+    "sender": "Отправитель",
+    "phoneNumber": "Номер телефона",
+    "payment": "Оплата",
+    "fromCard": "С карты",
+    "printCheck": "Распечатать чек",
+    "repeat": "Повторить",
+    "needHelp": "Нужна помощь?",
+    "helpDesc": "Наши специалисты помогут вам",
+    "write": "Написать"
+  },
   "nav": {
     "transactions": "Мои транзакции",
     "cards": "Мои карты",

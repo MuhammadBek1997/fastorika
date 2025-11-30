@@ -8,6 +8,22 @@ const TransactionInfo = () => {
 
     let currentTrans = transactions.find(item => item.id == id)
 
+    // Normalize status for translation lookup
+    const statusMap = {
+        pending: 'waiting',
+        waiting: 'waiting',
+        inreview: 'support',
+        review: 'support',
+        support: 'support',
+        delivered: 'success',
+        completed: 'success',
+        success: 'success',
+        canceled: 'cancel',
+        cancelled: 'cancel',
+        cancel: 'cancel'
+    }
+    const normStatus = statusMap[(currentTrans.status || '').toLowerCase()] || (currentTrans.status || 'waiting').toLowerCase()
+
     let senderFlagicon = countries.find(item=>item.name == currentTrans.senderState)
     let receiverFlagicon = countries.find(item=>item.name == currentTrans.receiverState)
 
@@ -41,7 +57,7 @@ const TransactionInfo = () => {
                     <ArrowLeft />
                 </button>
                 <h3>
-                    Transaction number {currentTrans.id}
+                    {t('transactionInfo.title')} {currentTrans.id}
                 </h3>
             </div>
             <div className='transaction-info-body'>
@@ -94,28 +110,14 @@ const TransactionInfo = () => {
                             <MinusCircle size={25}/>
                         }
                         <h1>
-                            {
-                                currentTrans.status === "waiting"
-                                ?
-                                "В обработке"
-                                :
-                                currentTrans.status === "support"
-                                ?
-                                "Поддержка"
-                                :
-                                currentTrans.status === "success"
-                                ?
-                                "Доставлено"
-                                :
-                                "Отклонено"
-                            }
+                            {t(`transactionInfo.status.${normStatus}`)}
                         </h1>
                     </div>
                     <div className='transaction-info-datalist'>
                         <div className='transaction-info-datalist-item'>
                             <div className='info-item-left'>
                                 <p>
-                                    Operation number
+                                    {t('transactionInfo.operationNumber')}
                                 </p>
                             </div>
                             <div className='info-item-right'>
@@ -127,7 +129,7 @@ const TransactionInfo = () => {
                         <div className='transaction-info-datalist-item'>
                             <div className='info-item-left'>
                                 <p>
-                                    Operation date
+                                    {t('transactionInfo.operationDate')}
                                 </p>
                             </div>
                             <div className='info-item-right'>
@@ -139,7 +141,7 @@ const TransactionInfo = () => {
                         <div className='transaction-info-datalist-item'>
                             <div className='info-item-left'>
                                 <p>
-                                    Comission
+                                    {t('transactionInfo.commission')}
                                 </p>
                             </div>
                             <div className='info-item-right'>
@@ -149,7 +151,7 @@ const TransactionInfo = () => {
                                     ?
                                     currentTrans.transactionFee 
                                     :
-                                    "Without fee"
+                                    t('transactionInfo.withoutFee')
                                     }
                                 </p>
                             </div>
@@ -158,7 +160,7 @@ const TransactionInfo = () => {
                         <div className='transaction-info-datalist-item'>
                             <div className='info-item-left'>
                                 <p>
-                                    Delivery
+                                    {t('transactionInfo.delivery')}
                                 </p>
                             </div>
                             <div className='info-item-right'>
@@ -170,7 +172,7 @@ const TransactionInfo = () => {
                         <div className='transaction-info-datalist-item'>
                             <div className='info-item-left'>
                                 <p>
-                                    Recipient
+                                    {t('transactionInfo.recipient')}
                                 </p>
                             </div>
                             <div className='info-item-right'>
@@ -182,7 +184,7 @@ const TransactionInfo = () => {
                         <div className='transaction-info-datalist-item'>
                             <div className='info-item-left'>
                                 <p>
-                                    Sender
+                                    {t('transactionInfo.sender')}
                                 </p>
                             </div>
                             <div className='info-item-right'>
@@ -194,7 +196,7 @@ const TransactionInfo = () => {
                         <div className='transaction-info-datalist-item'>
                             <div className='info-item-left'>
                                 <p>
-                                    Phone Number
+                                    {t('transactionInfo.phoneNumber')}
                                 </p>
                             </div>
                             <div className='info-item-right'>
@@ -207,12 +209,12 @@ const TransactionInfo = () => {
                         <div className='transaction-info-datalist-item'>
                             <div className='info-item-left'>
                                 <p>
-                                    Payment
+                                    {t('transactionInfo.payment')}
                                 </p>
                             </div>
                             <div className='info-item-right'>
                                 <p>
-                                    From card ··{currentTrans.senderCardNumber.slice(-4)}
+                                    {t('transactionInfo.fromCard')} ··{currentTrans.senderCardNumber.slice(-4)}
                                 </p>
                             </div>
                         </div>
@@ -222,7 +224,7 @@ const TransactionInfo = () => {
                             currentTrans.status == 'success' && (
                                 <button>
                                     <Printer />
-                                    Print chek
+                                    {t('transactionInfo.printCheck')}
                                 </button>
 
                             )
@@ -231,7 +233,7 @@ const TransactionInfo = () => {
                             currentTrans.status == 'success' || currentTrans.status == 'cancelled' ? (
                                 <button className='repeatbtn'>
                                     <RotateCw />
-                                    Repeat
+                                    {t('transactionInfo.repeat')}
                                 </button>
                             )
                             :
@@ -243,15 +245,15 @@ const TransactionInfo = () => {
             <div className='transaction-info-support'>
                 <div>
                     <h2>
-                        Need Help?
+                        {t('transactionInfo.needHelp')}
                     </h2>
                     <p>
-                        Our specialists will assist you
+                        {t('transactionInfo.helpDesc')}
                     </p>
                 </div>
                 <button>
                     <MessagesSquare/>
-                    Write
+                    {t('transactionInfo.write')}
                 </button>
             </div>
         </section>

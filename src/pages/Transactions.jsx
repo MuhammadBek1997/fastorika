@@ -5,6 +5,14 @@ import { Check, Clock, List, MessagesSquare, MinusCircle } from 'lucide-react'
 
 const Transactions = () => {
   let { t, theme, navigate, transactions } = useGlobalContext()
+  // Safe fallbacks for translations that were reported missing in list rows
+  const translateStatus = (statusKey) => {
+    const k = `transactions.status.${statusKey}`
+    const v = t(k)
+    return v === k ? t(`transactionInfo.status.${statusKey}`) : v
+  }
+  const toCardPrimary = t('transactions.toCard')
+  const toCardResolved = toCardPrimary === 'transactions.toCard' ? t('global.toCard') : toCardPrimary
   let currency = [
     {
       flag: 'https://img.icons8.com/color/96/usa-circular.png',
@@ -162,9 +170,28 @@ const Transactions = () => {
               </tr>
             </thead>
             <tbody>
-              {transactions.length > 0 &&
-                transactions.map((transaction, index) => (
-                  <>
+  {transactions.length > 0 &&
+    transactions.map((transaction, index) => (
+      <>
+        {(() => {
+          // Normalize status for translation lookup
+          const s = (transaction.status || '').toLowerCase();
+          const map = {
+            pending: 'waiting',
+            waiting: 'waiting',
+            inreview: 'support',
+            review: 'support',
+            support: 'support',
+            delivered: 'success',
+            completed: 'success',
+            success: 'success',
+            canceled: 'cancel',
+            cancelled: 'cancel',
+            cancel: 'cancel'
+          };
+          transaction.__normStatus = map[s] || s || 'waiting';
+          return null;
+        })()}
                     <tr key={index} className='transaction-list-rowD' onClick={() => navigate(`transaction/${transaction.id}`)}>
                       <td className='transaction-list-name'>
                         <div>
@@ -175,7 +202,7 @@ const Transactions = () => {
                             {transaction.type === "send" ? transaction.receiverName : transaction.sanderName}
                           </h4>
                           <p>
-                            to card **** {transaction.receiverCardNumber.slice(-4)}
+                            {toCardResolved} {transaction.receiverCardNumber.slice(-4)}
                           </p>
                         </div>
 
@@ -224,7 +251,7 @@ const Transactions = () => {
                                   <MinusCircle size={15} />
                           }
                           <p>
-                            {transaction.status}
+                            {translateStatus(transaction.__normStatus)}
                           </p>
                         </div>
                       </td>
@@ -239,7 +266,7 @@ const Transactions = () => {
                             {transaction.type === "send" ? transaction.receiverName : transaction.sanderName}
                           </h4>
                           <p>
-                            to the card **** {transaction.receiverCardNumber.slice(-4)}
+                            {toCardResolved} {transaction.receiverCardNumber.slice(-4)}
                           </p>
                         </div>
 
@@ -299,7 +326,7 @@ const Transactions = () => {
                         <div className='empty-state-icon'>
                           <List />
                         </div>
-                        <p>Нет транзакций</p>
+                        <p>{t('transactions.noTransactions')}</p>
                       </div>
                     </td>
                   </tr>
