@@ -3462,9 +3462,12 @@ nav.scrolled {
 #dark .transaction-info-btns button{
     background-color: var(--bg-body-dark);
 }
-.transaction-info-btns .repeatbtn{
+
+#light .transaction-info-btns .repeatbtn,
+#dark .transaction-info-btns .repeatbtn{
     background-color: #00D796;
 }
+
 
 
 .transaction-info-support{
