@@ -269,22 +269,40 @@ const Registration = () => {
                 ) : (
                     <button className='reg-clientBtn' onClick={async () => {
                         try {
-                            const res = await apiFetch('auth/registr', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                    name: "",
-                                    email: mail,
-                                    phone: "+"+forNum,
-                                    password: psw,
-                                    country_id: 1,
-                                    date_of_birth: "2000-01-01"
-                                })
-                            })
-                            if (!res.ok) throw new Error('Registration failed')
-                            setShowVerifyModal(true)
+                            // Validate password
+                            if (!checkPsw("length") || !checkPsw("case") || !checkPsw("match")) {
+                                toast.error('Parol talablariga javob bermaydi')
+                                return
+                            }
+
+                            if (!mail) {
+                                toast.error('Email kiriting')
+                                return
+                            }
+
+                            // Mock registration - store in localStorage
+                            const mockUserData = {
+                                id: Date.now(),
+                                userId: Date.now(),
+                                email: mail,
+                                name: mail.split('@')[0] || 'User',
+                                phone: "+"+forNum,
+                                role: 'USER',
+                                status: 'ACTIVE'
+                            }
+
+                            const mockToken = `mock_token_${Date.now()}`
+                            localStorage.setItem('token', mockToken)
+                            localStorage.setItem('logged', 'true')
+                            localStorage.setItem('user', JSON.stringify(mockUserData))
+
+                            toast.success('Ro\'yxatdan o\'tdingiz (LocalStorage mode)')
+
+                            // Redirect to login page
+                            navigate('/login')
                         } catch (err) {
-                            toast.error(t('toast.registration.error'))
+                            console.error('Registration error:', err)
+                            toast.error('Ro\'yxatdan o\'tishda xatolik')
                         }
                     }}>
                         {t("reg-clientStep1")}
@@ -298,13 +316,13 @@ const Registration = () => {
                     </p>
                 </div>
                 <div className='login-clientProviders'>
-                    {/* Google orqali registratsiya */}
-                    <button onClick={handleGoogleLogin}>
+                    {/* Google orqali registratsiya - DISABLED */}
+                    <button onClick={handleGoogleLogin} style={{ opacity: 0.5, cursor: 'not-allowed' }}>
                         <img src="/images/Google.png" alt="" />
                         {t("login-clientwithG")}
                     </button>
-                    {/* Apple orqali registratsiya */}
-                    <button onClick={handleAppleLogin}>
+                    {/* Apple orqali registratsiya - DISABLED */}
+                    <button onClick={handleAppleLogin} style={{ opacity: 0.5, cursor: 'not-allowed' }}>
                         <img src={`/images/apple${theme}.png`} alt="" />
                         {t("login-clientwithA")}
                     </button>

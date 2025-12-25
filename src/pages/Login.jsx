@@ -158,13 +158,13 @@ const Login = () => {
 
                 </div>
                 <div className='login-clientProviders'>
-                    {/* Google orqali login */}
-                    <button onClick={handleGoogleLogin}>
+                    {/* Google orqali login - DISABLED */}
+                    <button onClick={handleGoogleLogin} style={{ opacity: 0.5, cursor: 'not-allowed' }}>
                         <img src="/images/Google.png" alt="" />
                         {t("login-clientwithG")}
                     </button>
-                    {/* Apple orqali login */}
-                    <button onClick={()=>handleAppleLogin()}>
+                    {/* Apple orqali login - DISABLED */}
+                    <button onClick={()=>handleAppleLogin()} style={{ opacity: 0.5, cursor: 'not-allowed' }}>
                         <img src={`/images/apple${theme}.png`} alt="" />
                         {t("login-clientwithA")}
                     </button>

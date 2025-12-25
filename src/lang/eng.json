@@ -247,7 +247,8 @@
     }
   },
   "supportPage": {
-    "title": "Support"
+    "title": "Support",
+    "inputPlaceholder": "Type a message..."
   },
   "profilePage": {
     "title": "Profile",
