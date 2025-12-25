@@ -263,45 +263,68 @@ export const AppProvider = ({ children }) => {
   // Login Handler
   const handleLogin = async (email, password) => {
     try {
-      const res = await apiFetch('auth/login', {
+      // Determine endpoint based on email domain or specific patterns
+      const isAdminLogin = email === 'adminfastorika' || email.includes('@admin');
+      const endpoint = isAdminLogin ? 'auth/admin/login' : 'auth/login';
+
+      const res = await apiFetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
       });
 
-      const data = await res.json();
+      const responseData = await res.json();
 
       if (!res.ok) {
         try {
           const { toast } = await import('react-toastify');
-          toast.error(data.message || t('toast.login.error'));
+          toast.error(responseData.message || t('toast.login.error'));
         } catch { }
         return false;
       }
 
-      // Set auth state
-      sessionStorage.setItem('token', data.token);
-      localStorage.setItem("logged", "true");
-      
-      // Fetch full profile to get stable userId immediately
-      let fullUser = null;
-      try {
-        const profileRes = await apiFetch('user/getOne', { method: 'GET' });
-        if (profileRes.ok) {
-          fullUser = await profileRes.json();
-        }
-      } catch (e) {
-        // Ignore and fallback to login payload
+      // Handle new backend response structure
+      const { data, success, message } = responseData;
+
+      if (!success || !data) {
+        try {
+          const { toast } = await import('react-toastify');
+          toast.error(message || t('toast.login.error'));
+        } catch { }
+        return false;
       }
-      const nextUser = fullUser || (data.user || { email });
-      setUser(nextUser);
+
+      // Extract tokens and user data
+      const { accessToken, refreshToken, user: userData } = data;
+
+      // Store tokens
+      sessionStorage.setItem('token', accessToken);
+      sessionStorage.setItem('refreshToken', refreshToken);
+      localStorage.setItem("logged", "true");
+
+      // Set user data with role information
+      const userWithRole = {
+        ...userData,
+        userId: userData.id,
+        role: userData.role, // ADMIN or SUPERADMIN
+        status: userData.status
+      };
+
+      setUser(userWithRole);
       setIsAuthenticated(true);
-      // Preload cards on successful login using resolved userId
-      try { await loadUserCards(nextUser?.userId) } catch {}
+
+      // Load cards only for regular users (not admin/superadmin)
+      if (userData.role !== 'ADMIN' && userData.role !== 'SUPERADMIN') {
+        try {
+          await loadUserCards(userData.id);
+        } catch (err) {
+          console.warn('Failed to load cards:', err);
+        }
+      }
 
       try {
         const { toast } = await import('react-toastify');
-        toast.success(t('toast.login.success'));
+        toast.success(message || t('toast.login.success'));
       } catch { }
 
       navigate('/transactions');

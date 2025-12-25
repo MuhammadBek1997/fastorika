@@ -8,9 +8,9 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://fastorikabackend-production.up.railway.app',
+        target: 'http://backend-fastorika.up.railway.app',
         changeOrigin: true,
-        secure: true,
+        secure: false,
         configure: (proxy) => {
           proxy.on('proxyRes', (proxyRes) => {
             // Prevent browser Basic Auth prompt caused by backend 'WWW-Authenticate'
