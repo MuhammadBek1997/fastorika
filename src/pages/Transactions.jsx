@@ -213,7 +213,7 @@ const Transactions = () => {
                 <div className='transaction-ad-logo'>
                   Fastorika
                   <div className="transaction-ad-logo-id">
-                    id
+                    ID
                   </div>
                 </div>
                 <p>
