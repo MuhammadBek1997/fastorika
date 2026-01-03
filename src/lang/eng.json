@@ -338,5 +338,12 @@
     "lastName": "Last name",
     "userId": "User ID"
   },
-"at":"at "
+  "fastorikaIdShare": {
+    "description": "Share the Fastorika ID registration link and send transfers instantly!",
+    "shareButton": "Share"
+  },
+"at":"at ",
+"yearsOnMarket":"Years on market",
+"successfulTransfers":"Successful transfers",
+"countriesWeWork":"Countries we work"
 }

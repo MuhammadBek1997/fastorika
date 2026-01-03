@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './transactions.css'
 import { useGlobalContext } from '../Context'
-import { ArrowLeftRight, Check, Clock, List, MessagesSquare, MinusCircle } from 'lucide-react'
+import { ArrowLeftRight, Check, Clock, List, MessagesSquare, MinusCircle, X } from 'lucide-react'
 
 const Transactions = () => {
   let { t, theme, navigate, transactions } = useGlobalContext()
@@ -27,13 +27,49 @@ const Transactions = () => {
   const [openIndex, setOpenIndex] = useState(null);
   const [regoffer, setRegoffer] = useState(localStorage.getItem("regoffer") || "show")
 
+  // Fastorika ID ad banner states
+  const [showAdBanner, setShowAdBanner] = useState(false)
+  const [canCloseAd, setCanCloseAd] = useState(false)
+  const [countdown, setCountdown] = useState(5)
 
+  // Check if we should show ad banner (1 hour interval)
+  useEffect(() => {
+    if (regoffer === "hide") {
+      const lastAdShown = localStorage.getItem("lastAdShown")
+      const now = Date.now()
 
+      if (!lastAdShown || now - parseInt(lastAdShown) >= 3600000) { // 1 hour = 3600000ms
+        setShowAdBanner(true)
+        setCountdown(5)
+        localStorage.setItem("lastAdShown", now.toString())
 
+        // Countdown timer
+        const interval = setInterval(() => {
+          setCountdown(prev => {
+            if (prev <= 1) {
+              clearInterval(interval)
+              setCanCloseAd(true)
+              return 0
+            }
+            return prev - 1
+          })
+        }, 1000)
+
+        return () => clearInterval(interval)
+      }
+    }
+  }, [regoffer])
 
   const handleRegoffer = () => {
     localStorage.setItem("regoffer", "hide");
     setRegoffer("hide")
+  }
+
+  const handleCloseAdBanner = () => {
+    if (canCloseAd) {
+      setShowAdBanner(false)
+      setCanCloseAd(false)
+    }
   }
 
   return (
@@ -153,6 +189,40 @@ const Transactions = () => {
                 </button>
                 <button >
                   {t('transactions.regOffer.verify')}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {regoffer == "hide" && showAdBanner && (
+          <div className='transaction-ad-banner'>
+            <button
+              className={`ad-banner-close ${!canCloseAd ? 'disabled' : ''}`}
+              onClick={handleCloseAdBanner}
+              disabled={!canCloseAd}
+            >
+              {!canCloseAd ? (
+                <span className="countdown-timer">{countdown}</span>
+              ) : (
+                <X size={20} />
+              )}
+            </button>
+            <div className='transaction-ad-content'>
+              <div className='transaction-ad-left'>
+                <div className='transaction-ad-logo'>
+                  Fastorika
+                  <div className="transaction-ad-logo-id">
+                    id
+                  </div>
+                </div>
+                <p>
+                  {t('fastorikaIdShare.description')}
+                </p>
+              </div>
+              <div className='transaction-ad-right'>
+                <button className='ad-share-btn'>
+                  {t('fastorikaIdShare.shareButton')}
                 </button>
               </div>
             </div>

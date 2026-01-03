@@ -151,3 +151,136 @@
   .transactions-transfer-cont input { font-size: 15px; }
   .transactions-transfer-cont p { font-size: 12px; }
 } */
+
+/* Fastorika ID Ad Banner */
+.transaction-ad-banner {
+  position: relative;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, #00D796 0%, #00B1EC 100%);
+}
+
+.ad-banner-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.ad-banner-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.ad-banner-close.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.countdown-timer {
+  font-size: 1rem;
+  font-weight: 700;
+  color: white;
+}
+
+.transaction-ad-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.transaction-ad-left {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.transaction-ad-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+}
+
+.transaction-ad-logo-id {
+  background: white;
+  color: #00D796;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.transaction-ad-left p {
+  color: white;
+  font-size: 0.9rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.transaction-ad-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.ad-share-btn {
+  background: white;
+  color: #00D796;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.ad-share-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 768px) {
+  .transaction-ad-banner {
+    padding: 1rem;
+  }
+
+  .transaction-ad-content {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .ad-banner-close {
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+
+  .transaction-ad-logo {
+    font-size: 1.25rem;
+  }
+
+  .transaction-ad-left p {
+    font-size: 0.85rem;
+  }
+
+  .ad-share-btn {
+    width: 100%;
+    padding: 0.625rem 1rem;
+  }
+}

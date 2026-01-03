@@ -359,6 +359,44 @@ const handleAppleLogin = async () => {
     },
   ]
 
+// Mock users for Fastorika ID search
+let mockUsers = [
+  {
+    id: '123423',
+    firstName: 'Тимур',
+    lastName: 'К.',
+    fullName: 'Тимур К.',
+    verified: true
+  },
+  {
+    id: '1234-1432-1234',
+    firstName: 'Тимур',
+    lastName: 'К.',
+    fullName: 'Тимур К.',
+    verified: true
+  },
+  {
+    id: '567890',
+    firstName: 'Алексей',
+    lastName: 'Петров',
+    fullName: 'Алексей Петров',
+    verified: true
+  },
+  {
+    id: '789456',
+    firstName: 'Мария',
+    lastName: 'Иванова',
+    fullName: 'Мария Иванова',
+    verified: true
+  },
+  {
+    id: '321654',
+    firstName: 'Дмитрий',
+    lastName: 'Смирнов',
+    fullName: 'Дмитрий Смирнов',
+    verified: false
+  }
+]
 
 let transactions = [
     {
@@ -711,7 +749,8 @@ let transactions = [
       // Data
       faqData,
       transactions,
-      countries
+      countries,
+      mockUsers
     }}>
       {children}
     </AppContext.Provider>

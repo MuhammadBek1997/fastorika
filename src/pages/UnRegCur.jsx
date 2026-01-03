@@ -1,6 +1,6 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import './currency.css'
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import { useGlobalContext } from "../Context"
 import { ArrowUpDown, ChevronRight } from "lucide-react"
 
@@ -9,6 +9,7 @@ const UnRegCur = () => {
 
     let { t, theme } = useGlobalContext()
     const navigate = useNavigate()
+    const location = useLocation()
 
     let currency = [
         {
@@ -35,6 +36,27 @@ const UnRegCur = () => {
     const [myCurrency, setMyCurrency] = useState(currency[0])
     const [otherCurrency, setOtherCurrency] = useState(currency[0])
     const [changeCurrencyCards, setChangeCurrencyCards] = useState(false)
+    const [sendAmount, setSendAmount] = useState('1000')
+    const [receiveAmount, setReceiveAmount] = useState('12 560 000')
+
+    // Get transfer data from Home page
+    useEffect(() => {
+        if (location.state) {
+            const { sendAmount: homeAmount, receiveAmount: homeReceive, fromCurrency, toCurrency, fromFlag, toFlag, paymentMethod } = location.state
+
+            if (homeAmount) setSendAmount(homeAmount)
+            if (homeReceive) setReceiveAmount(homeReceive)
+            if (fromCurrency && fromFlag) {
+                setMyCurrency({ flag: fromFlag, currencyName: fromCurrency })
+            }
+            if (toCurrency && toFlag) {
+                setOtherCurrency({ flag: toFlag, currencyName: toCurrency })
+            }
+            if (paymentMethod) {
+                setMethod(paymentMethod)
+            }
+        }
+    }, [location.state])
 
 
     return (
@@ -51,7 +73,11 @@ const UnRegCur = () => {
                             <p>
                                 {t("yousend")}
                             </p>
-                <input type="text" defaultValue="1000" />
+                            <input
+                                type="text"
+                                value={sendAmount}
+                                onChange={(e) => setSendAmount(e.target.value)}
+                            />
                         </div>
                         <div className="currDropdown">
                             <button
@@ -73,6 +99,7 @@ const UnRegCur = () => {
                                         <button
                                             key={index}
                                             onClick={() => {
+                                                setMyCurrency(cur)
                                                 setIsMyCurrencyOpen(false)
                                             }}
                                             className={`currOption ${myCurrency.currencyName === cur.currencyName ? 'active' : ''}`}
@@ -93,7 +120,11 @@ const UnRegCur = () => {
                             <p>
                                 {t("willtake")}
                             </p>
-                <input type="text" defaultValue={"12 560 000"} />
+                            <input
+                                type="text"
+                                value={receiveAmount}
+                                onChange={(e) => setReceiveAmount(e.target.value)}
+                            />
                         </div>
                         <div className="currDropdown">
                             <button
@@ -116,6 +147,7 @@ const UnRegCur = () => {
                                         <button
                                             key={index}
                                             onClick={() => {
+                                                setOtherCurrency(cur)
                                                 setIsOtherCurrencyOpen(false)
                                             }}
                                             className={`currOption ${otherCurrency.currencyName === cur.currencyName ? 'active' : ''}`}

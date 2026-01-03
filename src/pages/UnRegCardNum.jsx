@@ -6,7 +6,7 @@ import { ChevronLeft, CreditCard, User, AlertCircle, Phone, ArrowBigLeft, ArrowL
 import UnRegCopyModal from "./UnRegCopyModal"
 
 const UnRegCardNum = () => {
-    let { t, theme, user, profilePhone } = useGlobalContext()
+    let { t, theme, user, profilePhone, mockUsers } = useGlobalContext()
     const navigate = useNavigate()
 
     const [mode, setMode] = useState('card')
@@ -17,6 +17,8 @@ const UnRegCardNum = () => {
     const [lastName, setLastName] = useState("")
     const [userId, setUserId] = useState("")
     const [userverify,setUserverify] = useState(false)
+    const [isSearching, setIsSearching] = useState(false)
+    const [foundUser, setFoundUser] = useState(null)
 
     const extractDialCode = (phone) => {
         const match = String(phone || '').match(/^\+(\d{1,3})/)
@@ -51,6 +53,22 @@ const UnRegCardNum = () => {
 
     const fullPhoneNumber = `${phonePrefix}${phoneRest}`
     const isPhoneValid = phoneRest.length > 0
+
+    // Search user by ID with debounce
+    useEffect(() => {
+        if (mode === 'user' && userId.trim().length > 0) {
+            setIsSearching(true)
+            const timer = setTimeout(() => {
+                const user = mockUsers.find(u => u.id === userId.trim())
+                setFoundUser(user || null)
+                setIsSearching(false)
+            }, 800) // Simulate search delay
+            return () => clearTimeout(timer)
+        } else {
+            setFoundUser(null)
+            setIsSearching(false)
+        }
+    }, [userId, mode, mockUsers])
 
     return (
         <div className="currency">
@@ -125,6 +143,21 @@ const UnRegCardNum = () => {
                                         placeholder={t('placeholders.userId')}
                                     />
                                 </div>
+                                {isSearching && userId.trim().length > 0 && (
+                                    <div className="user-search-status">
+                                        <svg className="search-spinner" viewBox="0 0 24 24">
+                                            <path d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity=".25"/>
+                                            <path d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z"/>
+                                        </svg>
+                                        <span>Ищем пользователя...</span>
+                                    </div>
+                                )}
+                                {!isSearching && userId.trim().length > 0 && foundUser && (
+                                    <div className="user-found">
+                                        <User size={20} />
+                                        <span>{foundUser.fullName}</span>
+                                    </div>
+                                )}
                             </div>
                         )}
 
@@ -173,12 +206,14 @@ const UnRegCardNum = () => {
                                 </div>
                             </div>
                         )}
-                        <div className="info-card">
-                            <p className="info-text">
-                                <div className="info-icon">!</div>
-                                {mode === 'card' ? t("nameWarning") : t("nameWarningUserID")}
-                            </p>
-                        </div>
+                        {(mode === 'card' || (mode === 'user' && userId.trim().length === 0)) && (
+                            <div className="info-card">
+                                <p className="info-text">
+                                    <div className="info-icon">!</div>
+                                    {mode === 'card' ? t("nameWarning") : t("nameWarningUserID")}
+                                </p>
+                            </div>
+                        )}
                     </div>
                     <div className="terms-block">
                         <div className="terms-accept">
@@ -201,7 +236,7 @@ const UnRegCardNum = () => {
                     >
                         {t('continue')}
                     </button>
-                </div>    
+                </div>
             </div>
             {mode === 'user' && (
                 <div className="currency-share">
@@ -212,11 +247,11 @@ const UnRegCardNum = () => {
                         </div>
                     </div>
                     <p>
-                        Поделитесь ссылкой на регистрацию Fastorika ID и отправляйте переводы мгновенно!
+                        {t('fastorikaIdShare.description')}
                     </p>
                     <button onClick={()=>setUserverify(true)}>
                         <Share2 size={"1rem"}/>
-                        Поделиться
+                        {t('fastorikaIdShare.shareButton')}
                     </button>
                 </div>
             )}

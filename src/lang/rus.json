@@ -278,6 +278,10 @@
     "title": "Поддержка",
     "inputPlaceholder": "Введите сообщение..."
   },
+  "fastorikaIdShare": {
+    "description": "Поделитесь ссылкой на регистрацию Fastorika ID и отправляйте переводы мгновенно!",
+    "shareButton": "Поделиться"
+  },
   "profilePage": {
     "title": "Профиль",
     "unverified": "Не подтверждено",
@@ -339,5 +343,8 @@
     "crypto":"Криптовалюта",
     "bank":"Банковский перевод"
   },
-  "noData":"Нет информации"
+  "noData":"Нет информации",
+  "yearsOnMarket":"Года на рынке",
+  "successfulTransfers":"Успешных переводов",
+  "countriesWeWork":"Стран, где мы работаем"
 }

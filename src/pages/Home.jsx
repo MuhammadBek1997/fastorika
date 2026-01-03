@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useGlobalContext } from '../Context'
-import { ArrowUpDown, ChevronDown, ChevronRight } from 'lucide-react';
+import { ArrowUpDown, Banknote, Bitcoin, ChevronDown, ChevronRight, CreditCard, LucideBanknoteArrowUp } from 'lucide-react';
 
 const Home = () => {
 
@@ -23,6 +23,21 @@ const Home = () => {
   const [myCur, setMyCur] = useState(currency[0])
   const [otherCur, setOtherCur] = useState(currency[0])
   const [changeCards, setChangeCards] = useState(false)
+  const [sendAmount, setSendAmount] = useState('1000')
+  const [receiveAmount, setReceiveAmount] = useState('12 560 000')
+  const [isMethodOpen, setIsMethodOpen] = useState(false)
+  const [curMethod, setMethod] = useState("")
+
+  const methods = [
+    t('methods.debit'),
+    t('methods.crypto'),
+    t('methods.bank')
+  ]
+
+  const handleMethodSelect = (method) => {
+    setMethod(method)
+    setIsMethodOpen(false)
+  }
 
   
 
@@ -64,7 +79,11 @@ const Home = () => {
                 <p>
                   {t("yousend")}
                 </p>
-                <input type="text" defaultValue="1000" />
+                <input
+                  type="text"
+                  value={sendAmount}
+                  onChange={(e) => setSendAmount(e.target.value)}
+                />
               </div>
               <div className="currDropdown">
                 <button
@@ -87,6 +106,7 @@ const Home = () => {
                       <button
                         key={index}
                         onClick={() => {
+                          setMyCur(cur)
                           setIsMyCurOpen(false)
                         }}
                         className={`currOption ${myCur.currencyName === cur.currencyName ? 'active' : ''}`}
@@ -107,7 +127,11 @@ const Home = () => {
                 <p>
                   {t("willtake")}
                 </p>
-                <input type="text" defaultValue={"12 560 000"} />
+                <input
+                  type="text"
+                  value={receiveAmount}
+                  onChange={(e) => setReceiveAmount(e.target.value)}
+                />
               </div>
               <div className="currDropdown">
                 <button
@@ -130,6 +154,7 @@ const Home = () => {
                       <button
                         key={index}
                         onClick={() => {
+                          setOtherCur(cur)
                           setIsOtheCurOpen(false)
                         }}
                         className={`currOption ${otherCur.currencyName === cur.currencyName ? 'active' : ''}`}
@@ -147,21 +172,71 @@ const Home = () => {
             <h3>
               {t("payMethod")}
             </h3>
-            <div className='cardInfo-cont'>
-              <div className='cardInfoIcon'>
-                <img src={`/images/cardIcon${theme}.png`} alt="Card Icon" />
-              </div>
-              <div className='cardInfo-numbers'>
-                <h3>
-                  {t("noCard")}
-                </h3>
-                <p>
-                  Visa, Mastercard, Maestro…
-                </p>
-              </div>
-              <svg className="ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
-              </svg>
+            <div className="hero-method-container">
+              <button
+                onClick={() => setIsMethodOpen(!isMethodOpen)}
+                className="hero-method-btn"
+              >
+                {
+                  curMethod !== "" ?
+                    <div className="currency-selected-method">
+                      <div className='methodIcon'>
+                        {curMethod === t('methods.debit') && (
+                          <CreditCard/>
+                        )}
+                        {curMethod === t('methods.crypto') && (
+                          <Bitcoin/>
+                        )}
+                        {curMethod === t('methods.bank') && (
+                          <LucideBanknoteArrowUp/>
+                        )}
+                      </div>
+                      <div className='methodInfo'>
+                        <h3>
+                          {curMethod}
+                        </h3>
+                        {curMethod === t('methods.debit') && (
+                          <p>{t('cardsListDesc')}</p>
+                        )}
+                        {curMethod === t('methods.crypto') && (
+                          <p>{t('cryptoListDesc')}</p>
+                        )}
+                        {curMethod === t('methods.bank') && (
+                          <p>{t("bankTransferDesc")}</p>
+                        )}
+                      </div>
+                    </div>
+                    :
+                    <div className="currency-selected-method">
+                      <div className='methodIcon'>
+                        <CreditCard/>
+                      </div>
+                      <div className='methodInfo'>
+                        <h3>
+                          {t("noCard")}
+                        </h3>
+                        <p>
+                          {t('cardsListDesc')}
+                        </p>
+                      </div>
+                    </div>
+                }
+
+                <ChevronRight size={16} style={{ transform: isMethodOpen ? 'rotate(90deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }} />
+              </button>
+              {isMethodOpen && (
+                <div className="hero-method-dropdown">
+                  {methods.map((method, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleMethodSelect(method)}
+                      className={`hero-method-option ${curMethod === method ? 'active' : ''}`}
+                    >
+                      <span>{method}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
           <div className='hero-right-transferBtn'>
@@ -184,7 +259,17 @@ const Home = () => {
             <button onClick={()=>{
               // Start transfer flow without wiping storage
               localStorage.setItem("pending", true)
-              navigate('/currency')
+              // Save transfer data to pass to next page
+              const transferData = {
+                sendAmount,
+                receiveAmount,
+                fromCurrency: myCur.currencyName,
+                toCurrency: otherCur.currencyName,
+                fromFlag: myCur.flag,
+                toFlag: otherCur.flag,
+                paymentMethod: curMethod || t("noCard")
+              }
+              navigate('/currency', { state: transferData })
             }}>
               {t("transferBtn")}
             </button>
@@ -258,6 +343,32 @@ const Home = () => {
         </div>
         <div className='fasttransfer-img'>
           <img src={`/images/fasttransferPhoto${theme}.png`} alt="" />
+        </div>
+        <div className="fasttransfer-cards">
+          <div className="fasttransfer-card">
+              <div className="fasttransfer-card-number">
+                5+
+              </div>
+              <h3>
+                {t("yearsOnMarket") || "Года на рынке"}
+              </h3>
+          </div>
+          <div className="fasttransfer-card">
+              <div className="fasttransfer-card-number">
+                10K+
+              </div>
+              <h3>
+                {t("successfulTransfers") || "Успешных переводов"}
+              </h3>
+          </div>
+          <div className="fasttransfer-card">
+              <div className="fasttransfer-card-number">
+                50+
+              </div>
+              <h3>
+                {t("countriesWeWork") || "Стран, где мы работаем"}
+              </h3>
+          </div>
         </div>
       </div>
       <div className='ourapp'>

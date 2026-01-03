@@ -394,5 +394,74 @@
   .currency-share{
     width: 90%;
   }
-  
+
+}
+
+/* User ID Search Styles */
+.user-search-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+}
+
+#light .user-search-status {
+  background-color: #FEF3C7;
+  color: #92400E;
+}
+
+#dark .user-search-status {
+  background-color: rgba(251, 191, 36, 0.1);
+  color: #FCD34D;
+}
+
+.search-spinner {
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+}
+
+#light .search-spinner {
+  fill: #92400E;
+}
+
+#dark .search-spinner {
+  fill: #FCD34D;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.user-found {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+#light .user-found {
+  background-color: #D1FAE5;
+  color: #065F46;
+}
+
+#dark .user-found {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #10B981;
+}
+
+.user-found svg {
+  flex-shrink: 0;
 }
