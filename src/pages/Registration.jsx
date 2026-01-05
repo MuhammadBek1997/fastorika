@@ -293,13 +293,17 @@ const Registration = () => {
                                 })
                             })
 
-                            const data = await response.json()
+                            const responseData = await response.json()
+                            console.log('Registration response:', responseData)
 
                             if (!response.ok) {
-                                const errorMessage = data?.message || data?.error || 'Registration failed'
+                                const errorMessage = responseData?.message || responseData?.error || 'Registration failed'
                                 toast.error(errorMessage)
                                 return
                             }
+
+                            // Backend may return: { success: true, data: {...} } or direct data
+                            const data = responseData?.data || responseData
 
                             toast.success(t('registrationSuccess') || 'Ro\'yxatdan o\'tdingiz! Email tasdiqlash kerak.')
 

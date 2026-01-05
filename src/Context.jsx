@@ -251,11 +251,12 @@ export const AppProvider = ({ children }) => {
         body: JSON.stringify({ email, password })
       });
 
-      const data = await response.json();
+      const responseData = await response.json();
+      console.log('Login response:', responseData);
 
       if (!response.ok) {
         // Handle error response
-        const errorMessage = data?.message || data?.error || 'Login failed';
+        const errorMessage = responseData?.message || responseData?.error || 'Login failed';
         try {
           const { toast } = await import('react-toastify');
           toast.error(errorMessage);
@@ -263,7 +264,8 @@ export const AppProvider = ({ children }) => {
         return false;
       }
 
-      // Extract token and user data from response
+      // Backend may return: { success: true, data: { token, user } } or { token, user }
+      const data = responseData?.data || responseData;
       const { token, user: userData } = data;
 
       if (!token) {
