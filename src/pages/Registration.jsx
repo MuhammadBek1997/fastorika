@@ -271,38 +271,43 @@ const Registration = () => {
                         try {
                             // Validate password
                             if (!checkPsw("length") || !checkPsw("case") || !checkPsw("match")) {
-                                toast.error('Parol talablariga javob bermaydi')
+                                toast.error(t('passwordRequirements') || 'Parol talablariga javob bermaydi')
                                 return
                             }
 
                             if (!mail) {
-                                toast.error('Email kiriting')
+                                toast.error(t('enterEmail') || 'Email kiriting')
                                 return
                             }
 
-                            // Mock registration - store in localStorage
-                            const mockUserData = {
-                                id: Date.now(),
-                                userId: Date.now(),
-                                email: mail,
-                                name: mail.split('@')[0] || 'User',
-                                phone: "+"+forNum,
-                                role: 'USER',
-                                status: 'ACTIVE'
+                            // Call backend /auth/register endpoint
+                            const response = await apiFetch('auth/register', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    email: mail,
+                                    password: psw,
+                                    name: mail.split('@')[0] || 'User'
+                                })
+                            })
+
+                            const data = await response.json()
+
+                            if (!response.ok) {
+                                const errorMessage = data?.message || data?.error || 'Registration failed'
+                                toast.error(errorMessage)
+                                return
                             }
 
-                            const mockToken = `mock_token_${Date.now()}`
-                            localStorage.setItem('token', mockToken)
-                            localStorage.setItem('logged', 'true')
-                            localStorage.setItem('user', JSON.stringify(mockUserData))
+                            toast.success(t('registrationSuccess') || 'Ro\'yxatdan o\'tdingiz! Email tasdiqlash kerak.')
 
-                            toast.success('Ro\'yxatdan o\'tdingiz (LocalStorage mode)')
-
-                            // Redirect to login page
-                            navigate('/login')
+                            // Show verification modal
+                            setShowVerifyModal(true)
                         } catch (err) {
                             console.error('Registration error:', err)
-                            toast.error('Ro\'yxatdan o\'tishda xatolik')
+                            toast.error(t('registrationError') || 'Ro\'yxatdan o\'tishda xatolik')
                         }
                     }}>
                         {t("reg-clientStep1")}

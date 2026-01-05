@@ -230,41 +230,61 @@ export const AppProvider = ({ children }) => {
     navigate('/');
   };
 
-  // Login Handler - LOCALHOST MOCK VERSION (API disabled)
+  // Login Handler - Backend API version
   const handleLogin = async (email, password) => {
     try {
       // Simple validation
       if (!email || !password) {
         try {
           const { toast } = await import('react-toastify');
-          toast.error('Email va parol kiriting');
+          toast.error(t('fillAllFields') || 'Email va parol kiriting');
         } catch { }
         return false;
       }
 
-      // Mock user data
-      const mockUserData = {
-        id: 1,
-        userId: 1,
-        email: email,
-        name: email.split('@')[0] || 'User',
-        phone: '+998901234567',
-        role: 'USER',
-        status: 'ACTIVE'
-      };
+      // Call backend /auth/login endpoint
+      const response = await apiFetch('auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
 
-      // Store mock token in localStorage
-      const mockToken = `mock_token_${Date.now()}`;
-      localStorage.setItem('token', mockToken);
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Handle error response
+        const errorMessage = data?.message || data?.error || 'Login failed';
+        try {
+          const { toast } = await import('react-toastify');
+          toast.error(errorMessage);
+        } catch { }
+        return false;
+      }
+
+      // Extract token and user data from response
+      const { token, user: userData } = data;
+
+      if (!token) {
+        try {
+          const { toast } = await import('react-toastify');
+          toast.error('Token not received from server');
+        } catch { }
+        return false;
+      }
+
+      // Store token in sessionStorage (as per api.js convention)
+      sessionStorage.setItem('token', token);
       localStorage.setItem('logged', 'true');
-      localStorage.setItem('user', JSON.stringify(mockUserData));
+      localStorage.setItem('user', JSON.stringify(userData));
 
-      setUser(mockUserData);
+      setUser(userData);
       setIsAuthenticated(true);
 
       try {
         const { toast } = await import('react-toastify');
-        toast.success('Muvaffaqiyatli kirdingiz (LocalStorage mode)');
+        toast.success(t('loginSuccess') || 'Muvaffaqiyatli kirdingiz');
       } catch { }
 
       navigate('/transactions');
@@ -273,7 +293,7 @@ export const AppProvider = ({ children }) => {
       console.error('Login error:', err);
       try {
         const { toast } = await import('react-toastify');
-        toast.error('Kirishda xatolik');
+        toast.error(t('loginError') || 'Kirishda xatolik');
       } catch { }
       return false;
     }
