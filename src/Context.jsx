@@ -169,26 +169,49 @@ export const AppProvider = ({ children }) => {
   ];
   const currentLang = languages.find(lang => lang.code === currentLanguage);
 
-  // Check authentication on mount - LOCALHOST MOCK VERSION (API disabled)
+  // Check authentication on mount - Backend API version
   useEffect(() => {
     const checkAuth = async () => {
-      const token = localStorage.getItem('token');
-      const userStr = localStorage.getItem('user');
-      const logged = localStorage.getItem('logged');
+      // Read token from sessionStorage (where handleLogin stores it)
+      const token = sessionStorage.getItem('token');
 
-      if (token && logged === 'true' && userStr) {
-        try {
-          const userData = JSON.parse(userStr);
-          setUser(userData);
-          setIsAuthenticated(true);
-        } catch (error) {
-          console.error('Failed to parse user data:', error);
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          localStorage.removeItem('logged');
-          setIsAuthenticated(false);
+      if (!token) {
+        setIsAuthenticated(false);
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        // Validate token with backend API
+        const response = await apiFetch('user/getOne', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Token validation failed');
         }
-      } else {
+
+        const responseData = await response.json();
+        console.log('Auth check response:', responseData);
+
+        // Backend may return: { success: true, data: {...} } or direct user data
+        const userData = responseData?.data || responseData;
+
+        // Store user data and set authenticated
+        localStorage.setItem('user', JSON.stringify(userData));
+        localStorage.setItem('logged', 'true');
+        setUser(userData);
+        setIsAuthenticated(true);
+      } catch (error) {
+        console.error('Auth check failed:', error);
+        // Token invalid or expired - clear everything
+        sessionStorage.removeItem('token');
+        localStorage.removeItem('user');
+        localStorage.removeItem('logged');
+        setUser(null);
         setIsAuthenticated(false);
       }
 
