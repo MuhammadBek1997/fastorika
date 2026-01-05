@@ -325,20 +325,20 @@ export const AppProvider = ({ children }) => {
   };
 
 
-// Google Login Handler - DISABLED (LocalStorage mode)
+// Google Login Handler - OAuth via Firebase (In Development)
 const handleGoogleLogin = async () => {
   try {
     const { toast } = await import('react-toastify');
-    toast.info('Google login vaqtincha o\'chirilgan (LocalStorage mode)');
+    toast.info('Google login funksiyasi ishlab chiqilmoqda');
   } catch { }
   return false;
 };
 
-// Apple Login - DISABLED (LocalStorage mode)
+// Apple Login Handler - OAuth via Firebase (In Development)
 const handleAppleLogin = async () => {
   try {
     const { toast } = await import('react-toastify');
-    toast.info('Apple login vaqtincha o\'chirilgan (LocalStorage mode)');
+    toast.info('Apple login funksiyasi ishlab chiqilmoqda');
   } catch { }
   return false;
 };
@@ -346,7 +346,8 @@ const handleAppleLogin = async () => {
 
   // Logout Handler
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    // Clear both sessionStorage (token) and localStorage (user data)
+    sessionStorage.removeItem('token');
     localStorage.removeItem('user');
     localStorage.removeItem('logged');
     setUser(null);
