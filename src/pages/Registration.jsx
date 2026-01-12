@@ -27,6 +27,7 @@ const Registration = () => {
     const [showReg1Psw, setShowReg1Psw] = useState(false)
     const [showReg2Psw, setShowReg2Psw] = useState(false)
     const [mail, setMail] = useState('')
+    const [phone, setPhone] = useState('')
     const [psw, setPsw] = useState('')
     const [accPsw, setAccPsw] = useState('')
     const [showVerifyModal, setShowVerifyModal] = useState(false)
@@ -216,11 +217,20 @@ const Registration = () => {
                     <label htmlFor="">
                         {t("login-clientForm1")}
                     </label>
-                    <input 
-                        type="text" 
-                        value={mail} 
+                    <input
+                        type="text"
+                        value={mail}
                         onChange={(e) => setMail(e.target.value)}
                         disabled={location.state?.fromGoogle || location.state?.fromApple}
+                    />
+                    <label htmlFor="">
+                        {t("phoneNumber") || "Telefon raqami"}
+                    </label>
+                    <input
+                        type="tel"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        placeholder="+998 90 123 45 67"
                     />
                     <label htmlFor="">
                         {t("reg-clientForm2")}
@@ -280,6 +290,11 @@ const Registration = () => {
                                 return
                             }
 
+                            if (!phone) {
+                                toast.error(t('enterPhone') || 'Telefon raqamini kiriting')
+                                return
+                            }
+
                             // Call backend /auth/register endpoint
                             const response = await apiFetch('auth/register', {
                                 method: 'POST',
@@ -289,12 +304,14 @@ const Registration = () => {
                                 body: JSON.stringify({
                                     email: mail,
                                     password: psw,
-                                    name: mail.split('@')[0] || 'User'
+                                    name: mail.split('@')[0] || 'User',
+                                    phone: phone
                                 })
                             })
 
                             const responseData = await response.json()
                             console.log('Registration response:', responseData)
+                            console.log('Response status:', response.status)
 
                             if (!response.ok) {
                                 const errorMessage = responseData?.message || responseData?.error || 'Registration failed'
@@ -302,13 +319,18 @@ const Registration = () => {
                                 return
                             }
 
-                            // Backend may return: { success: true, data: {...} } or direct data
-                            const data = responseData?.data || responseData
+                            // Backend returns: { success: true, data: {}, timestamp: ... }
+                            // Data might be empty object, that's okay - user is created and verification email sent
+                            if (responseData.success) {
+                                console.log('Registration successful, showing verify modal')
+                                toast.success(t('registrationSuccess') || 'Ro\'yxatdan o\'tdingiz! Email tasdiqlash kerak.')
 
-                            toast.success(t('registrationSuccess') || 'Ro\'yxatdan o\'tdingiz! Email tasdiqlash kerak.')
-
-                            // Show verification modal
-                            setShowVerifyModal(true)
+                                // Show verification modal
+                                setShowVerifyModal(true)
+                            } else {
+                                console.error('Registration failed: success is false')
+                                toast.error(responseData?.message || 'Registration failed')
+                            }
                         } catch (err) {
                             console.error('Registration error:', err)
                             toast.error(t('registrationError') || 'Ro\'yxatdan o\'tishda xatolik')

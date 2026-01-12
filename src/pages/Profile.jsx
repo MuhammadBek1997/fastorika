@@ -1,13 +1,14 @@
 import './profile.css'
 import { useGlobalContext } from "../Context"
 import { apiFetch } from "../api"
-import { Calendar, ChevronLeft, ChevronRight } from "lucide-react"
+import { Calendar, ChevronLeft, ChevronRight, CheckCircle, Clock, XCircle, Loader2 } from "lucide-react"
 import { toast } from 'react-toastify'
 
 const Profile = () => {
   const {
     t,
     theme,
+    navigate,
     // Profile states from global context
     profileIsSelDate, setProfileIsSelDate,
     profileIsDateOpen, setProfileIsDateOpen,
@@ -26,6 +27,9 @@ const Profile = () => {
     profileEmail, setProfileEmail,
     profileInitial, setProfileInitial,
     profileStatus, setProfileStatus,
+    // KYC
+    kycStatus,
+    kycLoading
   } = useGlobalContext()
   const months = [
     'Yanvar', 'Fevral', 'Mart', 'April', 'May', 'Iyun',
@@ -118,18 +122,7 @@ const Profile = () => {
 
   const days = getDaysInMonth(profileCurMonth);
 
-  // Helpers: name split/join and date format conversions
-  const splitName = (full) => {
-    const parts = (full || '').trim().split(/\s+/).filter(Boolean);
-    const first = parts[0] || '';
-    const last = parts.length > 1 ? parts.slice(1).join(' ') : '';
-    return { firstName: first, lastName: last };
-  };
-
-  const joinName = (first, last) => {
-    return `${(first || '').trim()} ${(last || '').trim()}`.trim().replace(/\s+/g, ' ');
-  };
-
+  // Helpers: date format conversions
   const isoToDisplay = (iso) => {
     if (!iso) return '';
     const [y, m, d] = (iso || '').split('-');
@@ -172,21 +165,70 @@ const Profile = () => {
       </div>
       <div className='profile-body'>
         <div className="profile-verify">
-          <div className="profile-verify-status">
-            {t('profilePage.unverified')}
-          </div>
-          <div className="profile-verify-head">
-            <img src={`/images/notverified${theme}.png`} alt="" />
-            <h3>
-              {t('profilePage.verifyTitle')}
-            </h3>
-          </div>
-          <p>
-            {t('profilePage.verifyDesc')}
-          </p>
-          <button className="verify-btn">
-            {t('profilePage.verifyBtn')}
-          </button>
+          {kycLoading ? (
+            <>
+              <div className="profile-verify-status loading">
+                <Loader2 className="animate-spin" size={16} />
+                {t('profilePage.checkingStatus') || 'Checking...'}
+              </div>
+            </>
+          ) : kycStatus === 'VERIFIED' ? (
+            <>
+              <div className="profile-verify-status verified">
+                <CheckCircle size={16} />
+                {t('profilePage.verified') || 'Verified'}
+              </div>
+              <div className="profile-verify-head">
+                <CheckCircle size={48} className="verified-icon" />
+                <h3>{t('profilePage.verifiedTitle') || 'Identity Verified'}</h3>
+              </div>
+              <p>{t('profilePage.verifiedDesc') || 'Your identity has been verified successfully.'}</p>
+            </>
+          ) : kycStatus === 'PENDING' ? (
+            <>
+              <div className="profile-verify-status pending">
+                <Clock size={16} />
+                {t('profilePage.pending') || 'Pending'}
+              </div>
+              <div className="profile-verify-head">
+                <Clock size={48} className="pending-icon" />
+                <h3>{t('profilePage.pendingTitle') || 'Verification in Progress'}</h3>
+              </div>
+              <p>{t('profilePage.pendingDesc') || 'Your verification is being reviewed. This usually takes a few minutes.'}</p>
+              <button className="verify-btn secondary" onClick={() => navigate('/kyc')}>
+                {t('profilePage.checkStatus') || 'Check Status'}
+              </button>
+            </>
+          ) : kycStatus === 'NOT_VERIFIED' ? (
+            <>
+              <div className="profile-verify-status not-verified">
+                <XCircle size={16} />
+                {t('profilePage.notVerified') || 'Not Verified'}
+              </div>
+              <div className="profile-verify-head">
+                <XCircle size={48} className="not-verified-icon" />
+                <h3>{t('profilePage.notVerifiedTitle') || 'Verification Failed'}</h3>
+              </div>
+              <p>{t('profilePage.notVerifiedDesc') || 'Your verification was not successful. Please try again.'}</p>
+              <button className="verify-btn" onClick={() => navigate('/kyc')}>
+                {t('profilePage.tryAgain') || 'Try Again'}
+              </button>
+            </>
+          ) : (
+            <>
+              <div className="profile-verify-status">
+                {t('profilePage.unverified')}
+              </div>
+              <div className="profile-verify-head">
+                <img src={`/images/notverified${theme}.png`} alt="" />
+                <h3>{t('profilePage.verifyTitle')}</h3>
+              </div>
+              <p>{t('profilePage.verifyDesc')}</p>
+              <button className="verify-btn" onClick={() => navigate('/kyc')}>
+                {t('profilePage.verifyBtn')}
+              </button>
+            </>
+          )}
         </div>
         <div className="profile-info">
           <h3 className="profile-info-head"></h3>
@@ -395,24 +437,24 @@ const Profile = () => {
                 const finalCountryId = resolvedCountryId ?? profileCountryId ?? null;
                 const finalCountryName = countryNameFromId(finalCountryId);
 
+                // Backend expects: { name, surname, phone, countryId, dateOfBirth }
                 const payload = {
-                  userId: profileUserId ?? undefined,
-                  name: joinName(profileFirstName, profileLastName),
-                  email: norm(profileEmail),
+                  name: norm(profileFirstName),
+                  surname: norm(profileLastName),
                   phone: norm(profilePhone),
-                  dateOfBirth: displayToIso(profileIsSelDate),
-                  countryResponse: finalCountryId ? { countryId: finalCountryId, name: finalCountryName } : undefined,
+                  countryId: finalCountryId || 0,
+                  dateOfBirth: displayToIso(profileIsSelDate)
                 };
 
-                const res = await apiFetch('user/update', {
+                const res = await apiFetch('users/me', {
                   method: 'PUT',
                   headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
                   body: JSON.stringify(payload)
                 })
-                const data = await res.json()
+                const responseData = await res.json()
                 if (!res.ok) {
-                  setProfileStatus({ type: 'error', message: data.message || t('toast.profile.saveError') })
-                  toast.error(data.message || t('toast.profile.saveError'))
+                  setProfileStatus({ type: 'error', message: responseData.message || t('toast.profile.saveError') })
+                  toast.error(responseData.message || t('toast.profile.saveError'))
                   return
                 }
                 setProfileStatus({ type: 'success', message: t('toast.profile.saveSuccess') })

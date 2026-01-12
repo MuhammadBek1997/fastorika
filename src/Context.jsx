@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, useContext } from 'react';
-import { apiFetch, getUserCards } from './api';
+import { apiFetch, getUserCards, fetchMyTransactions, fetchMyTransactionDetails, startKycVerification, refreshKycAccessToken, getKycStatus } from './api';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { signInWithPopup } from 'firebase/auth';
@@ -15,6 +15,7 @@ export const AppProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isVerificationRequired, setIsVerificationRequired] = useState(false);
 
   // UI State
   const [theme, setTheme] = useState(() => {
@@ -30,12 +31,16 @@ export const AppProvider = ({ children }) => {
   const [cards, setCards] = useState([])
   const [cardsLoading, setCardsLoading] = useState(false)
 
-  const loadUserCards = async (uid) => {
-    const userId = uid || user?.userId
-    if (!userId) return
+  const loadUserCards = async () => {
+    // Now using /cards/my endpoint - no userId needed
+    const token = sessionStorage.getItem('token')
+    if (!token) {
+      setCards([])
+      return
+    }
     try {
       setCardsLoading(true)
-      const data = await getUserCards(userId)
+      const data = await getUserCards()
       setCards(Array.isArray(data) ? data : [])
     } catch (err) {
       console.warn('Load cards error:', err?.message || err)
@@ -71,12 +76,6 @@ export const AppProvider = ({ children }) => {
   const [profileInitial, setProfileInitial] = useState(null)
   const [profileStatus, setProfileStatus] = useState({ type: null, message: '' })
 
-  const splitName = (full) => {
-    const parts = (full || '').trim().split(/\s+/).filter(Boolean)
-    const first = parts[0] || ''
-    const last = parts.length > 1 ? parts.slice(1).join(' ') : ''
-    return { firstName: first, lastName: last }
-  }
   const isoToDisplay = (iso) => {
     if (!iso) return ''
     const [y, m, d] = String(iso || '').split('-')
@@ -88,44 +87,47 @@ export const AppProvider = ({ children }) => {
     const token = sessionStorage.getItem('token')
     if (!token) return
     try {
-      const res = await apiFetch('user/getOne', {
+      const res = await apiFetch('users/me', {
         headers: { Authorization: 'Bearer ' + token }
       })
-      const data = await res.json()
+      const responseData = await res.json()
       if (!res.ok) {
-        console.warn('Profile load failed:', data?.message)
-        setProfileStatus({ type: 'error', message: data?.message || '' })
+        console.warn('Profile load failed:', responseData?.message)
+        setProfileStatus({ type: 'error', message: responseData?.message || '' })
         setProfileInitial({
           email: '', firstName: '', lastName: '', phone: '', country: '', birthDate: '', countryId: null
         })
         return
       }
+      // Backend returns: { success: true, data: { id, email, phone, status, role, createdAt, name, surname } }
+      const data = responseData?.data || responseData
       setProfileEmail(data.email || '')
-      setProfileUserId(data?.userId ?? null)
-      const parsed = splitName(data.name || '')
-      setProfileFirstName(parsed.firstName)
-      setProfileLastName(parsed.lastName)
+      setProfileUserId(data?.id ?? null)
+      // Backend sends name and surname separately
+      setProfileFirstName(data.name || '')
+      setProfileLastName(data.surname || '')
       setProfilePhone(data.phone || '')
-      const backendCountry = data?.countryResponse?.name ?? ''
+      // Backend sends countryId, countryName, countryCode directly (not in countryResponse object)
+      const backendCountry = data?.countryName || ''
       setProfileCurState(backendCountry)
-      setProfileCountryId(data?.countryResponse?.countryId ?? null)
+      setProfileCountryId(data?.countryId ?? null)
       setProfileBackendCountryName(backendCountry)
       const displayDate = isoToDisplay(data?.dateOfBirth)
       setProfileIsSelDate(displayDate)
       setProfileInitial({
         email: data.email || '',
-        userId: data?.userId ?? null,
-        firstName: parsed.firstName,
-        lastName: parsed.lastName,
+        userId: data?.id ?? null,
+        firstName: data.name || '',
+        lastName: data.surname || '',
         phone: data.phone || '',
         country: backendCountry,
         birthDate: displayDate,
-        countryId: data?.countryResponse?.countryId ?? null,
+        countryId: data?.countryId ?? null,
         backendCountryName: backendCountry
       })
       setProfileStatus({ type: null, message: '' })
     } catch (e) {
-      console.warn('Profile load network error')
+      console.warn('Profile load network error', e)
       setProfileStatus({ type: 'error', message: 'Profilni yuklashda tarmoq xatosi' })
       setProfileInitial({
         email: '', userId: null, firstName: '', lastName: '', phone: '', country: '', birthDate: '', countryId: null, backendCountryName: ''
@@ -135,20 +137,22 @@ export const AppProvider = ({ children }) => {
 
   const loadCountries = async () => {
     try {
-      const res = await apiFetch('country/all', { method: 'GET' })
-      const data = await res.json()
+      const res = await apiFetch('countries', { method: 'GET' })
+      const responseData = await res.json()
       if (!res.ok) {
-        console.warn('Countries load failed:', data?.message)
+        console.warn('Countries load failed:', responseData?.message)
         setProfileCountriesList([])
         return
       }
-      const normalized = Array.isArray(data) ? data.map(c => ({
+      // Backend returns: { success: true, data: [...] }
+      const dataArray = responseData?.data || responseData
+      const normalized = Array.isArray(dataArray) ? dataArray.map(c => ({
         countryId: c.countryId ?? c.id ?? null,
         name: c.name ?? ''
       })).filter(c => c.name) : []
       setProfileCountriesList(normalized)
     } catch (e) {
-      console.warn('Countries load network error')
+      console.warn('Countries load network error', e)
       setProfileCountriesList([])
     }
   }
@@ -182,8 +186,8 @@ export const AppProvider = ({ children }) => {
       }
 
       try {
-        // Validate token with backend API
-        const response = await apiFetch('user/getOne', {
+        // Validate token with backend API using new endpoint
+        const response = await apiFetch('users/me', {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`
@@ -197,7 +201,7 @@ export const AppProvider = ({ children }) => {
         const responseData = await response.json();
         console.log('Auth check response:', responseData);
 
-        // Backend may return: { success: true, data: {...} } or direct user data
+        // Backend returns: { success: true, data: { id, email, phone, status, role, createdAt } }
         const userData = responseData?.data || responseData;
 
         // Store user data and set authenticated
@@ -209,6 +213,9 @@ export const AppProvider = ({ children }) => {
         console.error('Auth check failed:', error);
         // Token invalid or expired - clear everything
         sessionStorage.removeItem('token');
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('tokenType');
         localStorage.removeItem('user');
         localStorage.removeItem('logged');
         setUser(null);
@@ -280,6 +287,23 @@ export const AppProvider = ({ children }) => {
       if (!response.ok) {
         // Handle error response
         const errorMessage = responseData?.message || responseData?.error || 'Login failed';
+
+        if (errorMessage === "Account is not verified. Please verify your email first.") {
+          // Try to extract token if available for partial auth (KYC)
+          const data = responseData?.data || responseData;
+          if (data?.accessToken) {
+            sessionStorage.setItem('token', data.accessToken);
+            if (data.user) {
+              setUser(data.user);
+              setProfileUserId(data.user.id);
+            }
+          }
+
+          setIsVerificationRequired(true);
+          navigate('/kyc');
+          return false;
+        }
+
         try {
           const { toast } = await import('react-toastify');
           toast.error(errorMessage);
@@ -287,11 +311,11 @@ export const AppProvider = ({ children }) => {
         return false;
       }
 
-      // Backend may return: { success: true, data: { token, user } } or { token, user }
+      // Backend returns: { success: true, data: { accessToken, refreshToken, tokenType, user } }
       const data = responseData?.data || responseData;
-      const { token, user: userData } = data;
+      const { accessToken, refreshToken, tokenType, user: userData } = data;
 
-      if (!token) {
+      if (!accessToken) {
         try {
           const { toast } = await import('react-toastify');
           toast.error('Token not received from server');
@@ -299,8 +323,15 @@ export const AppProvider = ({ children }) => {
         return false;
       }
 
-      // Store token in sessionStorage (as per api.js convention)
-      sessionStorage.setItem('token', token);
+      // Store tokens in sessionStorage and localStorage (as per api.js convention)
+      sessionStorage.setItem('token', accessToken);
+      localStorage.setItem('token', accessToken);
+      if (refreshToken) {
+        localStorage.setItem('refreshToken', refreshToken);
+      }
+      if (tokenType) {
+        localStorage.setItem('tokenType', tokenType);
+      }
       localStorage.setItem('logged', 'true');
       localStorage.setItem('user', JSON.stringify(userData));
 
@@ -444,7 +475,232 @@ let mockUsers = [
   }
 ]
 
-let transactions = [
+  // Transactions State
+  const [transactions, setTransactions] = useState([])
+  const [transactionsLoading, setTransactionsLoading] = useState(false)
+
+  // Load transactions from backend using paginated API
+  const loadTransactions = async (page = 0, size = 20) => {
+    const token = sessionStorage.getItem('token')
+    if (!token) {
+      setTransactions([])
+      return
+    }
+
+    try {
+      setTransactionsLoading(true)
+      const responseData = await fetchMyTransactions(page, size)
+
+      // Backend returns paginated: { content: [...], pageable: {...}, totalElements, ... }
+      const dataArray = responseData?.content || responseData
+
+      // Transform backend structure to UI format
+      const transformedTransactions = (Array.isArray(dataArray) ? dataArray : []).map(tx => {
+        // Parse createdAt into date and time
+        const createdDate = tx.createdAt ? new Date(tx.createdAt) : new Date()
+        const dateStr = createdDate.toISOString().split('T')[0]
+        const timeStr = createdDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+
+        // Map backend status to UI status
+        const statusMap = {
+          'TO_PAY': 'waiting',
+          'PROCESSING': 'waiting',
+          'DELIVERED': 'success',
+          'COMPLETED': 'success',
+          'REJECTED': 'cancel',
+          'CANCELLED': 'cancel',
+          'IN_REVIEW': 'support',
+          'SUPPORT': 'support'
+        }
+
+        // Determine type based on isSender/isReceiver
+        const type = tx.isSender ? 'send' : 'receive'
+
+        return {
+          id: tx.transactionId || tx.id,
+          internalTransactionId: tx.internalTransactionId || '',
+          date: dateStr,
+          time: timeStr,
+          amount: tx.amountSent || tx.amount || 0,
+          amountInOther: tx.amountReceived || tx.amountInOther || 0,
+          currency: tx.sourceCurrency || tx.currency || 'USD',
+          currencyInOther: tx.destinationCurrency || tx.currencyInOther || 'UZS',
+          status: statusMap[tx.status] || 'waiting',
+          type: type,
+          isSender: tx.isSender || false,
+          isReceiver: tx.isReceiver || false,
+          counterpartyName: tx.counterpartyName || '',
+          receiverName: tx.counterpartyName || tx.receiverName || '',
+          receiverCardNumber: tx.receiverCardNumber || '****-****-****-****',
+          receiverPhoneNumber: tx.receiverPhoneNumber || '',
+          receiverState: tx.destinationCountry || tx.receiverCountryName || '',
+          senderName: tx.senderName || tx.sanderName || '',
+          sanderName: tx.senderName || tx.sanderName || '',
+          senderCardNumber: tx.senderCardNumber || '****-****-****-****',
+          senderState: tx.senderCountryName || '',
+          transactionFee: tx.feeAmount || 0,
+          exchangeRate: tx.exchangeRate || 0,
+          feePercentage: tx.feePercentage || 0
+        }
+      })
+
+      setTransactions(transformedTransactions)
+    } catch (e) {
+      console.warn('Transactions load error:', e?.message || e)
+      setTransactions([])
+    } finally {
+      setTransactionsLoading(false)
+    }
+  }
+
+  // Load transactions when authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      loadTransactions()
+    } else {
+      setTransactions([])
+    }
+  }, [isAuthenticated])
+
+  // Get transaction details by ID from backend API
+  const getTransactionDetails = async (transactionId) => {
+    const token = sessionStorage.getItem('token')
+    if (!token) {
+      throw new Error('Not authenticated')
+    }
+
+    try {
+      const tx = await fetchMyTransactionDetails(transactionId)
+
+      // Parse createdAt into date and time
+      const createdDate = tx.createdAt ? new Date(tx.createdAt) : new Date()
+      const dateStr = createdDate.toISOString().split('T')[0]
+      const timeStr = createdDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+
+      // Map backend status to UI status
+      const statusMap = {
+        'TO_PAY': 'waiting',
+        'PROCESSING': 'waiting',
+        'DELIVERED': 'success',
+        'COMPLETED': 'success',
+        'REJECTED': 'cancel',
+        'CANCELLED': 'cancel',
+        'IN_REVIEW': 'support',
+        'SUPPORT': 'support'
+      }
+
+      // Determine type based on isSender/isReceiver
+      const type = tx.isSender ? 'send' : 'receive'
+
+      return {
+        id: tx.transactionId || tx.id,
+        internalTransactionId: tx.internalTransactionId || '',
+        date: dateStr,
+        time: timeStr,
+        amount: tx.amountSent || tx.amount || 0,
+        amountInOther: tx.amountReceived || tx.amountInOther || 0,
+        currency: tx.sourceCurrency || tx.currency || 'USD',
+        currencyInOther: tx.destinationCurrency || tx.currencyInOther || 'UZS',
+        status: statusMap[tx.status] || 'waiting',
+        type: type,
+        isSender: tx.isSender || false,
+        isReceiver: tx.isReceiver || false,
+        senderName: tx.senderName || '',
+        receiverName: tx.receiverName || '',
+        receiverCardNumber: tx.receiverCard?.maskedCardNumber || '****-****-****-****',
+        receiverCardNetwork: tx.receiverCard?.cardNetwork || '',
+        receiverCardHolderName: tx.receiverCard?.cardHolderName || '',
+        receiverPhoneNumber: tx.receiverPhoneNumber || '',
+        receiverState: tx.receiverCountry || '',
+        receiverCountryCode: tx.receiverCountryCode || '',
+        sanderName: tx.senderName || '',
+        senderCardNumber: tx.senderCardNumber || '****-****-****-****',
+        senderState: tx.senderCountryName || '',
+        transactionFee: tx.feeAmount || 0,
+        exchangeRate: tx.exchangeRate || 0,
+        feePercentage: tx.feePercentage || 0,
+        paymentInfo: tx.paymentInfo || null,
+        createdAt: tx.createdAt,
+        updatedAt: tx.updatedAt
+      }
+    } catch (e) {
+      console.error('Get transaction details error:', e?.message || e)
+      throw e
+    }
+  }
+
+  // ============== KYC VERIFICATION ==============
+  const [kycStatus, setKycStatus] = useState(null) // PENDING, VERIFIED, NOT_VERIFIED
+  const [kycLoading, setKycLoading] = useState(false)
+  const [kycAccessToken, setKycAccessToken] = useState(null)
+  const [kycApplicantId, setKycApplicantId] = useState(null)
+
+  // Load KYC status when authenticated
+  const loadKycStatus = async () => {
+    const token = sessionStorage.getItem('token')
+    if (!token) {
+      setKycStatus(null)
+      return
+    }
+
+    try {
+      setKycLoading(true)
+      const statusData = await getKycStatus()
+      console.log('KYC status loaded:', statusData)
+      setKycStatus(statusData?.verificationStatus || statusData?.status || null)
+    } catch (e) {
+      console.warn('KYC status load error:', e?.message || e)
+      setKycStatus(null)
+    } finally {
+      setKycLoading(false)
+    }
+  }
+
+  // Start KYC verification process
+  const initiateKyc = async (userId) => {
+    try {
+      setKycLoading(true)
+      const result = await startKycVerification(userId)
+      console.log('KYC initiated:', result)
+      setKycAccessToken(result.accessToken)
+      setKycApplicantId(result.applicantId)
+      setKycStatus('PENDING')
+      return result
+    } catch (e) {
+      console.error('KYC initiation error:', e?.message || e)
+      throw e
+    } finally {
+      setKycLoading(false)
+    }
+  }
+
+  // Refresh KYC access token (for Sumsub WebSDK)
+  const refreshKycToken = async () => {
+    try {
+      const newToken = await refreshKycAccessToken()
+      console.log('KYC token refreshed')
+      setKycAccessToken(newToken)
+      return newToken
+    } catch (e) {
+      console.error('KYC token refresh error:', e?.message || e)
+      throw e
+    }
+  }
+
+  // Load KYC status when authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      loadKycStatus()
+    } else {
+      setKycStatus(null)
+      setKycAccessToken(null)
+      setKycApplicantId(null)
+    }
+  }, [isAuthenticated])
+
+  // Mock transactions for reference (remove after backend integration)
+  /*
+  let mockTransactions = [
     {
       id: 1,
       date: "2023-08-15",
@@ -726,6 +982,7 @@ let transactions = [
       transactionFee: 0,
     }
   ]
+*/
 
 
 
@@ -735,6 +992,7 @@ let transactions = [
       // Auth
       user,
       isAuthenticated,
+      isVerificationRequired,
       isLoading,
       handleLogin,
       handleLogout,
@@ -795,8 +1053,20 @@ let transactions = [
       // Data
       faqData,
       transactions,
+      transactionsLoading,
+      loadTransactions,
+      getTransactionDetails,
       countries,
-      mockUsers
+      mockUsers,
+
+      // KYC Verification
+      kycStatus,
+      kycLoading,
+      kycAccessToken,
+      kycApplicantId,
+      loadKycStatus,
+      initiateKyc,
+      refreshKycToken
     }}>
       {children}
     </AppContext.Provider>

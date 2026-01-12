@@ -1,10 +1,15 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useGlobalContext } from '../Context'
-import { ArrowUpDown, Banknote, Bitcoin, ChevronDown, ChevronRight, CreditCard, LucideBanknoteArrowUp } from 'lucide-react';
+import { ArrowUpDown, Banknote, Bitcoin, ChevronDown, ChevronRight, CreditCard, LucideBanknoteArrowUp } from 'lucide-react'
+import { getExchangeRate, calculateTransactionFees } from '../api'
 
 const Home = () => {
 
   let { t, theme, faqData,toggleAccordion,openIndex,navigate } = useGlobalContext()
+
+  // Fee configuration - default values (should be fetched from backend per country)
+  const DEFAULT_TRANSFER_FEE = 10 // 10% transfer fee
+  const DEFAULT_EXCHANGE_RATE_FEE = 2 // 2% exchange rate fee
 
   let currency = [
     {
@@ -12,8 +17,28 @@ const Home = () => {
       currencyName: 'USD'
     },
     {
-      flag:'https://img.icons8.com/color/96/uzbekistan-circular.png',
-      currencyName:'UZS'
+      flag: 'https://img.icons8.com/color/96/uzbekistan-circular.png',
+      currencyName: 'UZS'
+    },
+    {
+      flag: 'https://img.icons8.com/color/96/russian-federation-circular.png',
+      currencyName: 'RUB'
+    },
+    {
+      flag: 'https://img.icons8.com/color/96/european-union.png',
+      currencyName: 'EUR'
+    },
+    {
+      flag: 'https://img.icons8.com/color/96/great-britain-circular.png',
+      currencyName: 'GBP'
+    },
+    {
+      flag: 'https://img.icons8.com/color/96/turkey-circular.png',
+      currencyName: 'TRY'
+    },
+    {
+      flag: 'https://img.icons8.com/color/96/kazakhstan-circular.png',
+      currencyName: 'KZT'
     }
   ]
 
@@ -21,12 +46,15 @@ const Home = () => {
   const [isMyCurOpen, setIsMyCurOpen] = useState(false)
   const [isOtheCurOpen, setIsOtheCurOpen] = useState(false)
   const [myCur, setMyCur] = useState(currency[0])
-  const [otherCur, setOtherCur] = useState(currency[0])
+  const [otherCur, setOtherCur] = useState(currency[1])
   const [changeCards, setChangeCards] = useState(false)
   const [sendAmount, setSendAmount] = useState('1000')
   const [receiveAmount, setReceiveAmount] = useState('12 560 000')
   const [isMethodOpen, setIsMethodOpen] = useState(false)
   const [curMethod, setMethod] = useState("")
+  const [exchangeRate, setExchangeRate] = useState(null)
+  const [isLoadingRate, setIsLoadingRate] = useState(false)
+  const [feeCalculation, setFeeCalculation] = useState(null)
 
   const methods = [
     t('methods.debit'),
@@ -39,7 +67,57 @@ const Home = () => {
     setIsMethodOpen(false)
   }
 
-  
+  // Fetch exchange rate when currencies change
+  useEffect(() => {
+    const fetchExchangeRate = async () => {
+      if (myCur.currencyName === otherCur.currencyName) {
+        setExchangeRate({ rate: 1 })
+        return
+      }
+
+      try {
+        setIsLoadingRate(true)
+        const rateData = await getExchangeRate(myCur.currencyName, otherCur.currencyName)
+        setExchangeRate(rateData)
+
+        // Auto-calculate receive amount when rate is fetched
+        if (sendAmount) {
+          const amount = parseFloat(sendAmount.replace(/\s/g, ''))
+          if (!isNaN(amount)) {
+            const converted = amount * rateData.rate
+            setReceiveAmount(converted.toLocaleString('en-US', { maximumFractionDigits: 2 }))
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch exchange rate:', error)
+        setExchangeRate(null)
+      } finally {
+        setIsLoadingRate(false)
+      }
+    }
+
+    fetchExchangeRate()
+  }, [myCur.currencyName, otherCur.currencyName])
+
+  // Update receive amount when send amount changes - WITH FEE CALCULATION
+  useEffect(() => {
+    if (exchangeRate && sendAmount) {
+      const amount = parseFloat(sendAmount.replace(/\s/g, ''))
+      if (!isNaN(amount) && amount > 0) {
+        // Calculate with fees
+        const calculation = calculateTransactionFees(
+          amount,
+          DEFAULT_TRANSFER_FEE,
+          DEFAULT_EXCHANGE_RATE_FEE,
+          exchangeRate.rate
+        )
+        setFeeCalculation(calculation)
+        setReceiveAmount(calculation.amountReceived.toLocaleString('en-US', { maximumFractionDigits: 2 }))
+      }
+    }
+  }, [sendAmount, exchangeRate])
+
+
 
   return (
     <section>
@@ -240,12 +318,45 @@ const Home = () => {
             </div>
           </div>
           <div className='hero-right-transferBtn'>
+            {/* Exchange Rate Display */}
+            {exchangeRate && !isLoadingRate && (
+              <div className='hero-exchange-rate' style={{
+                padding: '0.75rem',
+                marginBottom: '0.5rem',
+                background: theme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
+                borderRadius: '8px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}>
+                <p style={{ margin: 0, fontSize: '0.9rem', opacity: 0.8 }}>
+                  {t("exchangeRate") || "Exchange Rate"}
+                </p>
+                <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 600 }}>
+                  1 {myCur.currencyName} = {exchangeRate.rate.toLocaleString('en-US', { maximumFractionDigits: 4 })} {otherCur.currencyName}
+                </h4>
+              </div>
+            )}
+            {isLoadingRate && (
+              <div className='hero-exchange-rate' style={{
+                padding: '0.75rem',
+                marginBottom: '0.5rem',
+                background: theme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
+                borderRadius: '8px',
+                textAlign: 'center'
+              }}>
+                <p style={{ margin: 0, fontSize: '0.9rem', opacity: 0.6 }}>
+                  {t("loadingRate") || "Loading exchange rate..."}
+                </p>
+              </div>
+            )}
+
             <div className='hero-fee'>
               <p>
-                {t("fee")}
+                {t("fee")} ({t("transferFee") || "Transfer"})
               </p>
               <h4>
-                0.5%
+                {feeCalculation ? `${feeCalculation.transferFeePercentage}%` : `${DEFAULT_TRANSFER_FEE}%`}
               </h4>
             </div>
             <div className='hero-feeCount'>
@@ -253,9 +364,19 @@ const Home = () => {
                 {t("feeCount")}
               </p>
               <h4>
-                1005 USD
+                {feeCalculation ? `${feeCalculation.transferFeeAmount.toLocaleString('en-US', { maximumFractionDigits: 2 })} ${myCur.currencyName}` : `0 ${myCur.currencyName}`}
               </h4>
             </div>
+            {feeCalculation && feeCalculation.exchangeRateFeePercentage > 0 && (
+              <div className='hero-fee' style={{ marginTop: '0.25rem' }}>
+                <p>
+                  {t("exchangeRateFee") || "Exchange Rate Fee"}
+                </p>
+                <h4>
+                  {feeCalculation.exchangeRateFeePercentage}%
+                </h4>
+              </div>
+            )}
             <button onClick={()=>{
               // Start transfer flow without wiping storage
               localStorage.setItem("pending", true)
@@ -267,7 +388,13 @@ const Home = () => {
                 toCurrency: otherCur.currencyName,
                 fromFlag: myCur.flag,
                 toFlag: otherCur.flag,
-                paymentMethod: curMethod || t("noCard")
+                paymentMethod: curMethod || t("noCard"),
+                exchangeRate: exchangeRate?.rate || null,
+                exchangeRateTimestamp: exchangeRate?.timestamp || null,
+                // Fee calculation data
+                feeCalculation: feeCalculation || null,
+                transferFeePercentage: DEFAULT_TRANSFER_FEE,
+                exchangeRateFeePercentage: DEFAULT_EXCHANGE_RATE_FEE
               }
               navigate('/currency', { state: transferData })
             }}>

@@ -1,13 +1,20 @@
 
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useGlobalContext } from '../Context'
+import { createTransaction, initVoletPayment } from '../api'
+import { toast } from 'react-toastify'
 import '../styles/unreginstruction.css'
 
 const UnRegInstruction = () => {
   const { t } = useGlobalContext()
   const navigate = useNavigate()
+  const location = useLocation()
   const [isChecked, setIsChecked] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+
+  // Get all transfer data from previous pages
+  const transferData = location.state || {}
 
   const steps = [
     t('step1Instructions'),
@@ -52,12 +59,174 @@ const UnRegInstruction = () => {
           </span>
         </label>
 
-        <button 
+        <button
           className="continue-button"
-          disabled={!isChecked}
-          onClick={() => navigate('/payment')}
+          disabled={!isChecked || isLoading}
+          onClick={async () => {
+            try {
+              setIsLoading(true)
+
+              // Build transaction data for API
+              const { recipient, feeCalculation, sendAmount, fromCurrency, toCurrency, paymentMethod, cryptoDetails, bankDetails } = transferData
+
+              // Determine payment method type
+              let paymentMethodType = 'DEBIT_CARD'
+              if (paymentMethod?.toLowerCase()?.includes('крипто') || paymentMethod?.toLowerCase()?.includes('crypto')) {
+                paymentMethodType = 'CRYPTO'
+              } else if (paymentMethod?.toLowerCase()?.includes('банк') || paymentMethod?.toLowerCase()?.includes('bank')) {
+                paymentMethodType = 'BANK_TRANSFER'
+              }
+
+              // Helper to detect card network from card number
+              const detectCardNetwork = (cardNumber) => {
+                const num = String(cardNumber).replace(/\s/g, '')
+                if (num.startsWith('4')) return 'VISA'
+                if (num.startsWith('5') || num.startsWith('2')) return 'MASTERCARD'
+                if (num.startsWith('8600')) return 'UZCARD'
+                if (num.startsWith('9860')) return 'HUMO'
+                return 'VISA' // default
+              }
+
+              // Build the transaction request - base fields
+              const transactionRequest = {
+                paymentMethod: paymentMethodType,
+                amountSent: parseFloat(String(sendAmount).replace(/\s/g, '')),
+                sourceCurrency: fromCurrency || 'USD',
+                receiverCurrency: toCurrency || 'UZS',
+                receiverName: recipient?.receiverName || `${recipient?.firstName || ''} ${recipient?.lastName || ''}`.trim(),
+                receiverCountryId: transferData.receiverCountryId || 1, // Default to Uzbekistan
+              }
+
+              // Add payment method specific details based on type
+              if (paymentMethodType === 'DEBIT_CARD' && recipient?.cardNumber) {
+                // DEBIT_CARD payment method
+                transactionRequest.debitCardDetails = {
+                  cardNumber: recipient.cardNumber.replace(/\s/g, ''),
+                  cardNetwork: detectCardNetwork(recipient.cardNumber),
+                  expirationMonth: recipient.expirationMonth || '12',
+                  expirationYear: recipient.expirationYear || '2026',
+                  cardHolderName: (recipient.receiverName || `${recipient.firstName} ${recipient.lastName}`).toUpperCase().trim()
+                }
+                // Optional bankName for flexible currency transfers
+                if (recipient.bankName) {
+                  transactionRequest.debitCardDetails.bankName = recipient.bankName
+                }
+              } else if (paymentMethodType === 'CRYPTO' && (cryptoDetails || recipient?.cryptoDetails)) {
+                // CRYPTO payment method
+                const crypto = cryptoDetails || recipient?.cryptoDetails || {}
+                transactionRequest.cryptoDetails = {
+                  cryptoCurrency: crypto.cryptoCurrency || toCurrency || 'USDT',
+                  blockchainNetwork: crypto.blockchainNetwork || 'TRC20',
+                  walletAddress: crypto.walletAddress || recipient?.walletAddress || ''
+                }
+              } else if (paymentMethodType === 'BANK_TRANSFER' && (bankDetails || recipient?.bankDetails)) {
+                // BANK_TRANSFER payment method
+                const bank = bankDetails || recipient?.bankDetails || {}
+                transactionRequest.bankTransferDetails = {
+                  bankName: bank.bankName || '',
+                  accountNumber: bank.accountNumber || '',
+                  swiftCode: bank.swiftCode || '',
+                  iban: bank.iban || '',
+                  accountHolderName: bank.accountHolderName || transactionRequest.receiverName
+                }
+              }
+
+              // If recipient is a registered Fastorika user
+              if (recipient?.mode === 'user' && recipient?.foundUser) {
+                transactionRequest.receiverUserId = parseInt(recipient.userId)
+                transactionRequest.receiverName = recipient.foundUser.fullName
+              }
+
+              console.log('Creating transaction:', transactionRequest)
+
+              // Step 1: Create transaction
+              const transaction = await createTransaction(transactionRequest)
+              console.log('Transaction created:', transaction)
+
+              // Step 2: Initialize Volet payment
+              const paymentData = await initVoletPayment(transaction.transactionId)
+              console.log('Payment initialized:', paymentData)
+
+              // Step 3: Redirect to Volet payment page
+              const formData = paymentData?.formData || paymentData?.data?.formData || paymentData
+
+              // Convert camelCase to snake_case for Volet form fields
+              // Backend returns: acAccountEmail, acSciName, etc.
+              // Volet expects: ac_account_email, ac_sci_name, etc.
+              const camelToSnake = (str) => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`)
+
+              const voletFieldMapping = {
+                'acAccountEmail': 'ac_account_email',
+                'acSciName': 'ac_sci_name',
+                'acAmount': 'ac_amount',
+                'acCurrency': 'ac_currency',
+                'acOrderId': 'ac_order_id',
+                'acSign': 'ac_sign',
+                'acSuccessUrl': 'ac_success_url',
+                'acFailUrl': 'ac_fail_url',
+                'acStatusUrl': 'ac_status_url',
+                'acComments': 'ac_comments'
+              }
+
+              // Check if we have the required fields (in either format)
+              const hasActionUrl = formData?.actionUrl
+              const hasAccountEmail = formData?.acAccountEmail || formData?.ac_account_email
+              const hasSciName = formData?.acSciName || formData?.ac_sci_name
+              const hasAmount = formData?.acAmount || formData?.ac_amount
+              const hasCurrency = formData?.acCurrency || formData?.ac_currency
+              const hasOrderId = formData?.acOrderId || formData?.ac_order_id
+
+              if (hasActionUrl && hasAccountEmail && hasSciName && hasAmount && hasCurrency && hasOrderId) {
+                // Create and submit form to Volet
+                const form = document.createElement('form')
+                form.method = 'POST'
+                form.action = formData.actionUrl
+
+                // Add all form fields, converting camelCase to snake_case
+                Object.entries(formData).forEach(([key, value]) => {
+                  if (key !== 'actionUrl' && key !== 'internalTransactionId' && key !== 'paymentOrderId' && key !== 'instructions' && value) {
+                    const input = document.createElement('input')
+                    input.type = 'hidden'
+                    // Convert to snake_case if it's a camelCase Volet field
+                    input.name = voletFieldMapping[key] || key
+                    input.value = value
+                    form.appendChild(input)
+                  }
+                })
+
+                console.log('Submitting Volet form:', form.action, Object.fromEntries(new FormData(form)))
+                document.body.appendChild(form)
+                form.submit()
+              } else if (hasActionUrl) {
+                // Has URL but missing some fields - log and show error
+                console.error('Missing required Volet parameters:', {
+                  formData,
+                  hasAccountEmail,
+                  hasSciName,
+                  hasAmount,
+                  hasCurrency,
+                  hasOrderId
+                })
+                toast.error(t('paymentConfigError') || 'Payment configuration error. Please contact support.')
+                // Still clear pending and go to transactions since transaction was created
+                localStorage.removeItem('pending')
+                navigate('/transactions')
+              } else {
+                // No payment URL - just complete without redirect
+                localStorage.removeItem('pending')
+                toast.success(t('transactionCreated') || 'Transaction created successfully!')
+                navigate('/transactions')
+              }
+
+            } catch (error) {
+              console.error('Transaction error:', error)
+              toast.error(error.message || t('transactionError') || 'Failed to create transaction')
+            } finally {
+              setIsLoading(false)
+            }
+          }}
         >
-          {t('continue')}
+          {isLoading ? (t('processing') || 'Processing...') : t('continue')}
         </button>
       </div>
     </div>

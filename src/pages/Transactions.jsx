@@ -187,7 +187,7 @@ const Transactions = () => {
                 <button onClick={handleRegoffer}>
                   {t('transactions.regOffer.close')}
                 </button>
-                <button >
+                <button onClick={() => navigate('/kyc')}>
                   {t('transactions.regOffer.verify')}
                 </button>
               </div>

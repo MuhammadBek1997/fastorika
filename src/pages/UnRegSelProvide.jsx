@@ -11,25 +11,14 @@ const UnRegSelProvide = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  // Default providers (fallback if none are passed from previous step)
+  // Volet payment service provider
   const defaultProviders = useMemo(() => ([
     {
-      id: 'Provider-1',
-      name: t('providerName'),
+      id: 'volet-service',
+      name: 'Volet',
       commission: '0%',
-      icon: null
-    },
-    {
-      id: 'provider-2',
-      name: t('providerName'),
-      commission: '0%',
-      icon: null
-    },
-    {
-      id: 'provider-3',
-      name: t('providerName'),
-      commission: '3.5% + 1.7 EUR',
-      icon: null
+      icon: null,
+      type: 'VOLET'
     }
   ]), [t])
 
@@ -46,7 +35,13 @@ const UnRegSelProvide = () => {
 
   const handleContinue = (provider) => {
     if (!provider) return
-    navigate('/continue-transfer', { state: { provider } })
+    // Pass all transfer data + selected provider to next page
+    navigate('/instruction', {
+      state: {
+        ...location.state,
+        provider
+      }
+    })
   }
 
   return (

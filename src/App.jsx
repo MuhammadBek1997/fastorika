@@ -40,10 +40,11 @@ import UnRegSelProvide from './pages/UnRegSelProvide';
 import UnRegCryp from './pages/UnRegCryp';
 import UnRegInstruction from './pages/UnRegInstruction';
 import TransactionInfo from './pages/TransactionInfo';
+import KycVerification from './pages/KycVerification';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, isLoading } = useGlobalContext();
+  const { isAuthenticated, isLoading, isVerificationRequired } = useGlobalContext();
 
   if (isLoading) {
     return (
@@ -53,7 +54,7 @@ const ProtectedRoute = ({ children }) => {
     );
   }
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated && !isVerificationRequired) {
     return <Navigate to="/login" replace />;
   }
 
@@ -62,7 +63,7 @@ const ProtectedRoute = ({ children }) => {
 
 // Public Route (redirect if authenticated)
 const PublicRoute = ({ children }) => {
-  const { isAuthenticated, isLoading } = useGlobalContext();
+  const { isAuthenticated, isLoading, isVerificationRequired } = useGlobalContext();
 
   if (isLoading) {
     return (
@@ -74,6 +75,10 @@ const PublicRoute = ({ children }) => {
 
   if (isAuthenticated) {
     return <Navigate to="/transactions" replace />;
+  }
+  
+  if (isVerificationRequired) {
+    return <Navigate to="/kyc" replace />;
   }
   
   return children;
@@ -236,6 +241,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <PrivateLayout><TransactionInfo/></PrivateLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/kyc"
+              element={
+                <ProtectedRoute>
+                  <PrivateLayout><KycVerification /></PrivateLayout>
                 </ProtectedRoute>
               }
             />

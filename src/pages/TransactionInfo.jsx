@@ -1,12 +1,89 @@
-import { ArrowLeft, ArrowRight, Check, Clock, MessagesSquare, MinusCircle, Printer, RotateCw } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { ArrowLeft, ArrowRight, Check, Clock, MessagesSquare, MinusCircle, Printer, RotateCw, Loader2 } from 'lucide-react'
 import { useParams } from 'react-router-dom'
 import { useGlobalContext } from '../Context'
 
 const TransactionInfo = () => {
     let { id } = useParams()
-    let { t, navigate, transactions ,countries} = useGlobalContext()
+    let { t, navigate, transactions, countries, getTransactionDetails } = useGlobalContext()
 
-    let currentTrans = transactions.find(item => item.id == id)
+    const [currentTrans, setCurrentTrans] = useState(null)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
+
+    // Fetch transaction details from API or fallback to context
+    useEffect(() => {
+        const loadTransaction = async () => {
+            setLoading(true)
+            setError(null)
+
+            // First try to find in local transactions (for quick display)
+            const localTrans = transactions.find(item => item.id === id || item.id == id)
+
+            // If ID looks like a UUID, fetch from API for full details
+            const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)
+
+            if (isUUID) {
+                try {
+                    const details = await getTransactionDetails(id)
+                    setCurrentTrans(details)
+                } catch (e) {
+                    console.error('Failed to load transaction details:', e)
+                    // Fallback to local if API fails
+                    if (localTrans) {
+                        setCurrentTrans(localTrans)
+                    } else {
+                        setError(e?.message || 'Failed to load transaction')
+                    }
+                }
+            } else if (localTrans) {
+                setCurrentTrans(localTrans)
+            } else {
+                setError('Transaction not found')
+            }
+
+            setLoading(false)
+        }
+
+        loadTransaction()
+    }, [id, transactions, getTransactionDetails])
+
+    // Loading state
+    if (loading) {
+        return (
+            <section id='webSection'>
+                <div className='transaction-info-nav'>
+                    <button className='back-btn' onClick={() => navigate('/transactions')}>
+                        <ArrowLeft />
+                    </button>
+                    <h3>{t('transactionInfo.title')}</h3>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '4rem' }}>
+                    <Loader2 className="animate-spin" size={32} />
+                </div>
+            </section>
+        )
+    }
+
+    // Error state
+    if (error || !currentTrans) {
+        return (
+            <section id='webSection'>
+                <div className='transaction-info-nav'>
+                    <button className='back-btn' onClick={() => navigate('/transactions')}>
+                        <ArrowLeft />
+                    </button>
+                    <h3>{t('transactionInfo.title')}</h3>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '4rem', flexDirection: 'column', gap: '1rem' }}>
+                    <p>{error || t('transactionInfo.notFound') || 'Transaction not found'}</p>
+                    <button onClick={() => navigate('/transactions')} style={{ padding: '0.5rem 1rem', cursor: 'pointer' }}>
+                        {t('back') || 'Back'}
+                    </button>
+                </div>
+            </section>
+        )
+    }
 
     // Normalize status for translation lookup
     const statusMap = {
@@ -24,8 +101,11 @@ const TransactionInfo = () => {
     }
     const normStatus = statusMap[(currentTrans.status || '').toLowerCase()] || (currentTrans.status || 'waiting').toLowerCase()
 
-    let senderFlagicon = countries.find(item=>item.name == currentTrans.senderState)
-    let receiverFlagicon = countries.find(item=>item.name == currentTrans.receiverState)
+    // Default flag for when country is not found
+    const defaultFlag = 'https://img.icons8.com/color/96/globe--v1.png'
+
+    let senderFlagicon = countries.find(item => item.name === currentTrans.senderState || item.code === currentTrans.senderCountryCode)
+    let receiverFlagicon = countries.find(item => item.name === currentTrans.receiverState || item.code === currentTrans.receiverCountryCode)
 
 
     // {
@@ -68,9 +148,9 @@ const TransactionInfo = () => {
                         </p>
                     </div>
                     <div className='info-cash-icons'>
-                        <img src={senderFlagicon.flag} alt="" />
+                        <img src={senderFlagicon?.flag || defaultFlag} alt="" />
                         <ArrowRight/>
-                        <img src={receiverFlagicon.flag} alt="" />
+                        <img src={receiverFlagicon?.flag || defaultFlag} alt="" />
                     </div>
                     <div className='info-cash-receive'>
                         <p>
@@ -165,7 +245,7 @@ const TransactionInfo = () => {
                             </div>
                             <div className='info-item-right'>
                                 <p>
-                                    **** {currentTrans.receiverCardNumber.slice(-4)}
+                                    **** {(currentTrans.receiverCardNumber || '****').slice(-4)}
                                 </p>
                             </div>
                         </div>
@@ -214,7 +294,7 @@ const TransactionInfo = () => {
                             </div>
                             <div className='info-item-right'>
                                 <p>
-                                    {t('transactionInfo.fromCard')} ··{currentTrans.senderCardNumber.slice(-4)}
+                                    {t('transactionInfo.fromCard')} ··{(currentTrans.senderCardNumber || '****').slice(-4)}
                                 </p>
                             </div>
                         </div>

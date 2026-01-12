@@ -14,15 +14,62 @@
 [data-theme="dark"] .profile-verify { background-color: var(--bg-dark); }
 
 .profile-verify-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   width: fit-content;
   padding: 0.3rem 0.7rem;
   border-radius: 1rem;
   border: 0.1rem solid var(--border-btn-light);
   color: rgba(0, 0, 0, 0.5);
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 500;
 }
 [data-theme="dark"] .profile-verify-status { border: 1px solid var(--border-btn-dark); color: rgba(255, 255, 255, 0.5); }
+
+.profile-verify-status.verified {
+  background: rgba(0, 215, 150, 0.15);
+  border-color: #00D796;
+  color: #00D796;
+}
+
+.profile-verify-status.pending {
+  background: rgba(255, 193, 7, 0.15);
+  border-color: #FFC107;
+  color: #FFC107;
+}
+
+.profile-verify-status.not-verified {
+  background: rgba(255, 82, 82, 0.15);
+  border-color: #FF5252;
+  color: #FF5252;
+}
+
+.profile-verify-status.loading {
+  background: rgba(100, 100, 100, 0.1);
+}
+
+.verified-icon { color: #00D796; }
+.pending-icon { color: #FFC107; }
+.not-verified-icon { color: #FF5252; }
+
+.verify-btn.secondary {
+  background-color: #f0f0f0;
+  color: #333;
+}
+[data-theme="dark"] .verify-btn.secondary {
+  background-color: #363636;
+  color: #fff;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
 
 .profile-verify-head { display: flex; align-items: center; gap: 1rem; padding: 1rem 0; }
 .profile-verify-head h3 { font-size: 2rem; font-weight: 500; line-height: normal; }

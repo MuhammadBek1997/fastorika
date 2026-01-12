@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import './currency.css'
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import { useGlobalContext } from "../Context"
 import { ChevronLeft, CreditCard, User, AlertCircle, Phone, ArrowBigLeft, ArrowLeft, AlertCircleIcon, Share2 } from "lucide-react"
 import UnRegCopyModal from "./UnRegCopyModal"
@@ -8,6 +8,10 @@ import UnRegCopyModal from "./UnRegCopyModal"
 const UnRegCardNum = () => {
     let { t, theme, user, profilePhone, mockUsers } = useGlobalContext()
     const navigate = useNavigate()
+    const location = useLocation()
+
+    // Get transfer data from previous page
+    const transferData = location.state || {}
 
     const [mode, setMode] = useState('card')
     const [cardNumber, setCardNumber] = useState("")
@@ -227,10 +231,27 @@ const UnRegCardNum = () => {
                     <button
                         className="currency-continueBtn"
                         onClick={() => {
-                            const payload = mode === 'card'
-                                ? { cardNumber, phoneNumber: fullPhoneNumber, firstName, lastName }
-                                : { userId }
-                            navigate('/provider', { state: { recipient: payload } })
+                            const recipientPayload = mode === 'card'
+                                ? {
+                                    mode: 'card',
+                                    cardNumber: cardNumber.replace(/\s/g, ''), // Remove spaces for API
+                                    phoneNumber: fullPhoneNumber,
+                                    firstName,
+                                    lastName,
+                                    receiverName: `${firstName} ${lastName}`.trim()
+                                  }
+                                : {
+                                    mode: 'user',
+                                    userId,
+                                    foundUser
+                                  }
+                            // Pass all transfer data + recipient info to next page
+                            navigate('/provider', {
+                                state: {
+                                    ...transferData,
+                                    recipient: recipientPayload
+                                }
+                            })
                         }}
                         disabled={mode === 'card' ? (!cardNumber || !isPhoneValid) : (!userId)}
                     >
