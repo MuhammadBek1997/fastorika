@@ -2,11 +2,12 @@ import { useState, useEffect } from "react"
 import './currency.css'
 import { useNavigate, useLocation } from "react-router-dom"
 import { useGlobalContext } from "../Context"
-import { ChevronLeft, CreditCard, User, AlertCircle, Phone, ArrowBigLeft, ArrowLeft, AlertCircleIcon, Share2 } from "lucide-react"
+import { ChevronLeft, CreditCard, User, AlertCircle, Phone, ArrowBigLeft, ArrowLeft, AlertCircleIcon, Share2, CheckCircle, XCircle } from "lucide-react"
 import UnRegCopyModal from "./UnRegCopyModal"
+import { findClientByFastorikaId } from "../api"
 
 const UnRegCardNum = () => {
-    let { t, theme, user, profilePhone, mockUsers } = useGlobalContext()
+    let { t, theme, user, profilePhone } = useGlobalContext()
     const navigate = useNavigate()
     const location = useLocation()
 
@@ -23,6 +24,11 @@ const UnRegCardNum = () => {
     const [userverify,setUserverify] = useState(false)
     const [isSearching, setIsSearching] = useState(false)
     const [foundUser, setFoundUser] = useState(null)
+    const [searchError, setSearchError] = useState(null)
+    const [selectedCard, setSelectedCard] = useState(null)
+
+    // Dropdown open state for recipient cards
+    const [isCardDropdownOpen, setIsCardDropdownOpen] = useState(false)
 
     const extractDialCode = (phone) => {
         const match = String(phone || '').match(/^\+(\d{1,3})/)
@@ -58,21 +64,45 @@ const UnRegCardNum = () => {
     const fullPhoneNumber = `${phonePrefix}${phoneRest}`
     const isPhoneValid = phoneRest.length > 0
 
-    // Search user by ID with debounce
+    // Search user by Fastorika ID with debounce - using real API
     useEffect(() => {
         if (mode === 'user' && userId.trim().length > 0) {
             setIsSearching(true)
-            const timer = setTimeout(() => {
-                const user = mockUsers.find(u => u.id === userId.trim())
-                setFoundUser(user || null)
-                setIsSearching(false)
-            }, 800) // Simulate search delay
+            setSearchError(null)
+            setFoundUser(null)
+            setSelectedCard(null)
+
+            const timer = setTimeout(async () => {
+                try {
+                    const client = await findClientByFastorikaId(userId.trim())
+                    if (client) {
+                        setFoundUser(client)
+                        // Auto-select first card if available
+                        if (client.cards && client.cards.length > 0) {
+                            setSelectedCard(client.cards[0])
+                        }
+                        setSearchError(null)
+                    } else {
+                        setFoundUser(null)
+                        setSearchError(t('userNotFound') || 'User not found')
+                    }
+                } catch (error) {
+                    console.error('Search error:', error)
+                    setFoundUser(null)
+                    setSearchError(error.message || t('searchError') || 'Search failed')
+                } finally {
+                    setIsSearching(false)
+                }
+            }, 800) // Debounce delay
+
             return () => clearTimeout(timer)
         } else {
             setFoundUser(null)
+            setSearchError(null)
+            setSelectedCard(null)
             setIsSearching(false)
         }
-    }, [userId, mode, mockUsers])
+    }, [userId, mode, t])
 
     return (
         <div className="currency">
@@ -153,13 +183,94 @@ const UnRegCardNum = () => {
                                             <path d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity=".25"/>
                                             <path d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z"/>
                                         </svg>
-                                        <span>Ищем пользователя...</span>
+                                        <span>{t('searchingUser') || 'Searching user...'}</span>
+                                    </div>
+                                )}
+                                {!isSearching && userId.trim().length > 0 && searchError && (
+                                    <div className="user-not-found" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--danger, #ef4444)', marginTop: '0.5rem' }}>
+                                        <XCircle size={20} />
+                                        <span>{searchError}</span>
                                     </div>
                                 )}
                                 {!isSearching && userId.trim().length > 0 && foundUser && (
-                                    <div className="user-found">
-                                        <User size={20} />
-                                        <span>{foundUser.fullName}</span>
+                                    <div className="user-found-container" style={{ marginTop: '0.75rem' }}>
+                                        <div className="user-found" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--success, #22c55e)', marginBottom: '0.5rem' }}>
+                                            <CheckCircle size={20} />
+                                            <span style={{ fontWeight: 500 }}>{foundUser.fullName}</span>
+                                            {foundUser.verificationStatus === 'VERIFIED' && (
+                                                <span style={{ fontSize: '0.75rem', background: 'var(--success, #22c55e)', color: 'white', padding: '2px 6px', borderRadius: '4px' }}>
+                                                    {t('verified') || 'Verified'}
+                                                </span>
+                                            )}
+                                        </div>
+                                        {/* Card selection dropdown if user has cards */}
+                                        {foundUser.cards && foundUser.cards.length > 0 && (
+                                            <div className="user-cards" style={{ marginTop: '0.75rem' }}>
+                                                <label className="field-label" style={{ marginBottom: '0.5rem', display: 'block' }}>
+                                                    {t('selectRecipientCard') || 'Select recipient card'}
+                                                </label>
+                                                <div style={{ position: 'relative' }}>
+                                                    <div
+                                                        onClick={() => setIsCardDropdownOpen(!isCardDropdownOpen)}
+                                                        style={{
+                                                            padding: '0.75rem',
+                                                            border: '2px solid #00D26A',
+                                                            borderRadius: '8px',
+                                                            cursor: 'pointer',
+                                                            background: 'rgba(0, 210, 106, 0.1)',
+                                                            display: 'flex',
+                                                            justifyContent: 'space-between',
+                                                            alignItems: 'center'
+                                                        }}
+                                                    >
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                                            <CreditCard size={18} />
+                                                            <span>•••• {selectedCard?.cardNumber?.slice(-4) || '----'}</span>
+                                                        </div>
+                                                        <div/>
+                                                    </div>
+                                                    {isCardDropdownOpen && (
+                                                        <div style={{
+                                                            position: 'absolute',
+                                                            top: '100%',
+                                                            left: 0,
+                                                            right: 0,
+                                                            background: 'var(--bg-light, #fff)',
+                                                            border: '1px solid var(--border-light, #e5e7eb)',
+                                                            borderRadius: '8px',
+                                                            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                                                            zIndex: 100,
+                                                            marginTop: '4px',
+                                                            maxHeight: '200px',
+                                                            overflowY: 'auto'
+                                                        }}>
+                                                            {foundUser.cards.map((card) => (
+                                                                <div
+                                                                    key={card.cardId}
+                                                                    onClick={() => {
+                                                                        setSelectedCard(card)
+                                                                        setIsCardDropdownOpen(false)
+                                                                    }}
+                                                                    style={{
+                                                                        padding: '0.75rem',
+                                                                        cursor: 'pointer',
+                                                                        borderBottom: '1px solid var(--border-light, #e5e7eb)',
+                                                                        background: selectedCard?.cardId === card.cardId ? 'rgba(0, 210, 106, 0.1)' : 'transparent'
+                                                                    }}
+                                                                >
+                                                                    <div style={{ fontWeight: 500 }}>
+                                                                        •••• {card.cardNumber?.slice(-4)}
+                                                                    </div>
+                                                                    <div style={{ fontSize: '0.85rem', opacity: 0.7 }}>
+                                                                        {card.bankName}
+                                                                    </div>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                             </div>
@@ -231,29 +342,53 @@ const UnRegCardNum = () => {
                     <button
                         className="currency-continueBtn"
                         onClick={() => {
-                            const recipientPayload = mode === 'card'
-                                ? {
+                            let recipientPayload
+
+                            if (mode === 'card') {
+                                // New card input
+                                recipientPayload = {
                                     mode: 'card',
-                                    cardNumber: cardNumber.replace(/\s/g, ''), // Remove spaces for API
+                                    cardNumber: cardNumber.replace(/\s/g, ''),
                                     phoneNumber: fullPhoneNumber,
                                     firstName,
                                     lastName,
                                     receiverName: `${firstName} ${lastName}`.trim()
-                                  }
-                                : {
+                                }
+                            } else {
+                                // Fastorika ID mode
+                                const expYear = selectedCard?.expiryYear?.toString() || ''
+                                const formattedExpYear = expYear.length === 2 ? `20${expYear}` : expYear
+
+                                recipientPayload = {
                                     mode: 'user',
-                                    userId,
-                                    foundUser
-                                  }
+                                    fastorikaId: userId,
+                                    userId: foundUser?.userId,
+                                    foundUser: foundUser,
+                                    receiverName: foundUser?.fullName,
+                                    cardNumber: selectedCard?.cardNumber,
+                                    cardNetwork: selectedCard?.cardNetwork,
+                                    cardHolderName: selectedCard?.cardHolderName,
+                                    expiryMonth: selectedCard?.expiryMonth?.toString().padStart(2, '0'),
+                                    expiryYear: formattedExpYear,
+                                    bankName: selectedCard?.bankName,
+                                    receiverCountryId: selectedCard?.country?.id
+                                }
+                            }
+
                             // Pass all transfer data + recipient info to next page
                             navigate('/provider', {
                                 state: {
                                     ...transferData,
-                                    recipient: recipientPayload
+                                    recipient: recipientPayload,
+                                    receiverCountryId: recipientPayload.receiverCountryId || transferData.receiverCountryId || 1
                                 }
                             })
                         }}
-                        disabled={mode === 'card' ? (!cardNumber || !isPhoneValid) : (!userId)}
+                        disabled={
+                            mode === 'card'
+                                ? (!cardNumber || !isPhoneValid)
+                                : (!foundUser || (foundUser.cards?.length > 0 && !selectedCard))
+                        }
                     >
                         {t('continue')}
                     </button>

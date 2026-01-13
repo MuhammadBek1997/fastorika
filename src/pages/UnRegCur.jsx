@@ -2,8 +2,8 @@ import { useState, useEffect } from "react"
 import './currency.css'
 import { useNavigate, useLocation } from "react-router-dom"
 import { useGlobalContext } from "../Context"
-import { ArrowUpDown, ChevronRight } from "lucide-react"
-import { getExchangeRate, calculateTransactionFees } from "../api"
+import { ArrowUpDown, ChevronRight, CreditCard } from "lucide-react"
+import { getExchangeRate, calculateTransactionFees, getUserCards } from "../api"
 
 
 const UnRegCur = () => {
@@ -70,6 +70,13 @@ const UnRegCur = () => {
     // Fee configuration - default values (should be fetched from backend per country)
     const [transferFeePercentage, setTransferFeePercentage] = useState(10) // 10% transfer fee
     const [exchangeRateFeePercentage, setExchangeRateFeePercentage] = useState(2) // 2% exchange rate fee
+
+    // Saved cards state
+    const isLoggedIn = !!sessionStorage.getItem('token')
+    const [myCards, setMyCards] = useState([])
+    const [selectedCard, setSelectedCard] = useState(null)
+    const [isLoadingCards, setIsLoadingCards] = useState(false)
+    const [isCardsExpanded, setIsCardsExpanded] = useState(false)
 
     // Get transfer data from Home page
     useEffect(() => {
@@ -163,6 +170,27 @@ const UnRegCur = () => {
             }
         }
     }, [sendAmount, exchangeRate, transferFeePercentage, exchangeRateFeePercentage])
+
+    // Fetch saved cards when debit card method is selected
+    useEffect(() => {
+        const fetchMyCards = async () => {
+            if (isLoggedIn && curMethod === t('methods.debit')) {
+                try {
+                    setIsLoadingCards(true)
+                    const cards = await getUserCards()
+                    console.log('Fetched cards:', cards)
+                    setMyCards(cards || [])
+                    // Don't auto-select - let user choose
+                } catch (error) {
+                    console.error('Failed to fetch cards:', error)
+                    setMyCards([])
+                } finally {
+                    setIsLoadingCards(false)
+                }
+            }
+        }
+        fetchMyCards()
+    }, [isLoggedIn, curMethod, t])
 
 
     return (
@@ -348,6 +376,155 @@ const UnRegCur = () => {
                         )}
                     </div>
                 </div>
+
+                {/* Saved Cards Accordion - shown when debit card is selected and user is logged in */}
+                {isLoggedIn && curMethod === t('methods.debit') && (
+                    <div className="saved-cards-accordion" style={{ margin: '1rem 0' }}>
+                        {/* Accordion Header */}
+                        <button
+                            onClick={() => setIsCardsExpanded(!isCardsExpanded)}
+                            className="country-select-btn"
+                            style={{ width: '100%' }}
+                        >
+                            <div className="currency-selected-method">
+                                <div className='methodIcon'>
+                                    <CreditCard size={24} />
+                                </div>
+                                <div className='methodInfo'>
+                                    <h3>
+                                        {selectedCard
+                                            ? `•••• •••• •••• ${selectedCard.cardData.cardNumber?.slice(-4) || '****'}`
+                                            : (t('selectCard') || 'Kartani tanlang')
+                                        }
+                                    </h3>
+                                    <p>
+                                        {selectedCard
+                                            ? `${selectedCard.cardNetwork || selectedCard.brand || 'VISA'} ${selectedCard.bankName ? `• ${selectedCard.bankName}` : ''}`
+                                            : (t('savedCardsDesc') || `${myCards.length} ta saqlangan karta`)
+                                        }
+                                    </p>
+                                </div>
+                            </div>
+                            <ChevronRight
+                                size={16}
+                                style={{
+                                    transform: isCardsExpanded ? 'rotate(90deg)' : 'rotate(0deg)',
+                                    transition: 'transform 0.2s'
+                                }}
+                            />
+                        </button>
+
+                        {/* Accordion Content */}
+                        {isCardsExpanded && (
+                            <div className="country-dropdown-menu" style={{ position: 'relative', marginTop: '0.5rem' }}>
+                                {isLoadingCards ? (
+                                    <div style={{ padding: '1rem', textAlign: 'center', opacity: 0.6 }}>
+                                        {t('loading') || 'Yuklanmoqda...'}
+                                    </div>
+                                ) : myCards.length > 0 ? (
+                                    <>
+                                        {myCards.map((card, index) => {
+                                            const cardUniqueId = card.id || card.cardId || index
+                                            const selectedUniqueId = selectedCard?.id || selectedCard?.cardId
+                                            const isSelected = selectedCard && (selectedUniqueId === cardUniqueId)
+
+                                            return (
+                                                <button
+                                                    key={cardUniqueId}
+                                                    onClick={() => {
+                                                        setSelectedCard(card)
+                                                        setIsCardsExpanded(false)
+                                                    }}
+                                                    className={`country-option ${isSelected ? 'active' : ''}`}
+                                                    style={{
+                                                        display: 'flex',
+                                                        justifyContent: 'space-between',
+                                                        alignItems: 'center',
+                                                        padding: '0.75rem 1rem'
+                                                    }}
+                                                >
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                                        <CreditCard size={18} style={{ opacity: 0.7 }} />
+                                                        <div style={{ textAlign: 'left' }}>
+                                                            <div style={{ fontWeight: 500 }}>
+                                                                •••• {card.cardData.cardNumber?.slice(-4) || '****'}
+                                                            </div>
+                                                            <div style={{ fontSize: '0.8rem', opacity: 0.6, marginTop: '2px' }}>
+                                                                {card.cardNetwork || card.brand || 'VISA'} {card.bankName ? `• ${card.bankName}` : ''}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {isSelected && (
+                                                        <div style={{
+                                                            width: '20px',
+                                                            height: '20px',
+                                                            borderRadius: '50%',
+                                                            background: '#22c55e',
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            justifyContent: 'center'
+                                                        }}>
+                                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
+                                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                                            </svg>
+                                                        </div>
+                                                    )}
+                                                </button>
+                                            )
+                                        })}
+
+                                        {/* New card option */}
+                                        <button
+                                            onClick={() => {
+                                                setSelectedCard(null)
+                                                setIsCardsExpanded(false)
+                                            }}
+                                            className={`country-option ${selectedCard === null ? 'active' : ''}`}
+                                            style={{
+                                                display: 'flex',
+                                                justifyContent: 'space-between',
+                                                alignItems: 'center',
+                                                padding: '0.75rem 1rem',
+                                                borderTop: '1px solid var(--border-light, #e0e0e0)'
+                                            }}
+                                        >
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                                <CreditCard size={18} style={{ opacity: 0.7 }} />
+                                                <div style={{ textAlign: 'left' }}>
+                                                    <div style={{ fontWeight: 500 }}>
+                                                        {t('newCard') || 'Yangi karta'}
+                                                    </div>
+                                                    <div style={{ fontSize: '0.8rem', opacity: 0.6, marginTop: '2px' }}>
+                                                        {t('enterNewCardDetails') || 'Yangi karta kiritish'}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {selectedCard === null && (
+                                                <div style={{
+                                                    width: '20px',
+                                                    height: '20px',
+                                                    borderRadius: '50%',
+                                                    background: '#22c55e',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center'
+                                                }}>
+                                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
+                                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                                    </svg>
+                                                </div>
+                                            )}
+                                        </button>
+                                    </>
+                                ) : (
+                                    <div style={{ padding: '1rem', textAlign: 'center', opacity: 0.6 }}>
+                                        {t('noSavedCards') || 'Saqlangan kartalar yo\'q'}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                )}
                 {/* Exchange Rate Display */}
                 {exchangeRate && !isLoadingRate && (
                     <div className='currency-exchange-rate' style={{
@@ -422,11 +599,25 @@ const UnRegCur = () => {
                             exchangeRate: exchangeRate?.rate || null,
                             feeCalculation: feeCalculation || null,
                             transferFeePercentage,
-                            exchangeRateFeePercentage
+                            exchangeRateFeePercentage,
+                            // Include selected saved card if any
+                            selectedCard: selectedCard || null
                         }
 
                         if (curMethod === t('methods.debit')) {
-                            navigate('/cardnumber', { state: transferData })
+                            // Always go to cardnumber page to enter RECEIVER's card details
+                            // selectedCard here is for sender's payment method, not receiver
+                            navigate('/cardnumber', {
+                                state: {
+                                    ...transferData,
+                                    // Pass sender's selected card for payment (if any)
+                                    senderCard: selectedCard ? {
+                                        cardNumber: (selectedCard.cardData || selectedCard).cardNumber,
+                                        cardNetwork: (selectedCard.cardData || selectedCard).cardNetwork,
+                                        cardHolderName: (selectedCard.cardData || selectedCard).cardHolderName
+                                    } : null
+                                }
+                            })
                         } else if (curMethod === t('methods.crypto')) {
                             navigate('/crypto', { state: transferData })
                         } else if (curMethod === t('methods.bank')) {

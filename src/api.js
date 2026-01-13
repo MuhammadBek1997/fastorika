@@ -835,6 +835,117 @@ export const fetchMyTransactionDetails = async (transactionId) => {
   }
 };
 
+// ============== CLIENT/FASTORIKA ID API ==============
+
+/**
+ * Check if a client is verified by Fastorika ID
+ *
+ * @param {string} fastorikaId - Fastorika ID to verify
+ * @returns {Promise<Object>} Verification status
+ *
+ * Response structure:
+ * {
+ *   "success": true,
+ *   "data": {
+ *     "fastorikaId": "FST123456",
+ *     "isVerified": true,
+ *     "verificationStatus": "VERIFIED"
+ *   }
+ * }
+ */
+export const verifyClientByFastorikaId = async (fastorikaId) => {
+  try {
+    console.log('Verifying client by Fastorika ID:', fastorikaId);
+
+    const res = await apiFetch(`clients/verify/${fastorikaId}`, {
+      method: 'GET'
+    });
+
+    const response = await res.json();
+    console.log('Verify client response:', response);
+
+    if (!res.ok) {
+      throw new Error(response?.message || 'Client not found or not verified');
+    }
+
+    return response?.data || response;
+  } catch (error) {
+    console.error('verifyClientByFastorikaId error:', error);
+    throw error;
+  }
+};
+
+/**
+ * Find verified client by Fastorika ID with FULL card data
+ * Returns complete client details including card numbers for money transfers
+ *
+ * Use Cases:
+ * - Find a recipient before sending money (internal trusted flow)
+ * - Verify a client's identity by Fastorika ID
+ * - Look up client details and available cards for transactions
+ *
+ * Card Data Security:
+ * - Returns FULL card numbers (trusted internal use)
+ * - Full numbers are allowed because this API is used for money transfers
+ * - JWT authentication is REQUIRED
+ *
+ * @param {string} fastorikaId - Fastorika ID to search
+ * @returns {Promise<Object>} Client details with cards
+ *
+ * Response structure:
+ * {
+ *   "success": true,
+ *   "data": {
+ *     "userId": 123,
+ *     "fastorikaId": "FST123456",
+ *     "fullName": "John Doe",
+ *     "email": "john@example.com",
+ *     "phone": "+998901234567",
+ *     "verificationStatus": "VERIFIED",
+ *     "cards": [
+ *       {
+ *         "cardId": "card-uuid",
+ *         "cardNumber": "8600123456781234",
+ *         "cardNetwork": "UZCARD",
+ *         "bankName": "National Bank",
+ *         "expiryMonth": 12,
+ *         "expiryYear": 26,
+ *         "cardHolderName": "JOHN DOE",
+ *         "country": {
+ *           "id": 1,
+ *           "name": "Uzbekistan",
+ *           "code": "UZ"
+ *         }
+ *       }
+ *     ]
+ *   }
+ * }
+ */
+export const findClientByFastorikaId = async (fastorikaId) => {
+  try {
+    console.log('Finding client by Fastorika ID:', fastorikaId);
+
+    const res = await apiFetch(`clients/by-fastorika-id/${fastorikaId}`, {
+      method: 'GET'
+    });
+
+    const response = await res.json();
+    console.log('Find client response:', response);
+
+    if (!res.ok) {
+      if (res.status === 404) {
+        return null; // Client not found
+      }
+      throw new Error(response?.message || 'Failed to find client');
+    }
+
+    return response?.data || response;
+  } catch (error) {
+    console.error('findClientByFastorikaId error:', error);
+    throw error;
+  }
+};
+
 // ============== KYC VERIFICATION API ==============
 
 /**

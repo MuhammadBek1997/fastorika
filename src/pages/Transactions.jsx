@@ -306,7 +306,7 @@ const Transactions = () => {
                         }`}>
                         <div>
                           {
-                            transaction.status === "waiting"
+                            transaction.status === "TO_PAY"
                               ?
                               <Clock size={15} />
                               :

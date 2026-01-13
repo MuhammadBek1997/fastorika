@@ -410,5 +410,40 @@
     "notVerifiedTitle": "Верификация не пройдена",
     "notVerifiedDesc": "Верификация не удалась. Пожалуйста, попробуйте снова.",
     "tryAgain": "Попробовать снова"
-  }
+  },
+  "userNotFound": "Пользователь не найден",
+  "searchError": "Ошибка поиска",
+  "searchingUser": "Поиск пользователя...",
+  "selectRecipientCard": "Выберите карту получателя",
+  "selectCard": "Выберите карту",
+  "savedCards": "Сохранённые карты",
+  "newCard": "Новая карта",
+  "enterNewCardDetails": "Введите данные новой карты",
+  "noSavedCards": "Нет сохранённых карт",
+  "selectYourCard": "Выберите вашу карту",
+  "processing": "В обработке",
+  "addCardModal": {
+    "errors": {
+      "fillRequired": "Заполните все обязательные поля",
+      "invalidCard": "Неверный номер карты",
+      "invalidMonth": "Неверный месяц (1-12)",
+      "invalidYear": "Неверный год",
+      "selectCountry": "Выберите страну"
+    },
+    "adding": "Добавление..."
+  },
+  "myCards": {
+    "cardAdded": "Карта успешно добавлена"
+  },
+  "transactionInfo": {
+    "notFound": "Транзакция не найдена"
+  },
+  "loginSuccess": "Вход выполнен успешно",
+  "loginError": "Ошибка входа",
+  "passwordRequirements": "Пароль не соответствует требованиям",
+  "enterEmail": "Введите email",
+  "enterPhone": "Введите номер телефона",
+  "registrationSuccess": "Регистрация выполнена! Требуется подтверждение email.",
+  "registrationError": "Ошибка регистрации",
+  "reg-client": "Регистрация"
 }

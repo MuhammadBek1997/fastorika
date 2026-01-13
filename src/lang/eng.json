@@ -410,5 +410,40 @@
   "notVerifiedTitle": "Verification Failed",
   "notVerifiedDesc": "Your verification was not successful. Please try again.",
   "tryAgain": "Try Again"
-}
+},
+"userNotFound": "User not found",
+"searchError": "Search failed",
+"searchingUser": "Searching user...",
+"selectRecipientCard": "Select recipient card",
+"selectCard": "Select card",
+"savedCards": "Saved cards",
+"newCard": "New card",
+"enterNewCardDetails": "Enter new card details",
+"noSavedCards": "No saved cards",
+"selectYourCard": "Select your card",
+"processing": "Processing",
+"addCardModal": {
+  "errors": {
+    "fillRequired": "Please fill all required fields",
+    "invalidCard": "Invalid card number",
+    "invalidMonth": "Invalid month (1-12)",
+    "invalidYear": "Invalid year",
+    "selectCountry": "Please select a country"
+  },
+  "adding": "Adding..."
+},
+"myCards": {
+  "cardAdded": "Card added successfully"
+},
+"transactionInfo": {
+  "notFound": "Transaction not found"
+},
+"loginSuccess": "Logged in successfully",
+"loginError": "Login failed",
+"passwordRequirements": "Password does not meet requirements",
+"enterEmail": "Enter email",
+"enterPhone": "Enter phone number",
+"registrationSuccess": "Registration successful! Email confirmation required.",
+"registrationError": "Registration error",
+"reg-client": "Registration"
 }

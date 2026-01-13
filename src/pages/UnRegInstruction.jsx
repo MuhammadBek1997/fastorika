@@ -99,17 +99,25 @@ const UnRegInstruction = () => {
 
               // Add payment method specific details based on type
               if (paymentMethodType === 'DEBIT_CARD' && recipient?.cardNumber) {
-                // DEBIT_CARD payment method
+                // DEBIT_CARD payment method (includes 'card', 'savedCard', and 'user' modes)
+                // Format expiration year - ensure it's 4 digits
+                const rawExpYear = recipient.expiryYear || recipient.expirationYear || '2026'
+                const expYear = rawExpYear.toString().length === 2 ? `20${rawExpYear}` : rawExpYear.toString()
+
                 transactionRequest.debitCardDetails = {
                   cardNumber: recipient.cardNumber.replace(/\s/g, ''),
-                  cardNetwork: detectCardNetwork(recipient.cardNumber),
-                  expirationMonth: recipient.expirationMonth || '12',
-                  expirationYear: recipient.expirationYear || '2026',
-                  cardHolderName: (recipient.receiverName || `${recipient.firstName} ${recipient.lastName}`).toUpperCase().trim()
+                  cardNetwork: recipient.cardNetwork || detectCardNetwork(recipient.cardNumber),
+                  expirationMonth: recipient.expiryMonth || recipient.expirationMonth || '12',
+                  expirationYear: expYear,
+                  cardHolderName: (recipient.cardHolderName || recipient.receiverName || `${recipient.firstName || ''} ${recipient.lastName || ''}`).toUpperCase().trim()
                 }
                 // Optional bankName for flexible currency transfers
                 if (recipient.bankName) {
                   transactionRequest.debitCardDetails.bankName = recipient.bankName
+                }
+                // For savedCard mode, use country from saved card
+                if (recipient.mode === 'savedCard' && recipient.receiverCountryId) {
+                  transactionRequest.receiverCountryId = recipient.receiverCountryId
                 }
               } else if (paymentMethodType === 'CRYPTO' && (cryptoDetails || recipient?.cryptoDetails)) {
                 // CRYPTO payment method
@@ -131,10 +139,32 @@ const UnRegInstruction = () => {
                 }
               }
 
-              // If recipient is a registered Fastorika user
-              if (recipient?.mode === 'user' && recipient?.foundUser) {
+              // If recipient is a registered Fastorika user (found by Fastorika ID)
+              if (recipient?.mode === 'user' && recipient?.userId) {
                 transactionRequest.receiverUserId = parseInt(recipient.userId)
-                transactionRequest.receiverName = recipient.foundUser.fullName
+                transactionRequest.receiverName = recipient.receiverName || recipient.foundUser?.fullName
+
+                // If user has a selected card, add debit card details
+                if (recipient.cardNumber && paymentMethodType === 'DEBIT_CARD') {
+                  const rawUserExpYear = recipient.expiryYear || '2026'
+                  const userExpYear = rawUserExpYear.toString().length === 2 ? `20${rawUserExpYear}` : rawUserExpYear.toString()
+
+                  transactionRequest.debitCardDetails = {
+                    cardNumber: recipient.cardNumber.replace(/\s/g, ''),
+                    cardNetwork: recipient.cardNetwork || detectCardNetwork(recipient.cardNumber),
+                    expirationMonth: recipient.expiryMonth || '12',
+                    expirationYear: userExpYear,
+                    cardHolderName: (recipient.cardHolderName || recipient.receiverName).toUpperCase()
+                  }
+                  if (recipient.bankName) {
+                    transactionRequest.debitCardDetails.bankName = recipient.bankName
+                  }
+                }
+
+                // Use country from selected card if available
+                if (recipient.receiverCountryId) {
+                  transactionRequest.receiverCountryId = recipient.receiverCountryId
+                }
               }
 
               console.log('Creating transaction:', transactionRequest)
