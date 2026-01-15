@@ -1,66 +1,75 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import './settings.css'
 import { useGlobalContext } from '../Context'
 import { ArrowUp, Paperclip } from 'lucide-react'
+import useChatPusher from '../hooks/useChatPusher'
 
 const Support = () => {
-  const { t } = useGlobalContext()
+  const { t, user } = useGlobalContext()
   const [message, setMessage] = useState('')
+  const messagesEndRef = useRef(null)
 
-  // Mock messages data
-  const mockMessages = [
-    {
-      id: 1,
-      sender: 'admin',
-      text: 'Здравствуйте, у меня есть сложности с началом нового дела. Можете помочь?',
-      time: '14:20',
-      date: '12 марта, 2025'
-    },
-    {
-      id: 2,
-      sender: 'user',
-      text: 'Здравствуйте, у меня есть сложности с началом нового дела. Можете помочь?',
-      time: '14:20',
-      date: null
-    },
-    {
-      id: 3,
-      sender: 'admin',
-      text: 'Здравствуйте, у меня есть сложности с началом нового дела. Можете помочь?',
-      time: '14:20',
-      date: null
-    },
-    {
-      id: 4,
-      sender: 'admin',
-      fileName: 'Название файла.PNG',
-      fileSize: '88.4 кБ',
-      time: '14:20',
-      date: null
-    },
-    {
-      id: 5,
-      sender: 'user',
-      text: 'Здравствуйте, у меня есть сложности с началом нового дела. Можете помочь?',
-      time: '14:20',
-      date: null
-    },
-    {
-      id: 6,
-      sender: 'user',
-      text: 'Здравствуйте, у меня есть сложности с началом нового дела. Можете помочь?',
-      time: '14:20',
-      date: null
+  const {
+    messages,
+    sendMessage,
+    startChat,
+    currentChatId,
+    isConnected
+  } = useChatPusher({
+    serverUrl: import.meta.env.VITE_CHAT_SERVER_URL,
+    pusherKey: import.meta.env.VITE_PUSHER_KEY,
+    pusherCluster: import.meta.env.VITE_PUSHER_CLUSTER,
+    userId: user?.id,
+    userName: user ? `${user.name || ''} ${user.surname || ''}`.trim() : 'User',
+    userType: 'user'
+  })
+
+  // Start chat automatically on mount if user is logged in
+  useEffect(() => {
+    if (user?.id && isConnected && !currentChatId) {
+      startChat().catch(err => console.error("Error starting chat:", err))
     }
-  ]
+  }, [user, isConnected, currentChatId, startChat])
 
-  const handleSendMessage = () => {
+  // Scroll to bottom on new message
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [messages])
+
+  const handleSendMessage = async () => {
     if (message.trim()) {
-      // Send message logic here
-      console.log('Sending message:', message)
+      await sendMessage(message)
       setMessage('')
     }
   }
+
+  // Group messages by date
+  const getGroupedMessages = () => {
+    const grouped = []
+    let lastDate = null
+
+    messages.forEach(msg => {
+      const msgDate = new Date(msg.createdAt).toLocaleDateString()
+      if (msgDate !== lastDate) {
+        grouped.push({ type: 'date', date: msgDate, id: `date-${msgDate}` })
+        lastDate = msgDate
+      }
+      grouped.push({
+        ...msg,
+        type: 'message',
+        id: msg._id,
+        sender: msg.senderType,
+        text: msg.content,
+        time: new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        fileName: msg.fileUrl ? msg.fileUrl.split('/').pop() : null
+      })
+    })
+    return grouped
+  }
+
+  const displayMessages = getGroupedMessages()
 
   return (
     <div id='webSection' className='supportRoute'>
@@ -71,38 +80,44 @@ const Support = () => {
       </div>
       <div className="support-body">
         <div className='support-conversations'>
-          {mockMessages.map((msg, index) => (
+          {displayMessages.length === 0 && (
+            <div style={{ textAlign: 'center', padding: '20px', color: '#888' }}>
+              {isConnected ? (t('startChat') || 'Начните общение') : (t('connecting') || 'Подключение...')}
+            </div>
+          )}
+          
+          {displayMessages.map((msg) => (
             <React.Fragment key={msg.id}>
-              {msg.date && (
+              {msg.type === 'date' ? (
                 <div className="support-date-divider">
                   <span>{msg.date}</span>
                 </div>
-              )}
+              ) : (
+                <div className={`support-message ${msg.sender === 'user' ? 'support-message-user' : 'support-message-admin'}`}>
+                  <div className="support-message-content">
+                    {msg.text && <div className="support-message-text">{msg.text}</div>}
 
-              <div className={`support-message ${msg.sender === 'user' ? 'support-message-user' : 'support-message-admin'}`}>
-                <div className="support-message-content">
-                  {msg.text && <div className="support-message-text">{msg.text}</div>}
-
-                  {msg.fileName && (
-                    <div className="support-message-file">
-                      <div className="support-file-icon">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                          <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                          <polyline points="13 2 13 9 20 9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
+                    {msg.fileName && (
+                      <div className="support-message-file">
+                        <div className="support-file-icon">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            <polyline points="13 2 13 9 20 9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </div>
+                        <div className="support-file-info">
+                          <div className="support-file-name">{msg.fileName}</div>
+                        </div>
                       </div>
-                      <div className="support-file-info">
-                        <div className="support-file-name">{msg.fileName}</div>
-                        <div className="support-file-size">{msg.fileSize}</div>
-                      </div>
-                    </div>
-                  )}
+                    )}
 
-                  <div className="support-message-time">{msg.time}</div>
+                    <div className="support-message-time">{msg.time}</div>
+                  </div>
                 </div>
-              </div>
+              )}
             </React.Fragment>
           ))}
+          <div ref={messagesEndRef} />
         </div>
 
         <div className='support-input-cont'>

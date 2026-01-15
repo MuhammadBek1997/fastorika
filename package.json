@@ -20,6 +20,7 @@
     "pdf-parse": "^2.4.5",
     "pdf2json": "^4.0.0",
     "pdfjs-dist": "^5.4.394",
+    "pusher-js": "^8.4.0",
     "react": "^19.1.1",
     "react-apple-signin-auth": "^1.1.2",
     "react-dom": "^19.1.1",
