@@ -28,10 +28,26 @@ const AddCardModal = () => {
 
     // China (CN) fields
     const [fullName, setFullName] = useState("")
-    const [phoneNumber, setPhoneNumber] = useState("+86")
+    const [phoneNumber, setPhoneNumber] = useState("")
     const [postalCode, setPostalCode] = useState("")
     const [bankName, setBankName] = useState("")
     const [cnAccountNumber, setCnAccountNumber] = useState("")
+
+    // Country codes for China phone input
+    const countryCodes = [
+        { code: '+86', country: 'CN', flag: '🇨🇳', name: 'China' },
+        { code: '+998', country: 'UZ', flag: '🇺🇿', name: 'Uzbekistan' },
+        { code: '+7', country: 'RU', flag: '🇷🇺', name: 'Russia' },
+        { code: '+7', country: 'KZ', flag: '🇰🇿', name: 'Kazakhstan' },
+        { code: '+1', country: 'US', flag: '🇺🇸', name: 'USA' },
+        { code: '+44', country: 'GB', flag: '🇬🇧', name: 'UK' },
+        { code: '+49', country: 'DE', flag: '🇩🇪', name: 'Germany' },
+        { code: '+90', country: 'TR', flag: '🇹🇷', name: 'Turkey' },
+        { code: '+82', country: 'KR', flag: '🇰🇷', name: 'South Korea' },
+        { code: '+971', country: 'AE', flag: '🇦🇪', name: 'UAE' }
+    ]
+    const [isPhoneCountryDropdownOpen, setIsPhoneCountryDropdownOpen] = useState(false)
+    const [selectedPhoneCountry, setSelectedPhoneCountry] = useState(countryCodes[0])
 
     // EU/CIS/Other fields
     const [euCardNumber, setEuCardNumber] = useState("")
@@ -134,7 +150,7 @@ const AddCardModal = () => {
                     countryCode: country.code,
                     cardData: {
                         fullName: fullName.trim(),
-                        phoneNumber: phoneNumber.trim(),
+                        phoneNumber: `${selectedPhoneCountry.code}${phoneNumber.trim()}`,
                         postalCode: postalCode.trim(),
                         bankName: bankName.trim(),
                         accountNumber: cnAccountNumber.trim()
@@ -408,13 +424,81 @@ const AddCardModal = () => {
 
                         <div className="addCardModal-form-group" style={{ marginBottom: '0.75rem' }}>
                             <label htmlFor="phoneNumber">{t('addCardModal.phoneNumber') || 'Phone Number'} *</label>
-                            <div className="date-input-container">
+                            <div className="date-input-container" style={{ display: 'flex', alignItems: 'center', padding: 0 }}>
+                                {/* Country Code Dropdown */}
+                                <div style={{ position: 'relative' }}>
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsPhoneCountryDropdownOpen(!isPhoneCountryDropdownOpen)}
+                                        style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '0.25rem',
+                                            padding: '0.75rem',
+                                            border: 'none',
+                                            background: 'transparent',
+                                            cursor: 'pointer',
+                                            fontSize: '0.9rem',
+                                            borderRight: '1px solid var(--border-light, #e5e7eb)'
+                                        }}
+                                    >
+                                        <span>{selectedPhoneCountry.flag}</span>
+                                        <span>{selectedPhoneCountry.code}</span>
+                                        <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style={{ marginLeft: '4px' }}>
+                                            <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                        </svg>
+                                    </button>
+                                    {isPhoneCountryDropdownOpen && (
+                                        <div style={{
+                                            position: 'absolute',
+                                            top: '100%',
+                                            left: 0,
+                                            background: theme === 'dark' ? '#2a2a2a' : '#fff',
+                                            border: '1px solid var(--border-light, #e5e7eb)',
+                                            borderRadius: '8px',
+                                            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                                            zIndex: 100,
+                                            minWidth: '180px',
+                                            maxHeight: '200px',
+                                            overflowY: 'auto'
+                                        }}>
+                                            {countryCodes.map((c, idx) => (
+                                                <button
+                                                    key={`${c.code}-${c.country}-${idx}`}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setSelectedPhoneCountry(c)
+                                                        setIsPhoneCountryDropdownOpen(false)
+                                                    }}
+                                                    style={{
+                                                        width: '100%',
+                                                        padding: '0.5rem 0.75rem',
+                                                        border: 'none',
+                                                        background: selectedPhoneCountry.code === c.code && selectedPhoneCountry.country === c.country ? 'rgba(0, 210, 106, 0.1)' : 'transparent',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        gap: '0.5rem',
+                                                        cursor: 'pointer',
+                                                        textAlign: 'left',
+                                                        color: 'inherit'
+                                                    }}
+                                                >
+                                                    <span>{c.flag}</span>
+                                                    <span style={{ flex: 1 }}>{c.name}</span>
+                                                    <span style={{ opacity: 0.6 }}>{c.code}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                                {/* Phone Number Input */}
                                 <input
                                     id="phoneNumber"
                                     type="text"
                                     value={phoneNumber}
-                                    onChange={(e) => setPhoneNumber(e.target.value)}
-                                    placeholder="+861234567890"
+                                    onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, ''))}
+                                    placeholder="1234567890"
+                                    style={{ flex: 1, border: 'none', padding: '0.75rem' }}
                                 />
                             </div>
                         </div>

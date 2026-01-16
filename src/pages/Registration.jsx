@@ -32,6 +32,22 @@ const Registration = () => {
     const [accPsw, setAccPsw] = useState('')
     const [showVerifyModal, setShowVerifyModal] = useState(false)
 
+    // Country codes for phone input
+    const countryCodes = [
+        { code: '+998', country: 'UZ', flag: '🇺🇿', name: 'Uzbekistan' },
+        { code: '+7', country: 'RU', flag: '🇷🇺', name: 'Russia' },
+        { code: '+7', country: 'KZ', flag: '🇰🇿', name: 'Kazakhstan' },
+        { code: '+1', country: 'US', flag: '🇺🇸', name: 'USA' },
+        { code: '+44', country: 'GB', flag: '🇬🇧', name: 'UK' },
+        { code: '+49', country: 'DE', flag: '🇩🇪', name: 'Germany' },
+        { code: '+90', country: 'TR', flag: '🇹🇷', name: 'Turkey' },
+        { code: '+82', country: 'KR', flag: '🇰🇷', name: 'South Korea' },
+        { code: '+86', country: 'CN', flag: '🇨🇳', name: 'China' },
+        { code: '+971', country: 'AE', flag: '🇦🇪', name: 'UAE' }
+    ]
+    const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false)
+    const [selectedCountry, setSelectedCountry] = useState(countryCodes[0])
+
     // Google/Apple dan kelgan ma'lumotlarni olish
     useEffect(() => {
         if (location.state) {
@@ -226,12 +242,88 @@ const Registration = () => {
                     <label htmlFor="">
                         {t("phoneNumber") || "Telefon raqami"}
                     </label>
-                    <input
-                        type="tel"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        placeholder="+998 90 123 45 67"
-                    />
+                    <div style={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
+                        {/* Country Code Dropdown */}
+                        <div style={{ position: 'relative' }}>
+                            <button
+                                type="button"
+                                onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.25rem',
+                                    padding: '0.75rem',
+                                    border: '1px solid var(--border-light, #e5e7eb)',
+                                    borderRight: 'none',
+                                    borderRadius: '8px 0 0 8px',
+                                    background: 'transparent',
+                                    cursor: 'pointer',
+                                    fontSize: '1rem',
+                                    height: '100%'
+                                }}
+                            >
+                                <span>{selectedCountry.flag}</span>
+                                <span>{selectedCountry.code}</span>
+                                <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style={{ marginLeft: '4px' }}>
+                                    <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                            </button>
+                            {isCountryDropdownOpen && (
+                                <div style={{
+                                    position: 'absolute',
+                                    top: '100%',
+                                    left: 0,
+                                    background: theme === 'dark' ? '#2a2a2a' : '#fff',
+                                    border: '1px solid var(--border-light, #e5e7eb)',
+                                    borderRadius: '8px',
+                                    boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                                    zIndex: 100,
+                                    minWidth: '180px',
+                                    maxHeight: '200px',
+                                    overflowY: 'auto'
+                                }}>
+                                    {countryCodes.map((country, idx) => (
+                                        <button
+                                            key={`${country.code}-${country.country}-${idx}`}
+                                            type="button"
+                                            onClick={() => {
+                                                setSelectedCountry(country)
+                                                setIsCountryDropdownOpen(false)
+                                            }}
+                                            style={{
+                                                width: '100%',
+                                                padding: '0.5rem 0.75rem',
+                                                border: 'none',
+                                                background: selectedCountry.code === country.code && selectedCountry.country === country.country ? 'rgba(0, 210, 106, 0.1)' : 'transparent',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '0.5rem',
+                                                cursor: 'pointer',
+                                                textAlign: 'left',
+                                                color: 'inherit'
+                                            }}
+                                        >
+                                            <span>{country.flag}</span>
+                                            <span style={{ flex: 1 }}>{country.name}</span>
+                                            <span style={{ opacity: 0.6 }}>{country.code}</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                        {/* Phone Number Input */}
+                        <input
+                            type="tel"
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
+                            placeholder="90 123 45 67"
+                            style={{
+                                flex: 1,
+                                borderRadius: '0 8px 8px 0',
+                                borderLeft: 'none'
+                            }}
+                        />
+                    </div>
                     <label htmlFor="">
                         {t("reg-clientForm2")}
                     </label>
@@ -305,7 +397,7 @@ const Registration = () => {
                                     email: mail,
                                     password: psw,
                                     name: mail.split('@')[0] || 'User',
-                                    phone: phone
+                                    phone: `${selectedCountry.code}${phone}`
                                 })
                             })
 

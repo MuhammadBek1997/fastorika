@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import './currency.css'
 import { useNavigate, useLocation } from "react-router-dom"
 import { useGlobalContext } from "../Context"
-import { ChevronLeft, CreditCard, User, AlertCircle, Phone, ArrowBigLeft, ArrowLeft, AlertCircleIcon, Share2, CheckCircle, XCircle } from "lucide-react"
+import { ChevronLeft, CreditCard, User, AlertCircle, Phone, ArrowBigLeft, ArrowLeft, AlertCircleIcon, Share2, CheckCircle, XCircle, ArrowRight, Wallet } from "lucide-react"
 import UnRegCopyModal from "./UnRegCopyModal"
 import { findClientByFastorikaId } from "../api"
 
@@ -13,6 +13,45 @@ const UnRegCardNum = () => {
 
     // Get transfer data from previous page
     const transferData = location.state || {}
+
+    // Extract transfer summary from previous page
+    const {
+        sendAmount = '0',
+        receiveAmount = '0',
+        fromCurrency = 'USD',
+        toCurrency = 'UZS',
+        exchangeRate = null,
+        feeCalculation = null,
+        transferFeePercentage = 10,
+        exchangeRateFeePercentage = 2,
+        paymentMethod = '',
+        cryptoCurrency = null,
+        cryptoIcon = null,
+        cryptoName = null
+    } = transferData
+
+    // Check if this is a crypto transfer
+    const isCryptoTransfer = paymentMethod === 'CRYPTO'
+
+    // Crypto-specific state
+    const [walletAddress, setWalletAddress] = useState("")
+    const [cryptoReceiverName, setCryptoReceiverName] = useState("")
+
+    // Country codes for phone input
+    const countryCodes = [
+        { code: '+998', country: 'UZ', flag: '🇺🇿', name: 'Uzbekistan' },
+        { code: '+7', country: 'RU', flag: '🇷🇺', name: 'Russia' },
+        { code: '+7', country: 'KZ', flag: '🇰🇿', name: 'Kazakhstan' },
+        { code: '+1', country: 'US', flag: '🇺🇸', name: 'USA' },
+        { code: '+44', country: 'GB', flag: '🇬🇧', name: 'UK' },
+        { code: '+49', country: 'DE', flag: '🇩🇪', name: 'Germany' },
+        { code: '+90', country: 'TR', flag: '🇹🇷', name: 'Turkey' },
+        { code: '+82', country: 'KR', flag: '🇰🇷', name: 'South Korea' },
+        { code: '+86', country: 'CN', flag: '🇨🇳', name: 'China' },
+        { code: '+971', country: 'AE', flag: '🇦🇪', name: 'UAE' }
+    ]
+    const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false)
+    const [selectedCountry, setSelectedCountry] = useState(countryCodes[0])
 
     const [mode, setMode] = useState('card')
     const [cardNumber, setCardNumber] = useState("")
@@ -136,8 +175,184 @@ const UnRegCardNum = () => {
             <div className="currency-body">
 
                 <h2 className="currency-head-title">
-                    {t("recipientDetails")}
+                    {t("recipientDetails") || "Укажите получателя"}
                 </h2>
+
+                {/* Crypto Transfer Inputs - Figma design */}
+                {isCryptoTransfer ? (
+                    <div className="currency-inner">
+                        <div className="input-labels-cont">
+                            {/* Receiver Name */}
+                            <div className="mb-1">
+                                <div className="input-label-row">
+                                    <span className="label-icon"><User /></span>
+                                    <span className="label-text">{t("receiverFullName") || "Имя Фамилия получателя"}</span>
+                                </div>
+                                <div className="currency-input-container">
+                                    <input
+                                        type="text"
+                                        value={cryptoReceiverName}
+                                        onChange={(e) => setCryptoReceiverName(e.target.value)}
+                                        placeholder=""
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Phone Number with Country Dropdown */}
+                            <div className="mb-1">
+                                <div className="input-label-row">
+                                    <span className="label-icon"><Phone /></span>
+                                    <span className="label-text">{t("phoneNumber") || "Номер телефона"}</span>
+                                </div>
+                                <div className="currency-input-container" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0' }}>
+                                    {/* Country Code Dropdown */}
+                                    <div style={{ position: 'relative' }}>
+                                        <button
+                                            type="button"
+                                            onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
+                                            style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '0.25rem',
+                                                padding: '0.75rem',
+                                                border: 'none',
+                                                background: 'transparent',
+                                                cursor: 'pointer',
+                                                fontSize: '1rem',
+                                                borderRight: '1px solid var(--border-light, #e5e7eb)'
+                                            }}
+                                        >
+                                            <span>{selectedCountry.flag}</span>
+                                            <span>{selectedCountry.code}</span>
+                                            <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style={{ marginLeft: '4px' }}>
+                                                <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                            </svg>
+                                        </button>
+                                        {isCountryDropdownOpen && (
+                                            <div style={{
+                                                position: 'absolute',
+                                                top: '100%',
+                                                left: 0,
+                                                background: theme === 'dark' ? '#2a2a2a' : '#fff',
+                                                border: '1px solid var(--border-light, #e5e7eb)',
+                                                borderRadius: '8px',
+                                                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                                                zIndex: 100,
+                                                minWidth: '180px',
+                                                maxHeight: '200px',
+                                                overflowY: 'auto'
+                                            }}>
+                                                {countryCodes.map((country, idx) => (
+                                                    <button
+                                                        key={`${country.code}-${country.country}-${idx}`}
+                                                        type="button"
+                                                        onClick={() => {
+                                                            setSelectedCountry(country)
+                                                            setPhonePrefix(country.code)
+                                                            setIsCountryDropdownOpen(false)
+                                                        }}
+                                                        style={{
+                                                            width: '100%',
+                                                            padding: '0.5rem 0.75rem',
+                                                            border: 'none',
+                                                            background: selectedCountry.code === country.code && selectedCountry.country === country.country ? 'rgba(0, 210, 106, 0.1)' : 'transparent',
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            gap: '0.5rem',
+                                                            cursor: 'pointer',
+                                                            textAlign: 'left'
+                                                        }}
+                                                    >
+                                                        <span>{country.flag}</span>
+                                                        <span style={{ flex: 1 }}>{country.name}</span>
+                                                        <span style={{ opacity: 0.6 }}>{country.code}</span>
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                    {/* Phone Number Input */}
+                                    <input
+                                        type="text"
+                                        value={phoneRest}
+                                        onChange={(e) => {
+                                            const val = e.target.value.replace(/\D/g, '')
+                                            setPhoneRest(val.slice(0, 12))
+                                        }}
+                                        placeholder="00 000 00 00"
+                                        style={{
+                                            flex: 1,
+                                            border: 'none',
+                                            outline: 'none',
+                                            background: 'transparent',
+                                            padding: '0.75rem',
+                                            fontSize: '1rem'
+                                        }}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Wallet Address */}
+                            <div className="mb-1">
+                                <div className="input-label-row">
+                                    <span className="label-icon"><Wallet /></span>
+                                    <span className="label-text">{t("recipientWallet") || "Кошелек получателя"}</span>
+                                </div>
+                                <div className="currency-input-container">
+                                    <input
+                                        type="text"
+                                        value={walletAddress}
+                                        onChange={(e) => setWalletAddress(e.target.value)}
+                                        placeholder="0000 0000 0000 0000"
+                                        style={{ fontFamily: 'monospace' }}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Warning info card */}
+                            <div className="info-card">
+                                <p className="info-text">
+                                    <div className="info-icon">!</div>
+                                    {t("walletNameWarning") || "Имя и фамилия получателя должны быть введены латинскими буквами"}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="terms-block">
+                            <div className="terms-accept">
+                                <input type="checkbox" id="cryptoTerms" className="terms-checkbox" />
+                                <label htmlFor="cryptoTerms" className="terms-label">
+                                    {t("confirmRecipientVerified") || "Подтверждаю, что получатель является"} <span className="link-accent">{t("verified") || "проверенным"}</span> {t("and") || "и"} <span className="link-accent">{t("trusted") || "доверенным"}</span> {t("person") || "лицом"}
+                                </label>
+                            </div>
+                        </div>
+
+                        <button
+                            className="currency-continueBtn"
+                            onClick={() => {
+                                const cryptoRecipient = {
+                                    mode: 'crypto',
+                                    walletAddress: walletAddress,
+                                    receiverName: cryptoReceiverName || null,
+                                    phoneNumber: `${selectedCountry.code}${phoneRest}`,
+                                    cryptoCurrency: cryptoCurrency
+                                }
+
+                                // Navigate to provider page to select network
+                                navigate('/provider', {
+                                    state: {
+                                        ...transferData,
+                                        recipient: cryptoRecipient
+                                    }
+                                })
+                            }}
+                            disabled={!walletAddress || walletAddress.length < 10}
+                        >
+                            {t('continue') || "Продолжить"}
+                        </button>
+                    </div>
+                ) : (
+                    <>
                 <p className="currency-desc">
                     {t("fillRecipientInfo")}
                 </p>
@@ -358,12 +573,91 @@ const UnRegCardNum = () => {
                                     <span className="label-icon"><Phone /></span>
                                     <span className="label-text">{t("phoneNumber")}</span>
                                 </div>
-                                <div className="currency-input-container">
+                                <div className="currency-input-container" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0' }}>
+                                    {/* Country Code Dropdown */}
+                                    <div style={{ position: 'relative' }}>
+                                        <button
+                                            type="button"
+                                            onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
+                                            style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '0.25rem',
+                                                padding: '0.75rem',
+                                                border: 'none',
+                                                background: 'transparent',
+                                                cursor: 'pointer',
+                                                fontSize: '1rem',
+                                                borderRight: '1px solid var(--border-light, #e5e7eb)'
+                                            }}
+                                        >
+                                            <span>{selectedCountry.flag}</span>
+                                            <span>{selectedCountry.code}</span>
+                                            <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style={{ marginLeft: '4px' }}>
+                                                <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                            </svg>
+                                        </button>
+                                        {isCountryDropdownOpen && (
+                                            <div style={{
+                                                position: 'absolute',
+                                                top: '100%',
+                                                left: 0,
+                                                background: theme === 'dark' ? '#2a2a2a' : '#fff',
+                                                border: '1px solid var(--border-light, #e5e7eb)',
+                                                borderRadius: '8px',
+                                                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                                                zIndex: 100,
+                                                minWidth: '180px',
+                                                maxHeight: '200px',
+                                                overflowY: 'auto'
+                                            }}>
+                                                {countryCodes.map((country, idx) => (
+                                                    <button
+                                                        key={`${country.code}-${country.country}-${idx}`}
+                                                        type="button"
+                                                        onClick={() => {
+                                                            setSelectedCountry(country)
+                                                            setPhonePrefix(country.code)
+                                                            setIsCountryDropdownOpen(false)
+                                                        }}
+                                                        style={{
+                                                            width: '100%',
+                                                            padding: '0.5rem 0.75rem',
+                                                            border: 'none',
+                                                            background: selectedCountry.code === country.code && selectedCountry.country === country.country ? 'rgba(0, 210, 106, 0.1)' : 'transparent',
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            gap: '0.5rem',
+                                                            cursor: 'pointer',
+                                                            textAlign: 'left',
+                                                            color: 'inherit'
+                                                        }}
+                                                    >
+                                                        <span>{country.flag}</span>
+                                                        <span style={{ flex: 1 }}>{country.name}</span>
+                                                        <span style={{ opacity: 0.6 }}>{country.code}</span>
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                    {/* Phone Number Input */}
                                     <input
                                         type="text"
-                                        value={fullPhoneNumber}
-                                        onChange={handlePhoneNumberChange}
-                                        placeholder={phonePrefix}
+                                        value={phoneRest}
+                                        onChange={(e) => {
+                                            const val = e.target.value.replace(/\D/g, '')
+                                            setPhoneRest(val.slice(0, 12))
+                                        }}
+                                        placeholder="00 000 00 00"
+                                        style={{
+                                            flex: 1,
+                                            border: 'none',
+                                            outline: 'none',
+                                            background: 'transparent',
+                                            padding: '0.75rem',
+                                            fontSize: '1rem'
+                                        }}
                                     />
                                 </div>
                             </div>
@@ -476,8 +770,10 @@ const UnRegCardNum = () => {
                         {t('continue')}
                     </button>
                 </div>
+                    </>
+                )}
             </div>
-            {mode === 'user' && (
+            {!isCryptoTransfer && mode === 'user' && (
                 <div className="currency-share">
                     <div className="currency-share-top">
                         Fastorika
@@ -495,7 +791,7 @@ const UnRegCardNum = () => {
                 </div>
             )}
             {
-                userverify && <UnRegCopyModal setUserverify={setUserverify}/>
+                !isCryptoTransfer && userverify && <UnRegCopyModal setUserverify={setUserverify}/>
             }
         </div>
     )

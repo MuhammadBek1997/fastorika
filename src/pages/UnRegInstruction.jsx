@@ -67,13 +67,16 @@ const UnRegInstruction = () => {
               setIsLoading(true)
 
               // Build transaction data for API
-              const { recipient, feeCalculation, sendAmount, fromCurrency, toCurrency, paymentMethod, cryptoDetails, bankDetails } = transferData
+              const { recipient, feeCalculation, sendAmount, fromCurrency, toCurrency, paymentMethod, cryptoDetails, bankDetails, cryptoCurrency, senderCard } = transferData
 
-              // Determine payment method type
+              // Log sender card info (card from which payment will be taken via Volet)
+              console.log('Sender card (payment source):', senderCard)
+
+              // Determine payment method type based on paymentMethod string
               let paymentMethodType = 'DEBIT_CARD'
-              if (paymentMethod?.toLowerCase()?.includes('крипто') || paymentMethod?.toLowerCase()?.includes('crypto')) {
+              if (paymentMethod === 'CRYPTO' || paymentMethod?.toLowerCase()?.includes('крипто') || paymentMethod?.toLowerCase()?.includes('crypto')) {
                 paymentMethodType = 'CRYPTO'
-              } else if (paymentMethod?.toLowerCase()?.includes('банк') || paymentMethod?.toLowerCase()?.includes('bank')) {
+              } else if (paymentMethod === 'BANK_TRANSFER' || paymentMethod?.toLowerCase()?.includes('банк') || paymentMethod?.toLowerCase()?.includes('bank')) {
                 paymentMethodType = 'BANK_TRANSFER'
               }
 
@@ -87,87 +90,100 @@ const UnRegInstruction = () => {
                 return 'VISA' // default
               }
 
-              // Build the transaction request - base fields
+              // Check if receiver currency is a crypto currency
+              const cryptoCurrencies = ['USDT', 'BTC', 'ETH', 'USDC', 'BNB']
+              const isCryptoReceiver = cryptoCurrencies.includes(toCurrency?.toUpperCase())
+
+              // Build the transaction request according to Swagger API spec
               const transactionRequest = {
                 paymentMethod: paymentMethodType,
                 amountSent: parseFloat(String(sendAmount).replace(/\s/g, '')),
                 sourceCurrency: fromCurrency || 'USD',
                 receiverCurrency: toCurrency || 'UZS',
                 receiverName: recipient?.receiverName || `${recipient?.firstName || ''} ${recipient?.lastName || ''}`.trim(),
-                receiverCountryId: transferData.receiverCountryId || 1, // Default to Uzbekistan
+                receiverCountryId: transferData.receiverCountryId || recipient?.receiverCountryId || 1
               }
 
-              // Add payment method specific details based on type
-              if (paymentMethodType === 'DEBIT_CARD' && recipient?.cardNumber) {
-                // DEBIT_CARD payment method (includes 'card', 'savedCard', and 'user' modes)
-                // Format expiration year - ensure it's 4 digits
-                const rawExpYear = recipient.expiryYear || recipient.expirationYear || '2026'
-                const expYear = rawExpYear.toString().length === 2 ? `20${rawExpYear}` : rawExpYear.toString()
+              // Add sender card details (card from which payment is taken)
+              if (senderCard && senderCard.cardNumber) {
+                const senderExpYear = senderCard.expiryYear?.toString() || '2026'
+                const senderExpYearFormatted = senderExpYear.length === 2 ? `20${senderExpYear}` : senderExpYear
+                const senderExpMonth = String(senderCard.expiryMonth || '12').padStart(2, '0')
 
-                transactionRequest.debitCardDetails = {
-                  cardNumber: recipient.cardNumber.replace(/\s/g, ''),
-                  cardNetwork: recipient.cardNetwork || detectCardNetwork(recipient.cardNumber),
-                  expirationMonth: recipient.expiryMonth || recipient.expirationMonth || '12',
-                  expirationYear: expYear,
-                  cardHolderName: (recipient.cardHolderName || recipient.receiverName || `${recipient.firstName || ''} ${recipient.lastName || ''}`).toUpperCase().trim()
-                }
-                // Optional bankName for flexible currency transfers
-                if (recipient.bankName) {
-                  transactionRequest.debitCardDetails.bankName = recipient.bankName
-                }
-                // For savedCard mode, use country from saved card
-                if (recipient.mode === 'savedCard' && recipient.receiverCountryId) {
-                  transactionRequest.receiverCountryId = recipient.receiverCountryId
-                }
-              } else if (paymentMethodType === 'CRYPTO' && (cryptoDetails || recipient?.cryptoDetails)) {
-                // CRYPTO payment method
-                const crypto = cryptoDetails || recipient?.cryptoDetails || {}
-                transactionRequest.cryptoDetails = {
-                  cryptoCurrency: crypto.cryptoCurrency || toCurrency || 'USDT',
-                  blockchainNetwork: crypto.blockchainNetwork || 'TRC20',
-                  walletAddress: crypto.walletAddress || recipient?.walletAddress || ''
-                }
-              } else if (paymentMethodType === 'BANK_TRANSFER' && (bankDetails || recipient?.bankDetails)) {
-                // BANK_TRANSFER payment method
-                const bank = bankDetails || recipient?.bankDetails || {}
-                transactionRequest.bankTransferDetails = {
-                  bankName: bank.bankName || '',
-                  accountNumber: bank.accountNumber || '',
-                  swiftCode: bank.swiftCode || '',
-                  iban: bank.iban || '',
-                  accountHolderName: bank.accountHolderName || transactionRequest.receiverName
+                transactionRequest.senderCardDetails = {
+                  cardId: senderCard.cardId,
+                  cardNumber: senderCard.cardNumber.replace(/\s/g, ''),
+                  cardNetwork: senderCard.cardNetwork || detectCardNetwork(senderCard.cardNumber),
+                  expirationMonth: senderExpMonth,
+                  expirationYear: senderExpYearFormatted,
+                  cardHolderName: (senderCard.cardHolderName || '').toUpperCase().trim(),
+                  bankName: senderCard.bankName || ''
                 }
               }
 
-              // If recipient is a registered Fastorika user (found by Fastorika ID)
-              if (recipient?.mode === 'user' && recipient?.userId) {
-                transactionRequest.receiverUserId = parseInt(recipient.userId)
-                transactionRequest.receiverName = recipient.receiverName || recipient.foundUser?.fullName
-
-                // If user has a selected card, add debit card details
-                if (recipient.cardNumber && paymentMethodType === 'DEBIT_CARD') {
-                  const rawUserExpYear = recipient.expiryYear || '2026'
-                  const userExpYear = rawUserExpYear.toString().length === 2 ? `20${rawUserExpYear}` : rawUserExpYear.toString()
+              // ===== DEBIT_CARD PAYMENT METHOD =====
+              if (paymentMethodType === 'DEBIT_CARD') {
+                if (recipient?.cardNumber) {
+                  // Format expiration year - ensure it's 4 digits
+                  const rawExpYear = recipient.expiryYear || recipient.expirationYear || '2026'
+                  const expYear = rawExpYear.toString().length === 2 ? `20${rawExpYear}` : rawExpYear.toString()
+                  const expMonth = String(recipient.expiryMonth || recipient.expirationMonth || '12').padStart(2, '0')
 
                   transactionRequest.debitCardDetails = {
                     cardNumber: recipient.cardNumber.replace(/\s/g, ''),
                     cardNetwork: recipient.cardNetwork || detectCardNetwork(recipient.cardNumber),
-                    expirationMonth: recipient.expiryMonth || '12',
-                    expirationYear: userExpYear,
-                    cardHolderName: (recipient.cardHolderName || recipient.receiverName).toUpperCase()
+                    expirationMonth: expMonth,
+                    expirationYear: expYear,
+                    cardHolderName: (recipient.cardHolderName || recipient.receiverName || `${recipient.firstName || ''} ${recipient.lastName || ''}`).toUpperCase().trim()
                   }
-                  if (recipient.bankName) {
+
+                  // Add bankName only for fiat-to-fiat transfers (not when receiver is crypto)
+                  if (!isCryptoReceiver && recipient.bankName) {
                     transactionRequest.debitCardDetails.bankName = recipient.bankName
                   }
                 }
 
-                // Use country from selected card if available
-                if (recipient.receiverCountryId) {
-                  transactionRequest.receiverCountryId = recipient.receiverCountryId
+                // For registered user transfers (via Fastorika ID)
+                if (recipient?.mode === 'user' && recipient?.userId) {
+                  transactionRequest.receiverUserId = parseInt(recipient.userId)
+                  transactionRequest.receiverName = recipient.receiverName || recipient.foundUser?.fullName
+
+                  // Use country from found user's card
+                  if (recipient.receiverCountryId) {
+                    transactionRequest.receiverCountryId = recipient.receiverCountryId
+                  }
                 }
               }
 
-              console.log('Creating transaction:', transactionRequest)
+              // ===== CRYPTO PAYMENT METHOD =====
+              else if (paymentMethodType === 'CRYPTO') {
+                // Get crypto details from transferData.cryptoDetails (set in UnRegSelProvide)
+                const crypto = cryptoDetails || {}
+
+                transactionRequest.cryptoDetails = {
+                  cryptoCurrency: crypto.cryptoCurrency || cryptoCurrency || toCurrency || 'USDT',
+                  blockchainNetwork: crypto.blockchainNetwork || 'TRC20',
+                  walletAddress: crypto.walletAddress || recipient?.walletAddress || ''
+                }
+
+                // For crypto, receiverCountryId is typically 2 (crypto country)
+                transactionRequest.receiverCountryId = transferData.receiverCountryId || 2
+              }
+
+              // ===== BANK_TRANSFER PAYMENT METHOD =====
+              else if (paymentMethodType === 'BANK_TRANSFER') {
+                const bank = bankDetails || recipient?.bankDetails || {}
+
+                transactionRequest.bankTransferDetails = {
+                  bankName: bank.bankName || '',
+                  accountNumber: bank.accountNumber || '',
+                  swiftCode: bank.swiftCode || '',
+                  iban: bank.iban || bank.accountNumber || '',
+                  accountHolderName: bank.accountHolderName || transactionRequest.receiverName
+                }
+              }
+
+              console.log('Creating transaction:', JSON.stringify(transactionRequest, null, 2))
 
               // Step 1: Create transaction
               const transaction = await createTransaction(transactionRequest)

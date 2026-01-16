@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import { useGlobalContext } from "../Context"
-import { ChevronLeft, Wallet, AlertCircle, ChevronRight } from "lucide-react"
+import { ChevronLeft, Wallet, AlertCircle, ChevronRight, ArrowRight } from "lucide-react"
 
 const UnRegCryp = () => {
   const { t, theme } = useGlobalContext()
@@ -10,6 +10,20 @@ const UnRegCryp = () => {
 
   // Get transfer data from previous page
   const transferData = location.state || {}
+
+  // Extract transfer summary from previous page
+  const {
+    sendAmount = '0',
+    receiveAmount = '0',
+    fromCurrency = 'USD',
+    toCurrency = 'UZS',
+    fromFlag = 'https://img.icons8.com/color/96/usa-circular.png',
+    toFlag = 'https://img.icons8.com/color/96/uzbekistan-circular.png',
+    exchangeRate = null,
+    feeCalculation = null,
+    transferFeePercentage = 10,
+    exchangeRateFeePercentage = 2
+  } = transferData
 
   // Crypto currencies available
   const cryptoCurrencies = [
@@ -99,7 +113,12 @@ const UnRegCryp = () => {
       state: {
         ...transferData,
         paymentMethod: 'CRYPTO',
-        cryptoDetails
+        cryptoDetails,
+        recipient: {
+          ...(transferData.recipient || {}),
+          cryptoDetails,
+          receiverName: receiverName || null
+        }
       }
     })
   }
@@ -123,11 +142,111 @@ const UnRegCryp = () => {
           <h2 style={{ margin: 0 }}>{t("cryptoDetails") || "Kripto ma'lumotlari"}</h2>
         </div>
 
+        {/* Transfer Summary Section */}
+        <div style={{
+          padding: '1rem',
+          margin: '0 1rem 1rem',
+          background: theme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
+          borderRadius: '12px'
+        }}>
+          {/* Amount Summary */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '0.75rem'
+          }}>
+            <div style={{ textAlign: 'left' }}>
+              <p style={{ margin: 0, fontSize: '0.8rem', opacity: 0.6 }}>
+                {t("yousend") || "Siz yuborasiz"}
+              </p>
+              <h3 style={{ margin: '0.25rem 0 0', fontSize: '1.25rem', fontWeight: 600 }}>
+                {sendAmount} {fromCurrency}
+              </h3>
+            </div>
+            <ArrowRight size={20} style={{ opacity: 0.5 }} />
+            <div style={{ textAlign: 'right' }}>
+              <p style={{ margin: 0, fontSize: '0.8rem', opacity: 0.6 }}>
+                {t("willtake") || "Qabul qiladi"}
+              </p>
+              <h3 style={{ margin: '0.25rem 0 0', fontSize: '1.25rem', fontWeight: 600 }}>
+                {receiveAmount} {toCurrency}
+              </h3>
+            </div>
+          </div>
+
+          {/* Exchange Rate */}
+          {exchangeRate && (
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              padding: '0.5rem 0',
+              borderTop: theme === 'dark' ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.1)'
+            }}>
+              <p style={{ margin: 0, fontSize: '0.85rem', opacity: 0.7 }}>
+                {t("exchangeRate") || "Ayirboshlash kursi"}
+              </p>
+              <span style={{ fontSize: '0.85rem', fontWeight: 500 }}>
+                1 {fromCurrency} = {typeof exchangeRate === 'object' ? exchangeRate.rate?.toLocaleString('en-US', { maximumFractionDigits: 4 }) : exchangeRate?.toLocaleString('en-US', { maximumFractionDigits: 4 })} {toCurrency}
+              </span>
+            </div>
+          )}
+
+          {/* Fees */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: '0.5rem 0',
+            borderTop: theme === 'dark' ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.1)'
+          }}>
+            <p style={{ margin: 0, fontSize: '0.85rem', opacity: 0.7 }}>
+              {t("fee") || "Komissiya"}
+            </p>
+            <span style={{ fontSize: '0.85rem', fontWeight: 500 }}>
+              {feeCalculation ? `${feeCalculation.transferFeePercentage}%` : `${transferFeePercentage}%`}
+            </span>
+          </div>
+
+          {feeCalculation && feeCalculation.transferFeeAmount > 0 && (
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              padding: '0.5rem 0'
+            }}>
+              <p style={{ margin: 0, fontSize: '0.85rem', opacity: 0.7 }}>
+                {t("feeCount") || "Komissiya miqdori"}
+              </p>
+              <span style={{ fontSize: '0.85rem', fontWeight: 500 }}>
+                {feeCalculation.transferFeeAmount.toLocaleString('en-US', { maximumFractionDigits: 2 })} {fromCurrency}
+              </span>
+            </div>
+          )}
+
+          {feeCalculation && feeCalculation.exchangeRateFeePercentage > 0 && (
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              padding: '0.5rem 0'
+            }}>
+              <p style={{ margin: 0, fontSize: '0.85rem', opacity: 0.7 }}>
+                {t("exchangeRateFee") || "Ayirboshlash kursi komissiyasi"}
+              </p>
+              <span style={{ fontSize: '0.85rem', fontWeight: 500 }}>
+                {feeCalculation.exchangeRateFeePercentage}%
+              </span>
+            </div>
+          )}
+        </div>
+
         <p style={{
           padding: '0 1rem',
           fontSize: '0.9rem',
           opacity: 0.7,
-          marginBottom: '1.5rem'
+          marginBottom: '1rem'
         }}>
           {t("enterCryptoWalletInfo") || "Qabul qiluvchining kripto hamyon ma'lumotlarini kiriting"}
         </p>

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import './profile.css'
 import { useGlobalContext } from "../Context"
 import { apiFetch } from "../api"
@@ -31,6 +32,46 @@ const Profile = () => {
     kycStatus,
     kycLoading
   } = useGlobalContext()
+
+  // Country codes for phone input
+  const countryCodes = [
+    { code: '+998', country: 'UZ', flag: '🇺🇿', name: 'Uzbekistan' },
+    { code: '+7', country: 'RU', flag: '🇷🇺', name: 'Russia' },
+    { code: '+7', country: 'KZ', flag: '🇰🇿', name: 'Kazakhstan' },
+    { code: '+1', country: 'US', flag: '🇺🇸', name: 'USA' },
+    { code: '+44', country: 'GB', flag: '🇬🇧', name: 'UK' },
+    { code: '+49', country: 'DE', flag: '🇩🇪', name: 'Germany' },
+    { code: '+90', country: 'TR', flag: '🇹🇷', name: 'Turkey' },
+    { code: '+82', country: 'KR', flag: '🇰🇷', name: 'South Korea' },
+    { code: '+86', country: 'CN', flag: '🇨🇳', name: 'China' },
+    { code: '+971', country: 'AE', flag: '🇦🇪', name: 'UAE' }
+  ]
+  const [isPhoneCountryDropdownOpen, setIsPhoneCountryDropdownOpen] = useState(false)
+
+  // Extract country code from phone number
+  const extractCountryFromPhone = (phone) => {
+    if (!phone) return countryCodes[0]
+    const phoneStr = String(phone)
+    for (const country of countryCodes) {
+      if (phoneStr.startsWith(country.code)) {
+        return country
+      }
+    }
+    return countryCodes[0]
+  }
+
+  const [selectedPhoneCountry, setSelectedPhoneCountry] = useState(() => extractCountryFromPhone(profilePhone))
+
+  // Get phone number without country code
+  const getPhoneWithoutCode = (phone, countryCode) => {
+    if (!phone) return ''
+    const phoneStr = String(phone)
+    if (phoneStr.startsWith(countryCode)) {
+      return phoneStr.slice(countryCode.length)
+    }
+    return phoneStr
+  }
+
   const months = [
     'Yanvar', 'Fevral', 'Mart', 'April', 'May', 'Iyun',
     'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'
@@ -283,8 +324,87 @@ const Profile = () => {
               <label className="date-input-label">
                 {t('profilePage.labels.phone')}
               </label>
-              <div className="date-input-container">
-                <input type="text" className="date-input-field" value={profilePhone} onChange={(e)=>setProfilePhone(e.target.value)} />
+              <div className="date-input-container" style={{ display: 'flex', alignItems: 'center', padding: 0 }}>
+                {/* Country Code Dropdown */}
+                <div style={{ position: 'relative' }}>
+                  <button
+                    type="button"
+                    onClick={() => setIsPhoneCountryDropdownOpen(!isPhoneCountryDropdownOpen)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.25rem',
+                      padding: '0.75rem',
+                      border: 'none',
+                      background: 'transparent',
+                      cursor: 'pointer',
+                      fontSize: '0.9rem',
+                      borderRight: '1px solid var(--border-light, #e5e7eb)'
+                    }}
+                  >
+                    <span>{selectedPhoneCountry.flag}</span>
+                    <span>{selectedPhoneCountry.code}</span>
+                    <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style={{ marginLeft: '4px' }}>
+                      <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </button>
+                  {isPhoneCountryDropdownOpen && (
+                    <div style={{
+                      position: 'absolute',
+                      top: '100%',
+                      left: 0,
+                      background: 'var(--bg-secondary, #fff)',
+                      border: '1px solid var(--border-light, #e5e7eb)',
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                      zIndex: 100,
+                      minWidth: '180px',
+                      maxHeight: '200px',
+                      overflowY: 'auto'
+                    }}>
+                      {countryCodes.map((country, idx) => (
+                        <button
+                          key={`${country.code}-${country.country}-${idx}`}
+                          type="button"
+                          onClick={() => {
+                            const phoneWithoutCode = getPhoneWithoutCode(profilePhone, selectedPhoneCountry.code)
+                            setSelectedPhoneCountry(country)
+                            setProfilePhone(`${country.code}${phoneWithoutCode}`)
+                            setIsPhoneCountryDropdownOpen(false)
+                          }}
+                          style={{
+                            width: '100%',
+                            padding: '0.5rem 0.75rem',
+                            border: 'none',
+                            background: selectedPhoneCountry.code === country.code && selectedPhoneCountry.country === country.country ? 'rgba(0, 210, 106, 0.1)' : 'transparent',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem',
+                            cursor: 'pointer',
+                            textAlign: 'left',
+                            color: 'inherit'
+                          }}
+                        >
+                          <span>{country.flag}</span>
+                          <span style={{ flex: 1 }}>{country.name}</span>
+                          <span style={{ opacity: 0.6 }}>{country.code}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                {/* Phone Number Input */}
+                <input
+                  type="text"
+                  className="date-input-field"
+                  value={getPhoneWithoutCode(profilePhone, selectedPhoneCountry.code)}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, '')
+                    setProfilePhone(`${selectedPhoneCountry.code}${val}`)
+                  }}
+                  style={{ flex: 1, border: 'none' }}
+                  placeholder="90 123 45 67"
+                />
               </div>
 
               {/* Date Input Field */}

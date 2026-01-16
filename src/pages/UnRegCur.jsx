@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import './currency.css'
 import { useNavigate, useLocation } from "react-router-dom"
 import { useGlobalContext } from "../Context"
-import { ArrowUpDown, ChevronRight, CreditCard } from "lucide-react"
+import { ArrowUpDown, ChevronRight, CreditCard, Wallet, AlertCircle } from "lucide-react"
 import { getExchangeRate, calculateTransactionFees, getUserCards } from "../api"
 
 
@@ -77,6 +77,63 @@ const UnRegCur = () => {
     const [selectedCard, setSelectedCard] = useState(null)
     const [isLoadingCards, setIsLoadingCards] = useState(false)
     const [isCardsExpanded, setIsCardsExpanded] = useState(false)
+
+    // Crypto state
+    const cryptoCurrencies = [
+        { code: 'USDT', name: 'Tether USD', icon: '💵' },
+        { code: 'BTC', name: 'Bitcoin', icon: '₿' },
+        { code: 'ETH', name: 'Ethereum', icon: 'Ξ' },
+        { code: 'USDC', name: 'USD Coin', icon: '💲' },
+        { code: 'BNB', name: 'Binance Coin', icon: '🔶' }
+    ]
+
+    const networkOptions = {
+        USDT: [
+            { code: 'TRC20', name: 'Tron (TRC20)', fee: 'Low fee' },
+            { code: 'ERC20', name: 'Ethereum (ERC20)', fee: 'High fee' },
+            { code: 'BEP20', name: 'BSC (BEP20)', fee: 'Low fee' }
+        ],
+        BTC: [
+            { code: 'BTC', name: 'Bitcoin Network', fee: 'Variable' }
+        ],
+        ETH: [
+            { code: 'ERC20', name: 'Ethereum (ERC20)', fee: 'High fee' },
+            { code: 'BEP20', name: 'BSC (BEP20)', fee: 'Low fee' }
+        ],
+        USDC: [
+            { code: 'ERC20', name: 'Ethereum (ERC20)', fee: 'High fee' },
+            { code: 'BEP20', name: 'BSC (BEP20)', fee: 'Low fee' }
+        ],
+        BNB: [
+            { code: 'BEP20', name: 'BSC (BEP20)', fee: 'Low fee' }
+        ]
+    }
+
+    const [selectedCrypto, setSelectedCrypto] = useState(cryptoCurrencies[0])
+    const [selectedNetwork, setSelectedNetwork] = useState(networkOptions['USDT'][0])
+    const [walletAddress, setWalletAddress] = useState("")
+    const [cryptoReceiverName, setCryptoReceiverName] = useState("")
+    const [isCryptoOpen, setIsCryptoOpen] = useState(false)
+    const [isNetworkOpen, setIsNetworkOpen] = useState(false)
+    const [cryptoTermsChecked, setCryptoTermsChecked] = useState(false)
+
+    // Update network options when crypto changes
+    useEffect(() => {
+        const networks = networkOptions[selectedCrypto.code]
+        if (networks && networks.length > 0) {
+            setSelectedNetwork(networks[0])
+        }
+    }, [selectedCrypto])
+
+    // Validate wallet address format
+    const validateWalletAddress = (address) => {
+        if (!address) return false
+        if (address.length < 26) return false
+        if (selectedNetwork.code === 'TRC20' && !address.startsWith('T')) return false
+        if ((selectedNetwork.code === 'ERC20' || selectedNetwork.code === 'BEP20') && !address.startsWith('0x')) return false
+        if (selectedNetwork.code === 'BTC' && !address.match(/^(1|3|bc1)/)) return false
+        return true
+    }
 
     // Get transfer data from Home page
     useEffect(() => {
@@ -171,10 +228,10 @@ const UnRegCur = () => {
         }
     }, [sendAmount, exchangeRate, transferFeePercentage, exchangeRateFeePercentage])
 
-    // Fetch saved cards when debit card method is selected
+    // Fetch saved cards when ANY payment method is selected (sender card is always needed)
     useEffect(() => {
         const fetchMyCards = async () => {
-            if (isLoggedIn && curMethod === t('methods.debit')) {
+            if (isLoggedIn && curMethod) {
                 try {
                     setIsLoadingCards(true)
                     const cards = await getUserCards()
@@ -190,7 +247,7 @@ const UnRegCur = () => {
             }
         }
         fetchMyCards()
-    }, [isLoggedIn, curMethod, t])
+    }, [isLoggedIn, curMethod])
 
 
     return (
@@ -261,36 +318,69 @@ const UnRegCur = () => {
                             />
                         </div>
                         <div className="currDropdown">
-                            <button
-                                onClick={() => {
-                                    setIsOtherCurrencyOpen(!isOtherCurrencyOpen)
-                                }}
-                                className="currToggle"
-
-                            >
-                                <img src={otherCurrency.flag} alt="" className="currImg" />
-                                <span className="currCode">{otherCurrency?.currencyName.toUpperCase()}</span>
-                                <svg className="ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
-                                </svg>
-                            </button>
-
-                            {isOtherCurrencyOpen && (
-                                <div className="currDropdownMenu">
-                                    {currency.map((cur, index) => (
-                                        <button
-                                            key={index}
-                                            onClick={() => {
-                                                setOtherCurrency(cur)
-                                                setIsOtherCurrencyOpen(false)
-                                            }}
-                                            className={`currOption ${otherCurrency.currencyName === cur.currencyName ? 'active' : ''}`}
-                                        >
-                                            <img src={cur.flag} alt="" className="currImg" />
-                                            <span>{cur.currencyName}</span>
-                                        </button>
-                                    ))}
-                                </div>
+                            {/* Show crypto dropdown when crypto method is selected */}
+                            {curMethod === t('methods.crypto') ? (
+                                <>
+                                    <button
+                                        onClick={() => setIsCryptoOpen(!isCryptoOpen)}
+                                        className="currToggle"
+                                    >
+                                        <span style={{ fontSize: '1.25rem' }}>{selectedCrypto.icon}</span>
+                                        <span className="currCode">{selectedCrypto.code}</span>
+                                        <svg className="ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
+                                        </svg>
+                                    </button>
+                                    {isCryptoOpen && (
+                                        <div className="currDropdownMenu">
+                                            {cryptoCurrencies.map((crypto) => (
+                                                <button
+                                                    key={crypto.code}
+                                                    onClick={() => {
+                                                        setSelectedCrypto(crypto)
+                                                        setIsCryptoOpen(false)
+                                                    }}
+                                                    className={`currOption ${selectedCrypto.code === crypto.code ? 'active' : ''}`}
+                                                >
+                                                    <span style={{ fontSize: '1.25rem', marginRight: '0.5rem' }}>{crypto.icon}</span>
+                                                    <span>{crypto.code}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
+                                </>
+                            ) : (
+                                <>
+                                    <button
+                                        onClick={() => {
+                                            setIsOtherCurrencyOpen(!isOtherCurrencyOpen)
+                                        }}
+                                        className="currToggle"
+                                    >
+                                        <img src={otherCurrency.flag} alt="" className="currImg" />
+                                        <span className="currCode">{otherCurrency?.currencyName.toUpperCase()}</span>
+                                        <svg className="ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
+                                        </svg>
+                                    </button>
+                                    {isOtherCurrencyOpen && (
+                                        <div className="currDropdownMenu">
+                                            {currency.map((cur, index) => (
+                                                <button
+                                                    key={index}
+                                                    onClick={() => {
+                                                        setOtherCurrency(cur)
+                                                        setIsOtherCurrencyOpen(false)
+                                                    }}
+                                                    className={`currOption ${otherCurrency.currencyName === cur.currencyName ? 'active' : ''}`}
+                                                >
+                                                    <img src={cur.flag} alt="" className="currImg" />
+                                                    <span>{cur.currencyName}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
+                                </>
                             )}
                         </div>
                     </div>
@@ -377,9 +467,15 @@ const UnRegCur = () => {
                     </div>
                 </div>
 
-                {/* Saved Cards Accordion - shown when debit card is selected and user is logged in */}
-                {isLoggedIn && curMethod === t('methods.debit') && (
+                {/* Sender Card Selection - shown for ALL payment methods when user is logged in */}
+                {isLoggedIn && curMethod && (
                     <div className="saved-cards-accordion" style={{ margin: '1rem 0' }}>
+                        {/* Section Header */}
+                        <div className="currency-payMethod" style={{ marginBottom: '0.5rem' }}>
+                            <h3 style={{ fontSize: '0.9rem', opacity: 0.8 }}>
+                                {t('senderCard') || 'Откуда списать средства'}
+                            </h3>
+                        </div>
                         {/* Accordion Header */}
                         <button
                             onClick={() => setIsCardsExpanded(!isCardsExpanded)}
@@ -393,14 +489,14 @@ const UnRegCur = () => {
                                 <div className='methodInfo'>
                                     <h3>
                                         {selectedCard
-                                            ? `•••• •••• •••• ${selectedCard.cardData.cardNumber?.slice(-4) || '****'}`
-                                            : (t('selectCard') || 'Kartani tanlang')
+                                            ? `•••• •••• •••• ${(selectedCard.cardData?.cardNumber || selectedCard.cardNumber)?.slice(-4) || '****'}`
+                                            : (t('selectCard') || 'Выберите карту')
                                         }
                                     </h3>
                                     <p>
                                         {selectedCard
-                                            ? `${selectedCard.cardNetwork || selectedCard.brand || 'VISA'} ${selectedCard.bankName ? `• ${selectedCard.bankName}` : ''}`
-                                            : (t('savedCardsDesc') || `${myCards.length} ta saqlangan karta`)
+                                            ? `${selectedCard.cardNetwork || selectedCard.cardData?.cardNetwork || selectedCard.brand || 'VISA'} ${selectedCard.bankName ? `• ${selectedCard.bankName}` : ''}`
+                                            : (t('savedCardsDesc') || 'Карта для оплаты перевода')
                                         }
                                     </p>
                                 </div>
@@ -447,10 +543,10 @@ const UnRegCur = () => {
                                                         <CreditCard size={18} style={{ opacity: 0.7 }} />
                                                         <div style={{ textAlign: 'left' }}>
                                                             <div style={{ fontWeight: 500 }}>
-                                                                •••• {card.cardData.cardNumber?.slice(-4) || '****'}
+                                                                •••• {(card.cardData?.cardNumber || card.cardNumber)?.slice(-4) || '****'}
                                                             </div>
                                                             <div style={{ fontSize: '0.8rem', opacity: 0.6, marginTop: '2px' }}>
-                                                                {card.cardNetwork || card.brand || 'VISA'} {card.bankName ? `• ${card.bankName}` : ''}
+                                                                {card.cardNetwork || card.cardData?.cardNetwork || card.brand || 'VISA'} {card.bankName ? `• ${card.bankName}` : ''}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -472,49 +568,6 @@ const UnRegCur = () => {
                                                 </button>
                                             )
                                         })}
-
-                                        {/* New card option */}
-                                        <button
-                                            onClick={() => {
-                                                setSelectedCard(null)
-                                                setIsCardsExpanded(false)
-                                            }}
-                                            className={`country-option ${selectedCard === null ? 'active' : ''}`}
-                                            style={{
-                                                display: 'flex',
-                                                justifyContent: 'space-between',
-                                                alignItems: 'center',
-                                                padding: '0.75rem 1rem',
-                                                borderTop: '1px solid var(--border-light, #e0e0e0)'
-                                            }}
-                                        >
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                                                <CreditCard size={18} style={{ opacity: 0.7 }} />
-                                                <div style={{ textAlign: 'left' }}>
-                                                    <div style={{ fontWeight: 500 }}>
-                                                        {t('newCard') || 'Yangi karta'}
-                                                    </div>
-                                                    <div style={{ fontSize: '0.8rem', opacity: 0.6, marginTop: '2px' }}>
-                                                        {t('enterNewCardDetails') || 'Yangi karta kiritish'}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            {selectedCard === null && (
-                                                <div style={{
-                                                    width: '20px',
-                                                    height: '20px',
-                                                    borderRadius: '50%',
-                                                    background: '#22c55e',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center'
-                                                }}>
-                                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
-                                                        <polyline points="20 6 9 17 4 12"></polyline>
-                                                    </svg>
-                                                </div>
-                                            )}
-                                        </button>
                                     </>
                                 ) : (
                                     <div style={{ padding: '1rem', textAlign: 'center', opacity: 0.6 }}>
@@ -540,7 +593,7 @@ const UnRegCur = () => {
                             {t("exchangeRate") || "Курс обмена"}
                         </p>
                         <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 600 }}>
-                            1 {myCurrency.currencyName} = {exchangeRate.rate.toLocaleString('en-US', { maximumFractionDigits: 4 })} {otherCurrency.currencyName}
+                            1 {myCurrency.currencyName} = {exchangeRate.rate.toLocaleString('en-US', { maximumFractionDigits: 4 })} {curMethod === t('methods.crypto') ? selectedCrypto.code : otherCurrency.currencyName}
                         </h4>
                     </div>
                 )}
@@ -584,15 +637,69 @@ const UnRegCur = () => {
                         </h4>
                     </div>
                 )}
+
+{/* Warning if no sender card selected */}
+                {isLoggedIn && curMethod && !selectedCard && myCards.length > 0 && (
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        padding: '0.75rem',
+                        borderRadius: '0.5rem',
+                        marginBottom: '1rem',
+                        backgroundColor: theme === 'dark' ? 'rgba(234, 179, 8, 0.1)' : 'rgba(234, 179, 8, 0.08)',
+                        border: '1px solid rgba(234, 179, 8, 0.25)'
+                    }}>
+                        <AlertCircle size={18} style={{ color: '#eab308', flexShrink: 0 }} />
+                        <p style={{ fontSize: '0.85rem', opacity: 0.9, margin: 0 }}>
+                            {t("selectSenderCardWarning") || "Выберите карту, с которой будет списана оплата"}
+                        </p>
+                    </div>
+                )}
+
+                {/* Warning if no cards available */}
+                {isLoggedIn && curMethod && myCards.length === 0 && !isLoadingCards && (
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        padding: '0.75rem',
+                        borderRadius: '0.5rem',
+                        marginBottom: '1rem',
+                        backgroundColor: theme === 'dark' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(239, 68, 68, 0.08)',
+                        border: '1px solid rgba(239, 68, 68, 0.25)'
+                    }}>
+                        <AlertCircle size={18} style={{ color: '#ef4444', flexShrink: 0 }} />
+                        <p style={{ fontSize: '0.85rem', opacity: 0.9, margin: 0 }}>
+                            {t("noCardsWarning") || "У вас нет сохраненных карт. Добавьте карту в профиле."}
+                        </p>
+                    </div>
+                )}
+
                 <button
                     className="currency-continueBtn"
+                    disabled={!curMethod || (isLoggedIn && !selectedCard)}
+                    style={{
+                        opacity: (!curMethod || (isLoggedIn && !selectedCard)) ? 0.5 : 1
+                    }}
                     onClick={() => {
+                        // Build sender card data
+                        const senderCardData = selectedCard ? {
+                            cardId: selectedCard.id || selectedCard.cardId,
+                            cardNumber: (selectedCard.cardData?.cardNumber || selectedCard.cardNumber),
+                            cardNetwork: (selectedCard.cardNetwork || selectedCard.cardData?.cardNetwork || selectedCard.brand || 'VISA'),
+                            cardHolderName: (selectedCard.cardData?.cardHolderName || selectedCard.cardHolderName),
+                            expiryMonth: (selectedCard.cardData?.expiryMonth || selectedCard.expiryMonth),
+                            expiryYear: (selectedCard.cardData?.expiryYear || selectedCard.expiryYear),
+                            bankName: selectedCard.bankName
+                        } : null
+
                         // Build transfer data to pass to next page
                         const transferData = {
                             sendAmount,
                             receiveAmount,
                             fromCurrency: myCurrency.currencyName,
-                            toCurrency: otherCurrency.currencyName,
+                            toCurrency: curMethod === t('methods.crypto') ? selectedCrypto.code : otherCurrency.currencyName,
                             fromFlag: myCurrency.flag,
                             toFlag: otherCurrency.flag,
                             paymentMethod: curMethod,
@@ -600,26 +707,24 @@ const UnRegCur = () => {
                             feeCalculation: feeCalculation || null,
                             transferFeePercentage,
                             exchangeRateFeePercentage,
-                            // Include selected saved card if any
-                            selectedCard: selectedCard || null
+                            // Sender card - the card from which payment will be taken
+                            senderCard: senderCardData
                         }
 
                         if (curMethod === t('methods.debit')) {
-                            // Always go to cardnumber page to enter RECEIVER's card details
-                            // selectedCard here is for sender's payment method, not receiver
+                            // Go to cardnumber page to enter RECEIVER's card details
+                            navigate('/cardnumber', { state: transferData })
+                        } else if (curMethod === t('methods.crypto')) {
+                            // Go to cardnumber page to enter wallet and receiver info
                             navigate('/cardnumber', {
                                 state: {
                                     ...transferData,
-                                    // Pass sender's selected card for payment (if any)
-                                    senderCard: selectedCard ? {
-                                        cardNumber: (selectedCard.cardData || selectedCard).cardNumber,
-                                        cardNetwork: (selectedCard.cardData || selectedCard).cardNetwork,
-                                        cardHolderName: (selectedCard.cardData || selectedCard).cardHolderName
-                                    } : null
+                                    paymentMethod: 'CRYPTO',
+                                    cryptoCurrency: selectedCrypto.code,
+                                    cryptoIcon: selectedCrypto.icon,
+                                    cryptoName: selectedCrypto.name
                                 }
                             })
-                        } else if (curMethod === t('methods.crypto')) {
-                            navigate('/crypto', { state: transferData })
                         } else if (curMethod === t('methods.bank')) {
                             navigate('/bank-transfer', { state: transferData })
                         } else {
