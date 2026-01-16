@@ -30,6 +30,23 @@ const UnRegCardNum = () => {
     // Dropdown open state for recipient cards
     const [isCardDropdownOpen, setIsCardDropdownOpen] = useState(false)
 
+    // Card expiration date
+    const [expiryMonth, setExpiryMonth] = useState('')
+    const [expiryYear, setExpiryYear] = useState('')
+
+    // Detect card network from card number
+    const detectCardNetwork = (cardNum) => {
+        const num = cardNum.replace(/\s/g, '')
+        if (num.startsWith('4')) return 'VISA'
+        if (num.startsWith('5') || num.startsWith('2')) return 'MASTERCARD'
+        if (num.startsWith('8600')) return 'UZCARD'
+        if (num.startsWith('9860')) return 'HUMO'
+        if (num.startsWith('34') || num.startsWith('37')) return 'AMEX'
+        return null
+    }
+
+    const cardNetwork = detectCardNetwork(cardNumber)
+
     const extractDialCode = (phone) => {
         const match = String(phone || '').match(/^\+(\d{1,3})/)
         return match ? `+${match[1]}` : '+998'
@@ -153,13 +170,72 @@ const UnRegCardNum = () => {
                                     <span className="label-icon"><CreditCard /></span>
                                     <span className="label-text">{t("cardNumber")}</span>
                                 </div>
-                                <div className="currency-input-container">
+                                <div className="currency-input-container" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                     <input
                                         type="text"
                                         value={cardNumber}
                                         onChange={handleCardNumberChange}
                                         placeholder={t('addCardModal.placeholders.cardNumber') || t('placeholders.cardNumber')}
+                                        style={{ flex: 1 }}
                                     />
+                                    {cardNetwork && (
+                                        <span style={{
+                                            fontSize: '0.75rem',
+                                            fontWeight: 600,
+                                            padding: '4px 8px',
+                                            borderRadius: '4px',
+                                            background: cardNetwork === 'VISA' ? '#1a1f71' :
+                                                        cardNetwork === 'MASTERCARD' ? '#eb001b' :
+                                                        cardNetwork === 'UZCARD' ? '#00a651' :
+                                                        cardNetwork === 'HUMO' ? '#00bfff' : '#666',
+                                            color: 'white'
+                                        }}>
+                                            {cardNetwork}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        {mode === 'card' && (
+                            <div className="two-cols mb-1">
+                                <div className="col">
+                                    <label className="field-label">
+                                        {t("expiryMonth") || "Oy"}
+                                    </label>
+                                    <div className="currency-input-container">
+                                        <input
+                                            type="text"
+                                            value={expiryMonth}
+                                            onChange={(e) => {
+                                                const val = e.target.value.replace(/\D/g, '')
+                                                if (val.length <= 2 && (val === '' || (parseInt(val) >= 0 && parseInt(val) <= 12))) {
+                                                    setExpiryMonth(val)
+                                                }
+                                            }}
+                                            placeholder="MM"
+                                            maxLength={2}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="col">
+                                    <label className="field-label">
+                                        {t("expiryYear") || "Yil"}
+                                    </label>
+                                    <div className="currency-input-container">
+                                        <input
+                                            type="text"
+                                            value={expiryYear}
+                                            onChange={(e) => {
+                                                const val = e.target.value.replace(/\D/g, '')
+                                                if (val.length <= 4) {
+                                                    setExpiryYear(val)
+                                                }
+                                            }}
+                                            placeholder="YYYY"
+                                            maxLength={4}
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -345,10 +421,17 @@ const UnRegCardNum = () => {
                             let recipientPayload
 
                             if (mode === 'card') {
+                                // Format expiry year to 4 digits
+                                const formattedYear = expiryYear.length === 2 ? `20${expiryYear}` : expiryYear
+
                                 // New card input
                                 recipientPayload = {
                                     mode: 'card',
                                     cardNumber: cardNumber.replace(/\s/g, ''),
+                                    cardNetwork: cardNetwork || 'VISA',
+                                    expiryMonth: expiryMonth.padStart(2, '0'),
+                                    expiryYear: formattedYear,
+                                    cardHolderName: `${firstName} ${lastName}`.trim().toUpperCase(),
                                     phoneNumber: fullPhoneNumber,
                                     firstName,
                                     lastName,
@@ -386,7 +469,7 @@ const UnRegCardNum = () => {
                         }}
                         disabled={
                             mode === 'card'
-                                ? (!cardNumber || !isPhoneValid)
+                                ? (!cardNumber || cardNumber.replace(/\s/g, '').length < 16 || !isPhoneValid || !expiryMonth || !expiryYear || expiryYear.length < 2 || !firstName || !lastName)
                                 : (!foundUser || (foundUser.cards?.length > 0 && !selectedCard))
                         }
                     >

@@ -621,7 +621,7 @@ const UnRegCur = () => {
                         } else if (curMethod === t('methods.crypto')) {
                             navigate('/crypto', { state: transferData })
                         } else if (curMethod === t('methods.bank')) {
-                            navigate('/provider', { state: transferData })
+                            navigate('/bank-transfer', { state: transferData })
                         } else {
                             // If no method selected, open the dropdown to prompt selection
                             setIsMethodOpen(true)

@@ -38,6 +38,7 @@ import UnRegCur from './pages/UnRegCur';
 import UnRegCardNum from './pages/UnRegCardNum';
 import UnRegSelProvide from './pages/UnRegSelProvide';
 import UnRegCryp from './pages/UnRegCryp';
+import UnRegBankTransfer from './pages/UnRegBankTransfer';
 import UnRegInstruction from './pages/UnRegInstruction';
 import TransactionInfo from './pages/TransactionInfo';
 import KycVerification from './pages/KycVerification';
@@ -108,6 +109,7 @@ function App() {
           <>
             <Route path="/currency" element={<PendingLayout><UnRegCur /></PendingLayout>} />
             <Route path="/crypto" element={<PendingLayout><UnRegCryp /></PendingLayout>} />
+            <Route path="/bank-transfer" element={<PendingLayout><UnRegBankTransfer /></PendingLayout>} />
             <Route path="/cardnumber" element={<PendingLayout><UnRegCardNum /></PendingLayout>} />
             <Route path="/provider" element={<PendingLayout><UnRegSelProvide /></PendingLayout>} />
             <Route path="/instruction" element={<PendingLayout><UnRegInstruction /></PendingLayout>} />
