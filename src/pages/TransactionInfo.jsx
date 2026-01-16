@@ -76,7 +76,7 @@ const TransactionInfo = () => {
                     <h3>{t('transactionInfo.title')}</h3>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '4rem', flexDirection: 'column', gap: '1rem' }}>
-                    <p>{error || t('transactionInfo.notFound') || 'Transaction not found'}</p>
+                    <p>{error || t('transactionInfo.status.notFound') || 'Transaction not found'}</p>
                     <button onClick={() => navigate('/transactions')} style={{ padding: '0.5rem 1rem', cursor: 'pointer' }}>
                         {t('back') || 'Back'}
                     </button>
