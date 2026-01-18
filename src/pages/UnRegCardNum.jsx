@@ -483,9 +483,9 @@ const UnRegCardNum = () => {
                                     </div>
                                 )}
                                 {!isSearching && userId.trim().length > 0 && searchError && (
-                                    <div className="user-not-found" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--danger, #ef4444)', marginTop: '0.5rem' }}>
-                                        <XCircle size={20} />
-                                        <span>{searchError}</span>
+                                    <div className="user-not-found" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--danger, #ef4444)', marginTop: '0.5rem', fontSize: '0.875rem' }}>
+                                        <XCircle size={18} style={{ flexShrink: 0 }} />
+                                        <span>{t('invalidFastorikaId') || 'Noto\'g\'ri Fastorika ID formati'}</span>
                                     </div>
                                 )}
                                 {!isSearching && userId.trim().length > 0 && foundUser && (

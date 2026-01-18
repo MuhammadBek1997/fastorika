@@ -205,6 +205,7 @@ const Profile = () => {
         </h2>
       </div>
       <div className='profile-body'>
+        {kycStatus !== 'VERIFIED' && (
         <div className="profile-verify">
           {kycLoading ? (
             <>
@@ -212,18 +213,6 @@ const Profile = () => {
                 <Loader2 className="animate-spin" size={16} />
                 {t('profilePage.checkingStatus') || 'Checking...'}
               </div>
-            </>
-          ) : kycStatus === 'VERIFIED' ? (
-            <>
-              <div className="profile-verify-status verified">
-                <CheckCircle size={16} />
-                {t('profilePage.verified') || 'Verified'}
-              </div>
-              <div className="profile-verify-head">
-                <CheckCircle size={48} className="verified-icon" />
-                <h3>{t('profilePage.verifiedTitle') || 'Identity Verified'}</h3>
-              </div>
-              <p>{t('profilePage.verifiedDesc') || 'Your identity has been verified successfully.'}</p>
             </>
           ) : kycStatus === 'PENDING' ? (
             <>
@@ -271,6 +260,7 @@ const Profile = () => {
             </>
           )}
         </div>
+        )}
         <div className="profile-info">
           <h3 className="profile-info-head"></h3>
           <div className="profile-info-cont">

@@ -10,6 +10,8 @@
   "step4Instructions": "Enter the transfer amount, making sure it matches the required payment",
   "step5Instructions": "Confirm the transaction by clicking the 'Confirm Transfer' button with the transaction key",
   "back": "Back",
+  "startChat": "Start a conversation",
+  "connecting": "Connecting...",
   "howToPay": "How to pay the transfer?",
   "followSteps": "Follow these steps to complete the payment",
   "agreeWithInstructions": "I confirm that I have read the payment instructions and accept their terms",
@@ -430,6 +432,7 @@
     }
   },
   "userNotFound": "User not found",
+  "invalidFastorikaId": "Invalid Fastorika ID format",
   "searchError": "Search failed",
   "searchingUser": "Searching user...",
   "selectRecipientCard": "Select recipient card",
