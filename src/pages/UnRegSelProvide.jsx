@@ -6,13 +6,13 @@ import "../styles/unregselprovide.css"
 import { ArrowLeft, ChevronRight, AlertCircle } from "lucide-react"
 
 const UnRegSelProvide = () => {
-  const { t, theme } = useGlobalContext()
+  const { t, theme, transferData, updateTransferData } = useGlobalContext()
   const navigate = useNavigate()
   const location = useLocation()
 
-  // Check if this is a crypto transfer
-  const isCryptoTransfer = location.state?.paymentMethod === 'CRYPTO'
-  const cryptoCurrency = location.state?.cryptoCurrency || 'USDT'
+  // Check if this is a crypto transfer from global context
+  const isCryptoTransfer = transferData?.paymentMethod === 'CRYPTO' || transferData?.cryptoCurrency
+  const cryptoCurrency = transferData?.cryptoCurrency || 'USDT'
 
   // Network options based on crypto currency
   const networkOptions = {
@@ -72,31 +72,27 @@ const UnRegSelProvide = () => {
       return
     }
 
-    // Build navigation state
-    const navState = {
-      ...location.state,
-      provider
+    // Save to global context
+    const updateData = {
+      selectedProvider: provider,
+      step3Completed: true
     }
 
     // Add network info for crypto transfers
     if (isCryptoTransfer) {
-      navState.cryptoDetails = {
+      updateData.selectedNetwork = selectedNetwork
+      updateData.cryptoDetails = {
         cryptoCurrency: cryptoCurrency,
         blockchainNetwork: selectedNetwork.code,
         networkName: selectedNetwork.name,
-        walletAddress: location.state?.recipient?.walletAddress,
-        receiverName: location.state?.recipient?.receiverName
-      }
-      // Also add to recipient
-      navState.recipient = {
-        ...location.state?.recipient,
-        blockchainNetwork: selectedNetwork.code,
-        networkName: selectedNetwork.name
+        walletAddress: transferData?.recipient?.walletAddress,
+        receiverName: transferData?.recipient?.receiverName
       }
     }
 
-    // Pass all transfer data + selected provider to next page
-    navigate('/instruction', { state: navState })
+    // Save to global context and navigate
+    updateTransferData(updateData)
+    navigate('/instruction')
   }
 
   return (

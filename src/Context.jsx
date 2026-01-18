@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider, appleProvider } from './firebaseConfig';
+import { authenticateWithGoogle, authenticateWithApple } from './services/authService';
 
 const AppContext = createContext();
 
@@ -24,6 +25,77 @@ export const AppProvider = ({ children }) => {
   const [openIndex, setOpenIndex] = useState(null);
   const [selPayment, setSelPayment] = useState("currency");
   const [addCardModal,setAddCardModal] = useState(false)
+
+  // Transfer Flow State - persists data across transfer steps
+  const [transferData, setTransferData] = useState({
+    // Step 1: Currency/Amount (UnRegCur)
+    sendAmount: '',
+    receiveAmount: '',
+    fromCurrency: 'USD',
+    toCurrency: 'UZS',
+    fromFlag: 'https://img.icons8.com/color/96/usa-circular.png',
+    toFlag: 'https://img.icons8.com/color/96/uzbekistan-circular.png',
+    paymentMethod: '',
+    exchangeRate: null,
+    feeCalculation: null,
+    transferFeePercentage: 10,
+    exchangeRateFeePercentage: 2,
+    senderCard: null,
+    // Crypto specific
+    cryptoCurrency: null,
+    cryptoIcon: null,
+    cryptoName: null,
+    // Step 2: Recipient (UnRegCardNum)
+    recipientCardNumber: '',
+    recipientName: '',
+    recipientCountry: '',
+    recipientPhone: '',
+    // Crypto recipient
+    walletAddress: '',
+    selectedNetwork: null,
+    // Step 3: Provider (UnRegSelProvide)
+    selectedProvider: null,
+    // Validation flags
+    step1Completed: false,
+    step2Completed: false,
+    step3Completed: false
+  })
+
+  // Update transfer data (merge with existing)
+  const updateTransferData = (newData) => {
+    setTransferData(prev => ({ ...prev, ...newData }))
+  }
+
+  // Reset transfer data
+  const resetTransferData = () => {
+    setTransferData({
+      sendAmount: '',
+      receiveAmount: '',
+      fromCurrency: 'USD',
+      toCurrency: 'UZS',
+      fromFlag: 'https://img.icons8.com/color/96/usa-circular.png',
+      toFlag: 'https://img.icons8.com/color/96/uzbekistan-circular.png',
+      paymentMethod: '',
+      exchangeRate: null,
+      feeCalculation: null,
+      transferFeePercentage: 10,
+      exchangeRateFeePercentage: 2,
+      senderCard: null,
+      cryptoCurrency: null,
+      cryptoIcon: null,
+      cryptoName: null,
+      recipientCardNumber: '',
+      recipientName: '',
+      recipientCountry: '',
+      recipientPhone: '',
+      walletAddress: '',
+      selectedNetwork: null,
+      selectedProvider: null,
+      step1Completed: false,
+      step2Completed: false,
+      step3Completed: false
+    })
+  }
   // Cards refresh signal (increment to force reloads)
   const [cardsRefreshKey, setCardsRefreshKey] = useState(0)
   const refreshCards = () => setCardsRefreshKey(prev => prev + 1)
@@ -356,22 +428,92 @@ export const AppProvider = ({ children }) => {
   };
 
 
-// Google Login Handler - OAuth via Firebase (In Development)
-const handleGoogleLogin = async () => {
+// Google Login Handler - OAuth via intermediate backend
+const handleGoogleLogin = async (googleResponse) => {
   try {
     const { toast } = await import('react-toastify');
-    toast.info('Google login funksiyasi ishlab chiqilmoqda');
-  } catch { }
-  return false;
+
+    // If no response provided, show info message
+    if (!googleResponse || !googleResponse.credential) {
+      toast.info('Google login funksiyasi ishlamoqda');
+      return false;
+    }
+
+    // Authenticate with our intermediate backend
+    const result = await authenticateWithGoogle(googleResponse);
+
+    if (!result.success) {
+      toast.error(result.error || 'Google login xatolik');
+      return false;
+    }
+
+    // Store tokens in sessionStorage (same as handleLogin)
+    if (result.token) {
+      sessionStorage.setItem('token', result.token);
+      localStorage.setItem('token', result.token);
+    }
+
+    // Set user data
+    setUser(result.user);
+    setIsAuthenticated(true);
+    localStorage.setItem('logged', 'true');
+    localStorage.setItem('user', JSON.stringify(result.user));
+
+    toast.success(t('loginSuccess') || 'Google orqali muvaffaqiyatli kirdingiz');
+    navigate('/transactions');
+    return true;
+  } catch (error) {
+    console.error('Google login error:', error);
+    try {
+      const { toast } = await import('react-toastify');
+      toast.error(t('loginError') || 'Google login xatolik');
+    } catch { }
+    return false;
+  }
 };
 
-// Apple Login Handler - OAuth via Firebase (In Development)
-const handleAppleLogin = async () => {
+// Apple Login Handler - OAuth via intermediate backend
+const handleAppleLogin = async (appleResponse) => {
   try {
     const { toast } = await import('react-toastify');
-    toast.info('Apple login funksiyasi ishlab chiqilmoqda');
-  } catch { }
-  return false;
+
+    // If no response provided, show info message
+    if (!appleResponse || (!appleResponse.authorization && !appleResponse.id_token)) {
+      toast.info('Apple login funksiyasi ishlamoqda');
+      return false;
+    }
+
+    // Authenticate with our intermediate backend
+    const result = await authenticateWithApple(appleResponse);
+
+    if (!result.success) {
+      toast.error(result.error || 'Apple login xatolik');
+      return false;
+    }
+
+    // Store tokens in sessionStorage (same as handleLogin)
+    if (result.token) {
+      sessionStorage.setItem('token', result.token);
+      localStorage.setItem('token', result.token);
+    }
+
+    // Set user data
+    setUser(result.user);
+    setIsAuthenticated(true);
+    localStorage.setItem('logged', 'true');
+    localStorage.setItem('user', JSON.stringify(result.user));
+
+    toast.success(t('loginSuccess') || 'Apple orqali muvaffaqiyatli kirdingiz');
+    navigate('/transactions');
+    return true;
+  } catch (error) {
+    console.error('Apple login error:', error);
+    try {
+      const { toast } = await import('react-toastify');
+      toast.error(t('loginError') || 'Apple login xatolik');
+    } catch { }
+    return false;
+  }
 };
 
 
@@ -1022,6 +1164,11 @@ let mockUsers = [
       setSelPayment,
       addCardModal,
       setAddCardModal,
+
+      // Transfer Flow
+      transferData,
+      updateTransferData,
+      resetTransferData,
       // Cards
       cardsRefreshKey,
       refreshCards,

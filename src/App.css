@@ -984,6 +984,32 @@ nav.scrolled {
     border-radius: 1rem;
 }
 
+.hero-fee,
+.hero-feeCount {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1rem;
+    margin-top: 0.5rem;
+}
+
+.hero-fee p,
+.hero-feeCount p {
+    font-size: 0.9rem;
+    opacity: 0.7;
+}
+
+.hero-fee h4,
+.hero-feeCount h4 {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.fee-accordion > div {
+    display: flex;
+    flex-direction: column;
+}
+
 
 
 
@@ -2209,9 +2235,10 @@ nav.scrolled {
 
 
     .fasttransfer {
-        flex-direction: column-reverse;
+        flex-direction: column;
         align-items: center;
         padding: 2rem;
+        padding-bottom: 1rem;
         gap: 1rem;
     }
 
@@ -2243,15 +2270,19 @@ nav.scrolled {
     }
 
     .fasttransfer-cards {
+        position: static;
+        transform: none;
         flex-direction: column;
-        width: 85%;
-        bottom: 2rem;
+        width: 100%;
         gap: 1rem;
+        justify-content: center;
     }
 
     .fasttransfer-card {
+        width: calc(100% - 0.5rem);
         padding: 1rem;
     }
+
 
     .fasttransfer-card-number {
         font-size: 32px;
@@ -3995,9 +4026,9 @@ nav.scrolled {
     transition: background-color 0.2s ease;
 }
 
-.country-select-btn:hover {
+/* .country-select-btn:hover {
     background-color: var(--hover-bg);
-}
+} */
 
 
 .country-dropdown-menu {
@@ -4685,10 +4716,17 @@ nav.scrolled {
 }
 
 .currency-payMethod {
-    padding: 1rem;
+    padding: 0.5rem 1rem 0 1rem;
     font-weight: 500;
 }
 
+.saved-cards-accordion{
+    padding: 0 1rem;
+}
+
+.fee-accordion{
+    flex-direction: column;
+}
 .currency-bottom {
     padding: 1rem;
 }
@@ -4727,10 +4765,16 @@ nav.scrolled {
     object-fit: contain;
 }
 
+.methodIcon svg {
+    width: 24px;
+    height: 24px;
+}
+
 .methodInfo {
     flex: 1;
     display: flex;
     flex-direction: column;
+    align-items: start;
     gap: 2px;
 }
 
@@ -4748,10 +4792,12 @@ nav.scrolled {
     font-size: 14px;
     color: var(--text-secondary);
     margin: 0;
+    opacity: 0.7;
 }
 
 /* Dark theme uchun */
 #dark .methodIcon {
+    color: #FFFFFF;
     background-color: var(--bg-dark);
 }
 
@@ -4766,7 +4812,6 @@ nav.scrolled {
     font-size: 0.8rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    margin-top: 0.5rem;
 }
 
 .currency-continueBtn:hover {

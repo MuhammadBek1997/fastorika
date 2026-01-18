@@ -4,7 +4,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { ClosedCaption, X } from 'lucide-react'
 
 const UnRegNavbar = () => {
-    let { t, theme, navigate, currentLang, currentLanguage, handleChange, languages, toggleTheme, selPayment } = useGlobalContext()
+    let { t, theme, navigate, currentLang, currentLanguage, handleChange, languages, toggleTheme, selPayment, transferData } = useGlobalContext()
     const [themeUnavOpen, setThemeUnavOpen] = useState(false)
     const [langUnavOpen, setLangUnavOpen] = useState(false)
     const [isUnavMobileMenuOpen, setIsUnavMobileMenuOpen] = useState(false)
@@ -58,20 +58,53 @@ const UnRegNavbar = () => {
                                 {t('unregNav.summa')}
                             </Link>
                         </li>
-                        <li  className={isActive == 2 ? 'active' : ''}>
-                            <Link to={selPayment == "currency" ? '/cardnumber' : '/crypto'} onClick={()=>setIsActive(2)}>
+                        <li className={`${isActive == 2 ? 'active' : ''} ${!transferData?.step1Completed ? 'disabled' : ''}`}>
+                            <span
+                                onClick={() => {
+                                    if (transferData?.step1Completed) {
+                                        setIsActive(2)
+                                        navigate(selPayment == "currency" ? '/cardnumber' : '/crypto')
+                                    }
+                                }}
+                                style={{
+                                    cursor: transferData?.step1Completed ? 'pointer' : 'not-allowed',
+                                    opacity: transferData?.step1Completed ? 1 : 0.5
+                                }}
+                            >
                                 {t('unregNav.recipient')}
-                            </Link>
+                            </span>
                         </li>
-                        <li className={isActive == 3 ? 'active' : ''}>
-                            <Link to={'/provider'} onClick={()=>setIsActive(3)}>
+                        <li className={`${isActive == 3 ? 'active' : ''} ${!transferData?.step2Completed ? 'disabled' : ''}`}>
+                            <span
+                                onClick={() => {
+                                    if (transferData?.step2Completed) {
+                                        setIsActive(3)
+                                        navigate('/provider')
+                                    }
+                                }}
+                                style={{
+                                    cursor: transferData?.step2Completed ? 'pointer' : 'not-allowed',
+                                    opacity: transferData?.step2Completed ? 1 : 0.5
+                                }}
+                            >
                                 {t('unregNav.paymentSystem')}
-                            </Link>
+                            </span>
                         </li>
-                        <li className={isActive == 4 ? 'active' : ''}>
-                            <Link to={'/instruction'} onClick={()=>setIsActive(4)}>
+                        <li className={`${isActive == 4 ? 'active' : ''} ${!transferData?.step3Completed ? 'disabled' : ''}`}>
+                            <span
+                                onClick={() => {
+                                    if (transferData?.step3Completed) {
+                                        setIsActive(4)
+                                        navigate('/instruction')
+                                    }
+                                }}
+                                style={{
+                                    cursor: transferData?.step3Completed ? 'pointer' : 'not-allowed',
+                                    opacity: transferData?.step3Completed ? 1 : 0.5
+                                }}
+                            >
                                 {t('unregNav.instructions')}
-                            </Link>
+                            </span>
                         </li>
 
                     </ul>

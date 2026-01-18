@@ -240,88 +240,49 @@ const Registration = () => {
                         disabled={location.state?.fromGoogle || location.state?.fromApple}
                     />
                     <label htmlFor="">
-                        {t("phoneNumber") || "Telefon raqami"}
+                        {t("phoneNumber") || "Номер телефона"}
                     </label>
-                    <div style={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
-                        {/* Country Code Dropdown */}
-                        <div style={{ position: 'relative' }}>
-                            <button
-                                type="button"
-                                onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '0.25rem',
-                                    padding: '0.75rem',
-                                    border: '1px solid var(--border-light, #e5e7eb)',
-                                    borderRight: 'none',
-                                    borderRadius: '8px 0 0 8px',
-                                    background: 'transparent',
-                                    cursor: 'pointer',
-                                    fontSize: '1rem',
-                                    height: '100%'
-                                }}
-                            >
-                                <span>{selectedCountry.flag}</span>
-                                <span>{selectedCountry.code}</span>
-                                <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style={{ marginLeft: '4px' }}>
-                                    <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                                </svg>
-                            </button>
-                            {isCountryDropdownOpen && (
-                                <div style={{
-                                    position: 'absolute',
-                                    top: '100%',
-                                    left: 0,
-                                    background: theme === 'dark' ? '#2a2a2a' : '#fff',
-                                    border: '1px solid var(--border-light, #e5e7eb)',
-                                    borderRadius: '8px',
-                                    boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                                    zIndex: 100,
-                                    minWidth: '180px',
-                                    maxHeight: '200px',
-                                    overflowY: 'auto'
-                                }}>
-                                    {countryCodes.map((country, idx) => (
-                                        <button
-                                            key={`${country.code}-${country.country}-${idx}`}
-                                            type="button"
-                                            onClick={() => {
-                                                setSelectedCountry(country)
-                                                setIsCountryDropdownOpen(false)
-                                            }}
-                                            style={{
-                                                width: '100%',
-                                                padding: '0.5rem 0.75rem',
-                                                border: 'none',
-                                                background: selectedCountry.code === country.code && selectedCountry.country === country.country ? 'rgba(0, 210, 106, 0.1)' : 'transparent',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '0.5rem',
-                                                cursor: 'pointer',
-                                                textAlign: 'left',
-                                                color: 'inherit'
-                                            }}
-                                        >
-                                            <span>{country.flag}</span>
-                                            <span style={{ flex: 1 }}>{country.name}</span>
-                                            <span style={{ opacity: 0.6 }}>{country.code}</span>
-                                        </button>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
+                    <div className="phone-input-container">
+                        {/* Country Code Dropdown Button */}
+                        <button
+                            type="button"
+                            onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
+                            className={`phone-country-btn ${isCountryDropdownOpen ? 'open' : ''}`}
+                        >
+                            <span className="flag">{selectedCountry.flag}</span>
+                            <span className="code">{selectedCountry.code}</span>
+                            <svg width="10" height="6" viewBox="0 0 10 6" fill="none">
+                                <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                        </button>
+
+                        {/* Country Dropdown Menu */}
+                        {isCountryDropdownOpen && (
+                            <div className="phone-dropdown">
+                                {countryCodes.map((country, idx) => (
+                                    <button
+                                        key={`${country.code}-${country.country}-${idx}`}
+                                        type="button"
+                                        onClick={() => {
+                                            setSelectedCountry(country)
+                                            setIsCountryDropdownOpen(false)
+                                        }}
+                                        className={`phone-dropdown-item ${selectedCountry.code === country.code && selectedCountry.country === country.country ? 'active' : ''}`}
+                                    >
+                                        <span className="flag">{country.flag}</span>
+                                        <span className="name">{country.name}</span>
+                                        <span className="dial-code">{country.code}</span>
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+
                         {/* Phone Number Input */}
                         <input
                             type="tel"
                             value={phone}
                             onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
                             placeholder="90 123 45 67"
-                            style={{
-                                flex: 1,
-                                borderRadius: '0 8px 8px 0',
-                                borderLeft: 'none'
-                            }}
                         />
                     </div>
                     <label htmlFor="">
@@ -432,24 +393,24 @@ const Registration = () => {
                     </button>
                 )}
                 
-                <div className='login-or'>
+                {/* <div className='login-or'>
                     <hr />
                     <p>
                         {t("or")}
                     </p>
-                </div>
-                <div className='login-clientProviders'>
-                    {/* Google orqali registratsiya - DISABLED */}
+                </div> */}
+                {/* <div className='login-clientProviders'>
+                    
                     <button onClick={handleGoogleLogin} style={{ opacity: 0.5, cursor: 'not-allowed' }}>
                         <img src="/images/Google.png" alt="" />
                         {t("login-clientwithG")}
                     </button>
-                    {/* Apple orqali registratsiya - DISABLED */}
+                    
                     <button onClick={handleAppleLogin} style={{ opacity: 0.5, cursor: 'not-allowed' }}>
                         <img src={`/images/apple${theme}.png`} alt="" />
                         {t("login-clientwithA")}
                     </button>
-                </div>
+                </div> */}
             </div>
             
             {showVerifyModal && (

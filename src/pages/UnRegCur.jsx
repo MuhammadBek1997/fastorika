@@ -2,13 +2,15 @@ import { useState, useEffect } from "react"
 import './currency.css'
 import { useNavigate, useLocation } from "react-router-dom"
 import { useGlobalContext } from "../Context"
-import { ArrowUpDown, ChevronRight, CreditCard, Wallet, AlertCircle } from "lucide-react"
+import { ArrowUpDown, ChevronRight, ChevronDown, CreditCard, Wallet, AlertCircle, Bitcoin, BanknoteArrowUp } from "lucide-react"
 import { getExchangeRate, calculateTransactionFees, getUserCards } from "../api"
+import VerificationModal from "../components/VerificationModal"
+import CancelTransactionModal from "../components/CancelTransactionModal"
 
 
 const UnRegCur = () => {
 
-    let { t, theme } = useGlobalContext()
+    let { t, theme, transferData, updateTransferData, kycStatus } = useGlobalContext()
     const navigate = useNavigate()
     const location = useLocation()
 
@@ -54,15 +56,27 @@ const UnRegCur = () => {
     }
 
     const [isMethodOpen, setIsMethodOpen] = useState(false)
-    const [curMethod, setMethod] = useState("")
+    const [curMethod, setMethod] = useState(transferData?.paymentMethod || "")
     const [selMeth, setSelMeth] = useState({})
     const [isMyCurrencyOpen, setIsMyCurrencyOpen] = useState(false)
     const [isOtherCurrencyOpen, setIsOtherCurrencyOpen] = useState(false)
-    const [myCurrency, setMyCurrency] = useState(currency[0])
-    const [otherCurrency, setOtherCurrency] = useState(currency[1])
+    const [myCurrency, setMyCurrency] = useState(() => {
+        if (transferData?.fromCurrency) {
+            const found = currency.find(c => c.currencyName === transferData.fromCurrency)
+            return found || currency[0]
+        }
+        return currency[0]
+    })
+    const [otherCurrency, setOtherCurrency] = useState(() => {
+        if (transferData?.toCurrency) {
+            const found = currency.find(c => c.currencyName === transferData.toCurrency)
+            return found || currency[1]
+        }
+        return currency[1]
+    })
     const [changeCurrencyCards, setChangeCurrencyCards] = useState(false)
-    const [sendAmount, setSendAmount] = useState('1000')
-    const [receiveAmount, setReceiveAmount] = useState('12 560 000')
+    const [sendAmount, setSendAmount] = useState(transferData?.sendAmount || '0')
+    const [receiveAmount, setReceiveAmount] = useState(transferData?.receiveAmount || '0')
     const [exchangeRate, setExchangeRate] = useState(null)
     const [isLoadingRate, setIsLoadingRate] = useState(false)
     const [feeCalculation, setFeeCalculation] = useState(null)
@@ -77,6 +91,7 @@ const UnRegCur = () => {
     const [selectedCard, setSelectedCard] = useState(null)
     const [isLoadingCards, setIsLoadingCards] = useState(false)
     const [isCardsExpanded, setIsCardsExpanded] = useState(false)
+    const [isFeeExpanded, setIsFeeExpanded] = useState(false)
 
     // Crypto state
     const cryptoCurrencies = [
@@ -117,6 +132,10 @@ const UnRegCur = () => {
     const [isNetworkOpen, setIsNetworkOpen] = useState(false)
     const [cryptoTermsChecked, setCryptoTermsChecked] = useState(false)
 
+    // Modal states
+    const [showVerificationModal, setShowVerificationModal] = useState(false)
+    const [showCancelModal, setShowCancelModal] = useState(false)
+
     // Update network options when crypto changes
     useEffect(() => {
         const networks = networkOptions[selectedCrypto.code]
@@ -124,6 +143,57 @@ const UnRegCur = () => {
             setSelectedNetwork(networks[0])
         }
     }, [selectedCrypto])
+
+    // Function to proceed with transfer after verification check
+    const proceedWithTransfer = () => {
+        // Build sender card data
+        const senderCardData = selectedCard ? {
+            cardId: selectedCard.id || selectedCard.cardId,
+            cardNumber: (selectedCard.cardData?.cardNumber || selectedCard.cardNumber),
+            cardNetwork: (selectedCard.cardNetwork || selectedCard.cardData?.cardNetwork || selectedCard.brand || 'VISA'),
+            cardHolderName: (selectedCard.cardData?.cardHolderName || selectedCard.cardHolderName),
+            expiryMonth: (selectedCard.cardData?.expiryMonth || selectedCard.expiryMonth),
+            expiryYear: (selectedCard.cardData?.expiryYear || selectedCard.expiryYear),
+            bankName: selectedCard.bankName
+        } : null
+
+        // Build transfer data and save to global context
+        const newTransferData = {
+            sendAmount,
+            receiveAmount,
+            fromCurrency: myCurrency.currencyName,
+            toCurrency: curMethod === t('methods.crypto') ? selectedCrypto.code : otherCurrency.currencyName,
+            fromFlag: myCurrency.flag,
+            toFlag: otherCurrency.flag,
+            paymentMethod: curMethod,
+            exchangeRate: exchangeRate?.rate || null,
+            feeCalculation: feeCalculation || null,
+            transferFeePercentage,
+            exchangeRateFeePercentage,
+            senderCard: senderCardData,
+            step1Completed: true
+        }
+
+        // Add crypto data if crypto method selected
+        if (curMethod === t('methods.crypto')) {
+            newTransferData.cryptoCurrency = selectedCrypto.code
+            newTransferData.cryptoIcon = selectedCrypto.icon
+            newTransferData.cryptoName = selectedCrypto.name
+        }
+
+        // Save to global context
+        updateTransferData(newTransferData)
+
+        if (curMethod === t('methods.debit')) {
+            navigate('/cardnumber')
+        } else if (curMethod === t('methods.crypto')) {
+            navigate('/cardnumber')
+        } else if (curMethod === t('methods.bank')) {
+            navigate('/bank-transfer')
+        } else {
+            setIsMethodOpen(true)
+        }
+    }
 
     // Validate wallet address format
     const validateWalletAddress = (address) => {
@@ -401,13 +471,13 @@ const UnRegCur = () => {
                                     <div className="currency-selected-method">
                                         <div className='methodIcon'>
                                             {curMethod === t('methods.debit') && (
-                                                <img src={`/images/cardIcon${theme}.png`} alt="Card Icon" />
+                                                <CreditCard/>
                                             )}
                                             {curMethod === t('methods.crypto') && (
-                                                <img src={`/images/cryptoIcon${theme}.png`} alt="Crypto Icon" />
+                                                <Bitcoin/>
                                             )}
                                             {curMethod === t('methods.bank') && (
-                                                <img src={`/images/bankIcon${theme}.png`} alt="Bank Icon" />
+                                                <BanknoteArrowUp/>
                                             )}
                                         </div>
                                         <div className='methodInfo'>
@@ -440,7 +510,6 @@ const UnRegCur = () => {
                                         </div>
                                     </div>
                             }
-
                             <ChevronRight size={16} style={{ transform: isMethodOpen ? 'rotate(90deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }} />
                         </button>
                         {isMethodOpen && (
@@ -479,7 +548,7 @@ const UnRegCur = () => {
                         {/* Accordion Header */}
                         <button
                             onClick={() => setIsCardsExpanded(!isCardsExpanded)}
-                            className="country-select-btn"
+                            className="date-input-container"
                             style={{ width: '100%' }}
                         >
                             <div className="currency-selected-method">
@@ -578,65 +647,65 @@ const UnRegCur = () => {
                         )}
                     </div>
                 )}
-                {/* Exchange Rate Display */}
-                {exchangeRate && !isLoadingRate && (
-                    <div className='currency-exchange-rate' style={{
-                        padding: '0.75rem',
-                        marginBottom: '0.5rem',
-                        background: theme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
-                        borderRadius: '8px',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center'
-                    }}>
-                        <p style={{ margin: 0, fontSize: '0.9rem', opacity: 0.8 }}>
-                            {t("exchangeRate") || "Курс обмена"}
-                        </p>
-                        <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 600 }}>
-                            1 {myCurrency.currencyName} = {exchangeRate.rate.toLocaleString('en-US', { maximumFractionDigits: 4 })} {curMethod === t('methods.crypto') ? selectedCrypto.code : otherCurrency.currencyName}
-                        </h4>
-                    </div>
-                )}
-                {isLoadingRate && (
-                    <div className='currency-exchange-rate' style={{
-                        padding: '0.75rem',
-                        marginBottom: '0.5rem',
-                        background: theme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
-                        borderRadius: '8px',
-                        textAlign: 'center'
-                    }}>
-                        <p style={{ margin: 0, fontSize: '0.9rem', opacity: 0.6 }}>
-                            {t("loadingRate") || "Загрузка курса..."}
-                        </p>
-                    </div>
-                )}
+                {/* Fee Accordion */}
+                <div className="fee-accordion" style={{ marginTop: '1rem' }}>
+                    <button
+                        onClick={() => setIsFeeExpanded(!isFeeExpanded)}
+                        style={{
+                            width: '100%',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            padding: '0.75rem 1rem',
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            borderRadius: '0.5rem',
+                            backgroundColor: theme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)'
+                        }}
+                    >
+                        
+                        <ChevronDown
+                            size={20}
+                            style={{
+                                transform: isFeeExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                                transition: 'transform 0.2s',
+                                opacity: 0.6
+                            }}
+                        />
+                    </button>
 
-                <div className='currency-fee'>
-                    <p>
-                        {t("fee")} ({t("transferFee") || "Transfer"})
-                    </p>
-                    <h4>
-                        {feeCalculation ? `${feeCalculation.transferFeePercentage}%` : `${transferFeePercentage}%`}
-                    </h4>
+                    {isFeeExpanded && (
+                        <div style={{ padding: '0.5rem 0' }}>
+                            <div className='currency-fee'>
+                                <p>
+                                    {t("fee")} ({t("transferFee") || "Transfer"})
+                                </p>
+                                <h4>
+                                    {feeCalculation ? `${feeCalculation.transferFeePercentage}%` : `${transferFeePercentage}%`}
+                                </h4>
+                            </div>
+                            <div className='currency-feeCount'>
+                                <p>
+                                    {t("feeCount")}
+                                </p>
+                                <h4>
+                                    {feeCalculation ? `${feeCalculation.transferFeeAmount.toLocaleString('en-US', { maximumFractionDigits: 2 })} ${myCurrency.currencyName}` : `0 ${myCurrency.currencyName}`}
+                                </h4>
+                            </div>
+                            {feeCalculation && feeCalculation.exchangeRateFeePercentage > 0 && (
+                                <div className='currency-fee' style={{ marginTop: '0.25rem' }}>
+                                    <p>
+                                        {t("exchangeRateFee") || "Exchange Rate Fee"}
+                                    </p>
+                                    <h4>
+                                        {feeCalculation.exchangeRateFeePercentage}%
+                                    </h4>
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
-                <div className='currency-feeCount'>
-                    <p>
-                        {t("feeCount")}
-                    </p>
-                    <h4>
-                        {feeCalculation ? `${feeCalculation.transferFeeAmount.toLocaleString('en-US', { maximumFractionDigits: 2 })} ${myCurrency.currencyName}` : `0 ${myCurrency.currencyName}`}
-                    </h4>
-                </div>
-                {feeCalculation && feeCalculation.exchangeRateFeePercentage > 0 && (
-                    <div className='currency-fee' style={{ marginTop: '0.25rem' }}>
-                        <p>
-                            {t("exchangeRateFee") || "Exchange Rate Fee"}
-                        </p>
-                        <h4>
-                            {feeCalculation.exchangeRateFeePercentage}%
-                        </h4>
-                    </div>
-                )}
 
 {/* Warning if no sender card selected */}
                 {isLoggedIn && curMethod && !selectedCard && myCards.length > 0 && (
@@ -646,7 +715,7 @@ const UnRegCur = () => {
                         gap: '0.5rem',
                         padding: '0.75rem',
                         borderRadius: '0.5rem',
-                        marginBottom: '1rem',
+                        margin: '1rem',
                         backgroundColor: theme === 'dark' ? 'rgba(234, 179, 8, 0.1)' : 'rgba(234, 179, 8, 0.08)',
                         border: '1px solid rgba(234, 179, 8, 0.25)'
                     }}>
@@ -665,7 +734,7 @@ const UnRegCur = () => {
                         gap: '0.5rem',
                         padding: '0.75rem',
                         borderRadius: '0.5rem',
-                        marginBottom: '1rem',
+                        margin: '1rem',
                         backgroundColor: theme === 'dark' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(239, 68, 68, 0.08)',
                         border: '1px solid rgba(239, 68, 68, 0.25)'
                     }}>
@@ -678,63 +747,58 @@ const UnRegCur = () => {
 
                 <button
                     className="currency-continueBtn"
-                    disabled={!curMethod || (isLoggedIn && !selectedCard)}
+                    disabled={!curMethod}
                     style={{
-                        opacity: (!curMethod || (isLoggedIn && !selectedCard)) ? 0.5 : 1
+                        opacity: !curMethod ? 0.5 : 1
                     }}
                     onClick={() => {
-                        // Build sender card data
-                        const senderCardData = selectedCard ? {
-                            cardId: selectedCard.id || selectedCard.cardId,
-                            cardNumber: (selectedCard.cardData?.cardNumber || selectedCard.cardNumber),
-                            cardNetwork: (selectedCard.cardNetwork || selectedCard.cardData?.cardNetwork || selectedCard.brand || 'VISA'),
-                            cardHolderName: (selectedCard.cardData?.cardHolderName || selectedCard.cardHolderName),
-                            expiryMonth: (selectedCard.cardData?.expiryMonth || selectedCard.expiryMonth),
-                            expiryYear: (selectedCard.cardData?.expiryYear || selectedCard.expiryYear),
-                            bankName: selectedCard.bankName
-                        } : null
-
-                        // Build transfer data to pass to next page
-                        const transferData = {
-                            sendAmount,
-                            receiveAmount,
-                            fromCurrency: myCurrency.currencyName,
-                            toCurrency: curMethod === t('methods.crypto') ? selectedCrypto.code : otherCurrency.currencyName,
-                            fromFlag: myCurrency.flag,
-                            toFlag: otherCurrency.flag,
-                            paymentMethod: curMethod,
-                            exchangeRate: exchangeRate?.rate || null,
-                            feeCalculation: feeCalculation || null,
-                            transferFeePercentage,
-                            exchangeRateFeePercentage,
-                            // Sender card - the card from which payment will be taken
-                            senderCard: senderCardData
+                        // Check if user is not logged in - show verification modal
+                        if (!isLoggedIn) {
+                            setShowVerificationModal(true)
+                            return
                         }
 
-                        if (curMethod === t('methods.debit')) {
-                            // Go to cardnumber page to enter RECEIVER's card details
-                            navigate('/cardnumber', { state: transferData })
-                        } else if (curMethod === t('methods.crypto')) {
-                            // Go to cardnumber page to enter wallet and receiver info
-                            navigate('/cardnumber', {
-                                state: {
-                                    ...transferData,
-                                    paymentMethod: 'CRYPTO',
-                                    cryptoCurrency: selectedCrypto.code,
-                                    cryptoIcon: selectedCrypto.icon,
-                                    cryptoName: selectedCrypto.name
-                                }
-                            })
-                        } else if (curMethod === t('methods.bank')) {
-                            navigate('/bank-transfer', { state: transferData })
-                        } else {
-                            // If no method selected, open the dropdown to prompt selection
-                            setIsMethodOpen(true)
+                        // Check if user is logged in but not verified
+                        if (isLoggedIn && kycStatus !== 'VERIFIED') {
+                            setShowVerificationModal(true)
+                            return
                         }
+
+                        // Proceed with transfer (only for verified users)
+                        proceedWithTransfer()
                     }}
                 >
                     {t('reg-clientStep1')}
                 </button>
+
+                {/* Verification Modal */}
+                <VerificationModal
+                    isOpen={showVerificationModal}
+                    isLoggedIn={isLoggedIn}
+                    onClose={() => {
+                        setShowVerificationModal(false)
+                        setShowCancelModal(true)
+                    }}
+                    onConfirm={() => {
+                        setShowVerificationModal(false)
+                        // If not logged in, redirect to registration, otherwise to KYC
+                        if (!isLoggedIn) {
+                            navigate('/registration')
+                        } else {
+                            navigate('/kyc')
+                        }
+                    }}
+                />
+
+                {/* Cancel Transaction Modal */}
+                <CancelTransactionModal
+                    isOpen={showCancelModal}
+                    onClose={() => setShowCancelModal(false)}
+                    onConfirm={() => {
+                        setShowCancelModal(false)
+                        navigate('/')
+                    }}
+                />
             </div>
         </div>
     )

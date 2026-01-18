@@ -7,14 +7,11 @@ import UnRegCopyModal from "./UnRegCopyModal"
 import { findClientByFastorikaId } from "../api"
 
 const UnRegCardNum = () => {
-    let { t, theme, user, profilePhone } = useGlobalContext()
+    let { t, theme, user, profilePhone, transferData, updateTransferData } = useGlobalContext()
     const navigate = useNavigate()
     const location = useLocation()
 
-    // Get transfer data from previous page
-    const transferData = location.state || {}
-
-    // Extract transfer summary from previous page
+    // Extract transfer summary from global context
     const {
         sendAmount = '0',
         receiveAmount = '0',
@@ -27,15 +24,19 @@ const UnRegCardNum = () => {
         paymentMethod = '',
         cryptoCurrency = null,
         cryptoIcon = null,
-        cryptoName = null
-    } = transferData
+        cryptoName = null,
+        // Previously entered recipient data (for back navigation)
+        recipientCardNumber = '',
+        recipientName = '',
+        walletAddress: savedWalletAddress = ''
+    } = transferData || {}
 
     // Check if this is a crypto transfer
     const isCryptoTransfer = paymentMethod === 'CRYPTO'
 
     // Crypto-specific state
-    const [walletAddress, setWalletAddress] = useState("")
-    const [cryptoReceiverName, setCryptoReceiverName] = useState("")
+    const [walletAddress, setWalletAddress] = useState(savedWalletAddress || "")
+    const [cryptoReceiverName, setCryptoReceiverName] = useState(recipientName || "")
 
     // Country codes for phone input
     const countryCodes = [
@@ -54,11 +55,11 @@ const UnRegCardNum = () => {
     const [selectedCountry, setSelectedCountry] = useState(countryCodes[0])
 
     const [mode, setMode] = useState('card')
-    const [cardNumber, setCardNumber] = useState("")
-    const [phonePrefix, setPhonePrefix] = useState('+998')
-    const [phoneRest, setPhoneRest] = useState('')
-    const [firstName, setFirstName] = useState("")
-    const [lastName, setLastName] = useState("")
+    const [cardNumber, setCardNumber] = useState(recipientCardNumber || "")
+    const [phonePrefix, setPhonePrefix] = useState(transferData?.recipientPhone?.slice(0, transferData?.recipientPhone?.indexOf(' ')) || '+998')
+    const [phoneRest, setPhoneRest] = useState(transferData?.recipientPhone?.split(' ').slice(1).join('') || '')
+    const [firstName, setFirstName] = useState(recipientName?.split(' ')[0] || "")
+    const [lastName, setLastName] = useState(recipientName?.split(' ').slice(1).join(' ') || "")
     const [userId, setUserId] = useState("")
     const [userverify,setUserverify] = useState(false)
     const [isSearching, setIsSearching] = useState(false)
@@ -338,13 +339,17 @@ const UnRegCardNum = () => {
                                     cryptoCurrency: cryptoCurrency
                                 }
 
-                                // Navigate to provider page to select network
-                                navigate('/provider', {
-                                    state: {
-                                        ...transferData,
-                                        recipient: cryptoRecipient
-                                    }
+                                // Save to global context
+                                updateTransferData({
+                                    walletAddress: walletAddress,
+                                    recipientName: cryptoReceiverName,
+                                    recipientPhone: `${selectedCountry.code}${phoneRest}`,
+                                    recipient: cryptoRecipient,
+                                    step2Completed: true
                                 })
+
+                                // Navigate to provider page to select network
+                                navigate('/provider')
                             }}
                             disabled={!walletAddress || walletAddress.length < 10}
                         >
@@ -752,14 +757,18 @@ const UnRegCardNum = () => {
                                 }
                             }
 
-                            // Pass all transfer data + recipient info to next page
-                            navigate('/provider', {
-                                state: {
-                                    ...transferData,
-                                    recipient: recipientPayload,
-                                    receiverCountryId: recipientPayload.receiverCountryId || transferData.receiverCountryId || 1
-                                }
+                            // Save to global context
+                            updateTransferData({
+                                recipientCardNumber: cardNumber.replace(/\s/g, ''),
+                                recipientName: mode === 'card' ? `${firstName} ${lastName}`.trim() : foundUser?.fullName,
+                                recipientPhone: fullPhoneNumber,
+                                recipient: recipientPayload,
+                                receiverCountryId: recipientPayload.receiverCountryId || transferData?.receiverCountryId || 1,
+                                step2Completed: true
                             })
+
+                            // Navigate to provider page
+                            navigate('/provider')
                         }}
                         disabled={
                             mode === 'card'

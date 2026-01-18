@@ -48,13 +48,25 @@ const Home = () => {
   const [myCur, setMyCur] = useState(currency[0])
   const [otherCur, setOtherCur] = useState(currency[1])
   const [changeCards, setChangeCards] = useState(false)
-  const [sendAmount, setSendAmount] = useState('1000')
-  const [receiveAmount, setReceiveAmount] = useState('12 560 000')
+  const [sendAmount, setSendAmount] = useState('0')
+  const [receiveAmount, setReceiveAmount] = useState('0')
   const [isMethodOpen, setIsMethodOpen] = useState(false)
   const [curMethod, setMethod] = useState("")
   const [exchangeRate, setExchangeRate] = useState(null)
   const [isLoadingRate, setIsLoadingRate] = useState(false)
   const [feeCalculation, setFeeCalculation] = useState(null)
+  const [isFeeExpanded, setIsFeeExpanded] = useState(false)
+
+  // Crypto state
+  const cryptoCurrencies = [
+    { code: 'USDT', name: 'Tether USD', icon: '💵' },
+    { code: 'BTC', name: 'Bitcoin', icon: '₿' },
+    { code: 'ETH', name: 'Ethereum', icon: 'Ξ' },
+    { code: 'USDC', name: 'USD Coin', icon: '💲' },
+    { code: 'BNB', name: 'Binance Coin', icon: '🔶' }
+  ]
+  const [selectedCrypto, setSelectedCrypto] = useState(cryptoCurrencies[0])
+  const [isCryptoOpen, setIsCryptoOpen] = useState(false)
 
   const methods = [
     t('methods.debit'),
@@ -212,36 +224,70 @@ const Home = () => {
                 />
               </div>
               <div className="currDropdown">
-                <button
-                  onClick={() => {
-                    setIsOtheCurOpen(!isOtheCurOpen)
-                  }}
-                  className="currToggle"
+                {/* Show crypto dropdown when crypto method is selected */}
+                {curMethod === t('methods.crypto') ? (
+                  <>
+                    <button
+                      onClick={() => setIsCryptoOpen(!isCryptoOpen)}
+                      className="currToggle"
+                    >
+                      <span style={{ fontSize: '1.25rem' }}>{selectedCrypto.icon}</span>
+                      <span className="currCode">{selectedCrypto.code}</span>
+                      <svg className="ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
+                      </svg>
+                    </button>
+                    {isCryptoOpen && (
+                      <div className="currDropdownMenu">
+                        {cryptoCurrencies.map((crypto) => (
+                          <button
+                            key={crypto.code}
+                            onClick={() => {
+                              setSelectedCrypto(crypto)
+                              setIsCryptoOpen(false)
+                            }}
+                            className={`currOption ${selectedCrypto.code === crypto.code ? 'active' : ''}`}
+                          >
+                            <span style={{ fontSize: '1.25rem', marginRight: '0.5rem' }}>{crypto.icon}</span>
+                            <span>{crypto.code}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => {
+                        setIsOtheCurOpen(!isOtheCurOpen)
+                      }}
+                      className="currToggle"
+                    >
+                      <img src={otherCur.flag} alt="" className="currImg" />
+                      <span className="currCode">{otherCur?.currencyName.toUpperCase()}</span>
+                      <svg className="ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
+                      </svg>
+                    </button>
 
-                >
-                  <img src={otherCur.flag} alt="" className="currImg" />
-                  <span className="currCode">{otherCur?.currencyName.toUpperCase()}</span>
-                  <svg className="ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
-                  </svg>
-                </button>
-
-                {isOtheCurOpen && (
-                  <div className="currDropdownMenu">
-                    {currency.map((cur, index) => (
-                      <button
-                        key={index}
-                        onClick={() => {
-                          setOtherCur(cur)
-                          setIsOtheCurOpen(false)
-                        }}
-                        className={`currOption ${otherCur.currencyName === cur.currencyName ? 'active' : ''}`}
-                      >
-                        <img src={cur.flag} alt="" className="currImg" />
-                        <span>{cur.currencyName}</span>
-                      </button>
-                    ))}
-                  </div>
+                    {isOtheCurOpen && (
+                      <div className="currDropdownMenu">
+                        {currency.map((cur, index) => (
+                          <button
+                            key={index}
+                            onClick={() => {
+                              setOtherCur(cur)
+                              setIsOtheCurOpen(false)
+                            }}
+                            className={`currOption ${otherCur.currencyName === cur.currencyName ? 'active' : ''}`}
+                          >
+                            <img src={cur.flag} alt="" className="currImg" />
+                            <span>{cur.currencyName}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             </div>
@@ -318,65 +364,64 @@ const Home = () => {
             </div>
           </div>
           <div className='hero-right-transferBtn'>
-            {/* Exchange Rate Display */}
-            {exchangeRate && !isLoadingRate && (
-              <div className='hero-exchange-rate' style={{
-                padding: '0.75rem',
-                marginBottom: '0.5rem',
-                background: theme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
-                borderRadius: '8px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-              }}>
-                <p style={{ margin: 0, fontSize: '0.9rem', opacity: 0.8 }}>
-                  {t("exchangeRate") || "Exchange Rate"}
-                </p>
-                <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 600 }}>
-                  1 {myCur.currencyName} = {exchangeRate.rate.toLocaleString('en-US', { maximumFractionDigits: 4 })} {otherCur.currencyName}
-                </h4>
-              </div>
-            )}
-            {isLoadingRate && (
-              <div className='hero-exchange-rate' style={{
-                padding: '0.75rem',
-                marginBottom: '0.5rem',
-                background: theme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
-                borderRadius: '8px',
-                textAlign: 'center'
-              }}>
-                <p style={{ margin: 0, fontSize: '0.9rem', opacity: 0.6 }}>
-                  {t("loadingRate") || "Loading exchange rate..."}
-                </p>
-              </div>
-            )}
+            {/* Fee Accordion */}
+            <div className="fee-accordion">
+              <button
+                onClick={() => setIsFeeExpanded(!isFeeExpanded)}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  padding: '0.75rem 1rem',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  borderRadius: '0.5rem',
+                  backgroundColor: theme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)'
+                }}
+              >
+                <ChevronDown
+                  size={20}
+                  style={{
+                    transform: isFeeExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                    transition: 'transform 0.2s',
+                    opacity: 0.6
+                  }}
+                />
+              </button>
 
-            <div className='hero-fee'>
-              <p>
-                {t("fee")} ({t("transferFee") || "Transfer"})
-              </p>
-              <h4>
-                {feeCalculation ? `${feeCalculation.transferFeePercentage}%` : `${DEFAULT_TRANSFER_FEE}%`}
-              </h4>
+              {isFeeExpanded && (
+                <div style={{ padding: '0.5rem 0' }}>
+                  <div className='hero-fee'>
+                    <p>
+                      {t("fee")} ({t("transferFee") || "Transfer"})
+                    </p>
+                    <h4>
+                      {feeCalculation ? `${feeCalculation.transferFeePercentage}%` : `${DEFAULT_TRANSFER_FEE}%`}
+                    </h4>
+                  </div>
+                  <div className='hero-feeCount'>
+                    <p>
+                      {t("feeCount")}
+                    </p>
+                    <h4>
+                      {feeCalculation ? `${feeCalculation.transferFeeAmount.toLocaleString('en-US', { maximumFractionDigits: 2 })} ${myCur.currencyName}` : `0 ${myCur.currencyName}`}
+                    </h4>
+                  </div>
+                  {feeCalculation && feeCalculation.exchangeRateFeePercentage > 0 && (
+                    <div className='hero-fee' style={{ marginTop: '0.25rem' }}>
+                      <p>
+                        {t("exchangeRateFee") || "Exchange Rate Fee"}
+                      </p>
+                      <h4>
+                        {feeCalculation.exchangeRateFeePercentage}%
+                      </h4>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
-            <div className='hero-feeCount'>
-              <p>
-                {t("feeCount")}
-              </p>
-              <h4>
-                {feeCalculation ? `${feeCalculation.transferFeeAmount.toLocaleString('en-US', { maximumFractionDigits: 2 })} ${myCur.currencyName}` : `0 ${myCur.currencyName}`}
-              </h4>
-            </div>
-            {feeCalculation && feeCalculation.exchangeRateFeePercentage > 0 && (
-              <div className='hero-fee' style={{ marginTop: '0.25rem' }}>
-                <p>
-                  {t("exchangeRateFee") || "Exchange Rate Fee"}
-                </p>
-                <h4>
-                  {feeCalculation.exchangeRateFeePercentage}%
-                </h4>
-              </div>
-            )}
             <button onClick={()=>{
               // Start transfer flow without wiping storage
               localStorage.setItem("pending", true)

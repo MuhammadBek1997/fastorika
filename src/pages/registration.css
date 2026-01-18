@@ -57,10 +57,148 @@
 
 .registration-cont-form-psw img { width: 1.5rem; position: absolute; left: 85%; }
 
+/* Phone Input Container */
+.phone-input-container {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  border-radius: 1rem;
+  margin: -0.5rem 0;
+  position: relative;
+}
+
+#dark .phone-input-container {
+  background-color: var(--bg-body-dark);
+}
+
+#light .phone-input-container {
+  background-color: var(--bg-body-light);
+}
+
+.phone-country-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1rem;
+  white-space: nowrap;
+  border-right: 1px solid rgba(128, 128, 128, 0.2);
+  transition: background 0.2s;
+  border-radius: 1rem 0 0 1rem;
+}
+
+.phone-country-btn:hover {
+  background: rgba(0, 210, 106, 0.05);
+}
+
+.phone-country-btn .flag {
+  font-size: 1.25rem;
+}
+
+.phone-country-btn .code {
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+.phone-country-btn svg {
+  opacity: 0.5;
+  transition: transform 0.2s;
+}
+
+.phone-country-btn.open svg {
+  transform: rotate(180deg);
+}
+
+.phone-input-container input {
+  flex: 1;
+  border: none !important;
+  border-radius: 0 1rem 1rem 0 !important;
+  background: transparent !important;
+  padding: 0.8rem 1rem !important;
+  margin: 0 !important;
+  font-size: 1rem;
+}
+
+.phone-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 220px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  max-height: 240px;
+  overflow-y: auto;
+  animation: dropdownFadeIn 0.2s ease;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#dark .phone-dropdown {
+  background: var(--bg-dark);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#light .phone-dropdown {
+  background: var(--bg-light);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.phone-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s;
+}
+
+.phone-dropdown-item:hover {
+  background: rgba(0, 210, 106, 0.1);
+}
+
+.phone-dropdown-item.active {
+  background: rgba(0, 210, 106, 0.15);
+}
+
+.phone-dropdown-item .flag {
+  font-size: 1.25rem;
+}
+
+.phone-dropdown-item .name {
+  flex: 1;
+  font-weight: 500;
+}
+
+.phone-dropdown-item .dial-code {
+  opacity: 0.6;
+  font-size: 0.9rem;
+}
+
 @media (max-width:768px) {
   .registration-cont { min-width: 5rem; width: 90%; left: 5%; font-size: 0.8rem; }
   .registration-cont h1 { font-size: 1.2rem; }
   .registration-cont-form input { padding: 0.7rem; }
   .reg-clientBtn { padding: 0.5rem; }
   .registration-cont-form-psw img { padding-top: 5vh; width: 100%; }
+
+  .phone-dropdown {
+    min-width: 100%;
+  }
 }

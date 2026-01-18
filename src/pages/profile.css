@@ -112,7 +112,7 @@
   color: var(--text-primary);
   transition: background-color 0.2s ease;
 }
-.country-select-btn:hover { background-color: var(--hover-bg); }
+/* .country-select-btn:hover { background-color: var(--hover-bg); } */
 
 .country-dropdown-menu {
   position: absolute;

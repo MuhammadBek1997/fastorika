@@ -147,28 +147,28 @@ const Login = () => {
                 <button className='login-clientBtn' onClick={()=>handleLogin(email, password)}>
                     {t("login")}
                 </button>
-                <Link to={'/registration'} style={{ color: "#348BDC", marginLeft: "32.5%" }}>
+                <Link to={'/registration'} style={{ color: "#348BDC"}}>
                     {t("login-clientForgot")}
                 </Link>
-                <div className='login-or'>
+                {/* <div className='login-or'>
                     <hr />
                     <p>
                         {t("or")}
                     </p>
 
-                </div>
-                <div className='login-clientProviders'>
-                    {/* Google orqali login - DISABLED */}
+                </div> */}
+                {/* <div className='login-clientProviders'>
+                   
                     <button onClick={handleGoogleLogin} style={{ opacity: 0.5, cursor: 'not-allowed' }}>
                         <img src="/images/Google.png" alt="" />
                         {t("login-clientwithG")}
                     </button>
-                    {/* Apple orqali login - DISABLED */}
+                   
                     <button onClick={()=>handleAppleLogin()} style={{ opacity: 0.5, cursor: 'not-allowed' }}>
                         <img src={`/images/apple${theme}.png`} alt="" />
                         {t("login-clientwithA")}
                     </button>
-                </div>
+                </div> */}
             </div>
         </div>
     )

@@ -1,19 +1,18 @@
 {
   "paymentSystem": "Payment System",
-  "selectPaymentSystem": "Select a payment system for your transfer",
+  "selectPaymentSystem": "Select a convenient payment system for your transfer",
   "commission": "Commission",
+  "continue": "Continue",
   "providerName": "Provider name",
-
   "step1Instructions": "After creating a transfer, you will receive the address of your cryptocurrency wallet",
   "step2Instructions": "Go to the cryptocurrency transfer application",
-  "step3Instructions": "In the transfer section, select one of the specified networks",
-  "step4Instructions": "Enter the transfer amount, making sure it matches",
-  "step5Instructions": "Confirm the transaction by clicking the 'Confirm Transfer' button with the specified transaction key",
+  "step3Instructions": "In the transfer section, select one of the specified networks for sending funds",
+  "step4Instructions": "Enter the transfer amount, making sure it matches the required payment",
+  "step5Instructions": "Confirm the transaction by clicking the 'Confirm Transfer' button with the transaction key",
   "back": "Back",
   "howToPay": "How to pay the transfer?",
   "followSteps": "Follow these steps to complete the payment",
-  "agreeWithInstructions": "I confirm that I have read and agree with the payment instructions and terms",
-
+  "agreeWithInstructions": "I confirm that I have read the payment instructions and accept their terms",
   "login": "Log In",
   "aboutUs": "About Us",
   "faq": "Questions and answers",
@@ -24,7 +23,6 @@
   "banktransfer": "Bank Account Transfers",
   "yousend": "You send",
   "willtake": "The recipient will receive",
-  "specifyAmount": "Please specify the transfer amount",
   "payMethod": "Payment Method",
   "noCard": "Debit Card",
   "fee": "Fee",
@@ -38,13 +36,13 @@
   "servicestep3p": "within 5 minutes",
   "unlimitedTransfer": "Unlimited Transfers",
   "transferanywere1": "Send money ",
-  "transferanywere2": "anywhere, ",
-  "transferanywere3": "anytime ",
-  "transferanywere": "Send money to loved ones anywhere in the world — quickly, conveniently, and safely. Always close by, no matter where they are.",
+  "transferanywere2": "anywhere ",
+  "transferanywere3": "anytime",
+  "transferanywere": "Send money to loved ones anywhere in the world — quickly, conveniently, and safely. Always close by, no matter where they are",
   "fasttransferID": "Transfers by ID",
   "fasttransfer1": "Transfer money even faster — by ",
   "fasttransfer2": "Fastorika ID",
-  "fasttransfer": "Forget about long details and complicated forms. Just know the unique Fastorika ID of the recipient to send a transfer in seconds.",
+  "fasttransfer": "Forget about long details and complicated forms. Just know the unique Fastorika ID of the recipient to send a transfer in seconds",
   "ourapp1": "Download our mobile app",
   "ourapp": "Fast transfers always at hand",
   "ursechead": "Secure Transfers",
@@ -52,20 +50,20 @@
   "ursec2": "security ",
   "ursec3": "is our priority",
   "datasec": "Data Protection",
-  "datasec2": "3D secure technology is used for processing transactions.",
+  "datasec2": "3D secure technology is used for processing transactions",
   "lisense": "License",
   "lisense2": "PCI DSS Certified",
   "defsec": "Transfer Insurance",
-  "defsec2": "We use our own fraud protection technologies.",
-  "faqhead": "FAQ",
+  "defsec2": "We use our own fraud protection technologies",
+  "faqhead": "Questions and answers",
   "faqsecond": "If you can't find the answer to your question",
   "faqancor": "Contact Us",
   "footerlink1": "Terms and Conditions",
   "footerlink2": "Cookie Policy",
   "footerlink3": "Privacy Policy",
   "footerabout1": "Fastorika Limited is a private limited company registered in Belize under number 000050785.",
-  "footerabout2": "The company provides IT solutions, consulting, and software services for the financial industry.",
-  "footerabout3": "Fastorika is not a bank, licensed payment institution, or electronic money issuer. We do not hold customer funds. All services are provided as software and technical solutions.",
+  "footerabout2": "The company provides IT solutions, consulting services, and software for the financial industry.",
+  "footerabout3": "Fastorika is not a bank, licensed payment institution, or electronic money issuer. We do not hold customer funds; all services are provided as software and technical solutions.",
   "footerabout4": "© 2025 Fastorika. All rights reserved.",
   "abouthero1": "We help transfer funds quickly and securely",
   "abouthero2": "We make international transfers as easy as sending a message. Reliability and speed are our top priorities",
@@ -78,15 +76,15 @@
   "ourmission31": "Accessibility",
   "ourmission32": "Operating in 50+ countries",
   "ourmission41": "Trust",
-  "ourmission42": "Thousands of clients choose us",
+  "ourmission42": "thousands of clients choose us",
   "trusthead": "Trusted by many",
   "trustsecond": "Every day we process thousands of transactions worldwide. We bring experience, stability, and transparency",
   "trust11": "3+",
-  "trust12": "Years in the Market",
+  "trust12": "Years on market",
   "trust21": "1 000 000+",
-  "trust22": "Successful Transfers",
+  "trust22": "Successful transfers",
   "trust31": "50+",
-  "trust32": "Countries We Operate In",
+  "trust32": "Countries we work",
   "transfertop": "Transfers without limits",
   "transferhead": "Send your transfer right now",
   "transfersecond": "Fast, convenient, and secure — just the way it should be",
@@ -111,6 +109,11 @@
   "transBtn": "Send",
   "transactions": {
     "regOffer": {
+      "desc": "Complete identity verification and get instant transfers without sharing your personal data!",
+      "close": "Close",
+      "verify": "Complete verification"
+    },
+    "regOfferFastorika": {
       "desc": "Verify your account with Fastorika ID to make transfers",
       "close": "Close",
       "verify": "Verify"
@@ -142,7 +145,8 @@
       "support": "Support",
       "success": "Delivered",
       "cancel": "Declined",
-      "cancelled": "Declined"
+      "cancelled": "Declined",
+      "notFound": "Transaction not found"
     },
     "operationNumber": "Operation number",
     "operationDate": "Operation date",
@@ -174,7 +178,8 @@
     "deleteCard": "Delete card",
     "deleteConfirmTitle": "Delete Card",
     "deleteConfirmMessage": "Are you sure you want to delete this card?",
-    "cardDeleted": "Card deleted successfully"
+    "cardDeleted": "Card deleted successfully",
+    "cardAdded": "Card added successfully"
   },
   "addCardModal": {
     "title": "Add card",
@@ -201,7 +206,15 @@
       "expire": "MM/YY",
       "bankName": "",
       "phoneNumber": "+998"
-    }
+    },
+    "errors": {
+      "fillRequired": "Please fill all required fields",
+      "invalidCard": "Invalid card number",
+      "invalidMonth": "Invalid month (1-12)",
+      "invalidYear": "Invalid year",
+      "selectCountry": "Please select a country"
+    },
+    "adding": "Adding..."
   },
   "settingsPage": {
     "title": "Settings",
@@ -217,6 +230,37 @@
     "amlPrivacy": "Terms of Service",
     "termService": "Service Terms"
   },
+  "specifyAmount": "Please specify the transfer amount",
+  "transferViaFastorika": "Transfer via Fastorika",
+  "cardsListDesc": "Visa, Mastercard, Maestro…",
+  "cryptoListDesc": "Bitcoin, Ethereum, USDT…",
+  "bankTransferDesc": "Bank wire via SEPA/SWIFT",
+  "byCardNumber": "By card number",
+  "byUserId": "By Fastorika ID",
+  "userId": "Fastorika ID",
+  "theme": {
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "unregNav": {
+    "summa": "Amount",
+    "recipient": "Recipient",
+    "paymentSystem": "Payment system",
+    "instructions": "Instructions"
+  },
+  "recipientFullName": "Recipient full name",
+  "fullName": "Full Name",
+  "nameWarningMessage": "Recipient’s first and last name must be in Latin letters",
+  "confirmRecipient": "I confirm recipient is",
+  "verified": "verified",
+  "trusted": "trusted",
+  "person": "person",
+  "fillAllFields": "Please fill in all fields",
+  "placeholders": {
+    "firstName": "First name",
+    "lastName": "Last name",
+    "userId": "User ID"
+  },
   "recipientDetails": "Specify the recipient",
   "fillRecipientInfo": "Fill in the required recipient details",
   "cardNumber": "Card number",
@@ -224,14 +268,13 @@
   "firstName": "First name",
   "lastName": "Last name",
   "nameWarning": "Recipient’s first and last name must be in Latin letters",
-  "nameWarningUserID":"Ensure that you have entered the correct user ID before transferring funds",
+  "nameWarningUserID": "Ensure that you have entered the correct user ID before transferring funds",
   "termsAccept": "Terms confirmation",
-  "confirmTerms": "I confirm the recipient is ",
+  "confirmTerms": "I confirm the recipient is",
   "termsT": "verified",
   "and": "and",
   "policy": "trusted",
-  "policy2":"",
-  "continue": "Continue",
+  "policy2": " person",
   "walletAddress": "Recipient wallet",
   "network": "Network",
   "selectNetwork": "Select network",
@@ -240,30 +283,18 @@
     "ethereum": "Ethereum",
     "usdt": "USDT (TRC20/ERC20)"
   },
-  "politics":"1. Introduction<br/>Fastorika Limited (the 'Company', 'we', 'us') respects your privacy. This Privacy Policy explains what data we collect, how we use it, and what rights users have.<br/><br/>2. The data we collect<br/>Fastorika Limited collects the following categories of information/data:<br/>2.1 Identification data – name, date of birth, passport data, customer IDs.<br/>2.2. Contact information – address, phone number, email, social media accounts.<br/>2.3. Payment and transaction information – partial data of cards/bank accounts/accounts in payment systems, transaction history.<br/>2.4. Technical information – IP address, cookies, device information, log files.<br/><br/>3. How we use the data<br/>Your data is processed exclusively for the following purposes:<br/>3.1. Fulfillment of contractual obligations (transfer processing, verification, account maintenance).<br/>3.2. Compliance with legal requirements (AML/KYC/CFT).<br/>3.3. Ensuring the security of the service and fraud prevention.<br/>3.4. Sending information messages (with the possibility of refusal).<br/>3.5. Use for marketing and promotion purposes (with the possibility of opt-out only).<br/><br/>4. Transfer of data to third parties<br/>We transfer data only in the following cases:<br/>4.1. Payment providers and banks for processing transfers.<br/>4.2. Government agencies, if there is a legal requirement.<br/>4.3. Contractors providing technical infrastructure, KYC services and anti-fraud systems.<br/><br/>5. Data retention periods<br/>5.1. In accordance with 4AMLD, 5AMLD, 6AMLD and local laws, your data will be stored for at least 5 years and may be stored for up to 10 years after the end of the business relationship.<br/>5.2. If the legislation requires longer storage (for example, for investigations), the period may be extended.<br/>5.3. After the expiration of the storage period, the data will be deleted or anonymized.<br/> <br/>6. User rights (in accordance with GDPR)<br/>You have the right:<br/>6.1. The right of access is to request a copy of your data.<br/>6.2. The right to rectification is to make changes or corrections to the data.<br/>6.3. Right to erasure ('right to be forgotten') – you can request the deletion of data, however, if their storage is required in accordance with AML/CFT, we are required to store them for 5-10 years.<br/>6.4. The right to restrict processing is to suspend the use of your data for certain purposes (for example, marketing).<br/>6.5. The right to data portability is to receive a copy of your data in a machine–readable format.<br/>6.6. Right to object – to refuse processing for marketing or mailing.<br/>6.7. The right to complain is to contact the national data protection supervisory authority.<br/> <br/>7. Contacts<br/>On issues related to data processing:<br/>•\tSupport: support@fastorika.com<br/><br/>8. Conclusion<br/>By using the Fastorika service, you confirm that you have read and agree to this Privacy Policy.<br/>",
-  "privacytitle":"Anti-Money Laundering and Counter-Terrorist Financing Policy",
-  "privacy": "1. Introduction<br/>This Policy sets out the framework adopted by Fastorika Limited (“the Company”) to prevent its services from being used for money laundering (ML) or terrorist financing (TF) purposes. Fastorika Limited is committed to complying with international standards, including the FATF Recommendations, EU Anti-Money Laundering Directives (4AMLD, 5AMLD, 6AMLD), GDPR, and the relevant legislation of Belize and other jurisdictions in which the Company operates. The objective of this Policy is to establish clear standards and internal procedures for customer due diligence (CDD), enhanced due diligence (EDD), ongoing monitoring, record-keeping, and reporting of suspicious activities to the competent authorities.<br/><br/>2. Regulatory Framework<br/>This Policy is based on the following legal and regulatory frameworks:<br/>- Financial Action Task Force (FATF) 40 Recommendations<br/>- EU Anti-Money Laundering Directives (4AMLD, 5AMLD, 6AMLD)<br/>- GDPR (data protection obligations)<br/>- Belize Anti-Money Laundering legislation<br/>- Other local AML/CFT laws applicable to the jurisdictions where Fastorika operates<br/><br/>3. Scope<br/>This Policy applies to all employees, directors, contractors, and partners of Fastorika Limited. It covers all services, transactions, and business activities of the Company, including IT solutions, platform services, and any financial-related integrations.<br/><br/>4. Risk-Based Approach<br/>The Company adopts a risk-based approach to AML/CFT. Clients and transactions are classified into risk categories:<br/>- Low Risk<br/>- Medium Risk<br/>- High Risk (e.g., PEPs, high-value transactions, offshore jurisdictions)<br/><br/>Risk factors include geographical risk, product/service risk, client type, and transaction patterns.<br/><br/>5. Customer Due Diligence (CDD/KYC)<br/>Fastorika Limited performs the following measures:<br/>- Identification of customers (name, DOB, nationality, address, valid ID)<br/>- Verification of identity documents<br/>- Enhanced Due Diligence for high-risk clients<br/>- Verification of Source of Funds (SoF) and Source of Wealth (SoW)<br/>- Ongoing monitoring of client activities<br/><br/>6. Politically Exposed Persons (PEPs)<br/>The Company applies Enhanced Due Diligence to all identified PEPs. Screening tools and databases are used to detect PEPs, their family members, and close associates.<br/><br/>7. Sanctions & Prohibited Activities<br/>Fastorika Limited screens all customers against international sanctions lists (UN, EU, OFAC, UK). The Company does not onboard clients from FATF high-risk jurisdictions or clients involved in prohibited activities.<br/><br/>8. Transaction Monitoring<br/>The Company monitors all transactions using automated and manual tools. Alerts are generated for unusual or suspicious activities, including structuring, smurfing, and transaction-based financial crimes (TBFC).<br/>9. Reporting<br/><br/>Suspicious Activity Reports (SARs) are filed with the competent authority in Belize (FIU Belize) or in the jurisdiction of operation. Reports must be submitted immediately upon detection of suspicious activity.<br/>10. Record Keeping<br/><br/>Customer records, transaction history, and KYC documentation are kept for a minimum of 5 years after the end of the business relationship. In some cases, data may be retained for up to 10 years as required by law.<br/>11. Training & Awareness<br/><br/>All employees of Fastorika Limited must undergo AML training at least once a year. Training covers identification of suspicious transactions, KYC procedures, and reporting obligations.<br/>12. Internal Controls<br/><br/>Fastorika Limited appoints a Money Laundering Reporting Officer (MLRO) responsible for AML compliance, reporting to regulators, and overseeing internal monitoring systems.<br/><br/>13. Enforcement<br/>Failure to comply with this Policy will result in disciplinary actions, which may include termination of employment or cooperation, and reporting to relevant authorities.<br/>",
+  "politics": "1. Introduction <br/> Fastorika Limited ('Company', 'we', 'us') respects your privacy. This Privacy Policy explains what data we collect, how we use it, and what rights users have. <br/>  <br/> 2. The data we collect <br/> Fastorika Limited collects the following categories of information/data: <br/> 2.1. Identification data – name, date of birth, passport data, customer IDs.  2.2. Contact data – address, phone number, email, social media accounts.  2.3. Payment and transaction information – partial card/bank account/payment system account data, transaction history.  2.4. Technical information – IP address, cookies, device information, log files. <br/>  <br/> 3. How we use the data <br/> Your data is processed exclusively for the following purposes: <br/> 3.1. Fulfillment of contractual obligations (transfer processing, verification, account maintenance).  3.2. Compliance with legal requirements (AML/KYC/CFT).  3.3. Ensuring service security and fraud prevention.  3.4. Sending informational messages (with opt-out option).  3.5. Use for marketing and promotion (only with opt-out option). <br/>  <br/> 4. Transfer of data to third parties <br/> We transfer data only in the following cases: <br/> 4.1. To payment providers and banks for transfer processing.  4.2. To government agencies if legally required.  4.3. To contractors providing technical infrastructure, KYC services, and anti-fraud systems. <br/>  <br/> 5. Data retention periods <br/> 5.1. In accordance with 4AMLD, 5AMLD, 6AMLD and local laws, your data will be stored for at least 5 years and may be stored up to 10 years after the end of the business relationship.  5.2. If legislation requires longer storage (e.g., for investigations), the period may be extended.  5.3. After the retention period expires, data will be deleted or anonymized. <br/>  <br/> 6. User rights (in accordance with GDPR) <br/> You have the right: <br/> 6.1. Right of access – request a copy of your data.  6.2. Right to rectification – make changes or corrections to data.  6.3. Right to erasure ('right to be forgotten') – you can request data deletion, but if storage is required under AML/CFT, we must retain it for 5–10 years.  6.4. Right to restrict processing – suspend use of your data for certain purposes (e.g., marketing).  6.5. Right to data portability – receive a copy of your data in machine-readable format.  6.6. Right to object – opt out of processing for marketing or mailings.  6.7. Right to complain – contact the national data protection supervisory authority. <br/>  <br/> 7. Contacts <br/> For data processing issues: <br/> ·         Support: support@fastorika.com <br/> ·         Compliance | AML | KYC | CFT | DPO: compliance@fastorika.com <br/>  <br/> 8. Conclusion <br/> By using the Fastorika service, you confirm that you have read and agree to this Privacy Policy.",
+  "privacytitle": "Anti-Money Laundering and Counter-Terrorist Financing Policy (AML/CFT Policy)",
   "termsTitle": "Terms & Conditions of Fastorika Limited Service",
-  "terms": "Introduction<br/>These Terms of Use (the \"Terms\") govern access to and use of the website, software solutions, and other services provided by Fastorika Limited, incorporated under the laws of Belize (registration number 000050785) (the \"Company\" or \"Fastorika\").<br/>By using the Fastorika website, software or services, you (the \"User\" or \"Client\") confirm that you have read these Terms, understand their content and agree to comply with them in full.<br/>If you do not agree with any provision of these Terms, you must immediately stop using the Fastorika website and services.<br/>This agreement is a public offer in accordance with the laws of Belize and is legally binding from the moment you start using Fastorika.<br/><br/>A. General Terms of Use<br/>1. Right to use<br/>By using the Fastorika website and services, you acknowledge that:<br/>• You are at least 18 years of age or the age of majority in your country of residence.<br/>• You have full legal capacity to enter into contracts and accept legal obligations.<br/>• You will use the service solely for lawful purposes and in accordance with these Terms.<br/><br/>Fastorika does not provide services to persons who:<br/>• Reside in jurisdictions where the use of such services is prohibited by law;<br/>• Are under sanctions or restrictions imposed by international organizations or state bodies;<br/>• Act on behalf of third parties without proper authorization.<br/><br/>2. Modification of Terms<br/>Fastorika reserves the right to change, supplement or update these Terms at any time.<br/>Changes take effect from the moment they are published on the official Fastorika website (fastorika.com). By continuing to use the site or services after publication of the updated Terms, the User confirms consent to their new version. In case of disagreement, the User must stop using Fastorika services.<br/><br/>3. Prohibited Activities<br/>The User agrees not to use the Fastorika website, software, or services for any illegal, fraudulent, or unauthorized activities, including but not limited to:<br/>• Violation of laws of Belize, the User's country of residence, or international norms including AML/CFT rules and sanctions regimes.<br/>• Providing false, incomplete, or misleading information when registering or using the service.<br/>• Attempts to interfere with the operation of the site, circumvent security measures, or gain unauthorized access to data or accounts.<br/>• Transmitting or distributing viruses, malicious code, programs, or scripts.<br/>• Posting spam, advertising messages, phishing links, or other unwanted materials.<br/>• Transactions related to money laundering, terrorist financing, illegal trafficking, gambling or other prohibited activities.<br/>• Attempts to circumvent identification, verification (KYC), or transaction monitoring procedures.<br/>• Using the service on behalf of a third party without legal grounds or power of attorney.<br/>Fastorika may restrict, suspend or terminate access if violations are detected or illegal activity is suspected.<br/><br/>4. Intellectual property rights<br/>All materials on the website and in Fastorika services (texts, logos, trademarks, designs, software, source code, databases, structure, interface) are the exclusive property of Fastorika Limited or used under license. The User is granted a limited, non-transferable right to use the Content solely for lawful purposes within these Terms.<br/>The User is prohibited, without prior written consent of Fastorika, to copy, distribute, modify, decompile, or otherwise exploit elements of the Site or software; create derivative products; use Fastorika's brand name, logo, or trademarks for commercial purposes.<br/><br/>5. Availability of the Service<br/>Fastorika strives for uninterrupted operation of the platform but does not guarantee continuous availability or absence of errors. Access may be restricted for maintenance, third‑party failures, or force majeure. Fastorika is not liable for indirect losses due to temporary unavailability. The Company will minimize downtime and, where possible, notify users in advance.<br/><br/>6. Use of Third‑Party Services<br/>Certain functions, including transfer processing, identification (KYC) or currency exchange, may be performed by external licensed partners who operate under their own terms and privacy policies. Fastorika is not responsible for actions or failures of such third parties. Interaction with third‑party services is at the user's own risk.<br/><br/>B. Description and Nature of Services<br/>1. Nature of services<br/>Fastorika provides access to an online platform enabling interaction between users and external licensed financial providers. The service allows requests for transfers, tracking of status, and receiving notifications and tools. Fastorika is a technological solution provider (SaaS) and does not accept, store, transfer, convert or manage user funds. All financial transactions are carried out exclusively by licensed third parties.<br/><br/>2. No licensed financial activity<br/>Fastorika Limited operates in IT only and is not a bank, electronic money institution, payment institution, investment, trust or brokerage company, nor a provider for storing or managing client funds. Fastorika does not operate in Belize and does not provide services to residents of Belize. In accordance with IFSC Act and IBC Act of Belize, such activities do not require licensing.<br/><br/>3. Commissions and fees<br/>Using Fastorika services may involve service fees for access to functions or processing requests, indicated prior to confirmation. Fastorika does not charge fees for fund transfers performed by third‑party providers. Third‑party commissions are set independently and may be automatically deducted. Fastorika does not control or refund third‑party fees.<br/><br/>4. Limits and restrictions<br/>Fastorika and partners may set limits (transaction amount, count per period, by country/currency/user category) for compliance with law, preventing fraud, and ensuring stability. Operations may be suspended or rejected if limits are exceeded or additional verification is required.<br/><br/>5. Responsibility for data accuracy<br/>The User is fully responsible for the accuracy and relevance of all data provided during registration and use. Fastorika and its partners process transactions based solely on user‑entered data and are not responsible for delays or losses caused by incorrect information.<br/><br/>6. Currency conversion<br/>Currency conversion rates are determined by licensed providers and shown until confirmation. The final amount credited may differ due to bank/provider fees or rounding. Fastorika does not control third‑party fees or final conversion results.<br/><br/>C. Refund Policy<br/>Refunds are possible only when a transaction was not successfully executed or confirmed by a third‑party provider. Fastorika is not responsible for refunds where the operation has been completed and confirmed by the relevant provider.<br/>"
-  ,
-  "at": "at ",
-  "transactions": {
-    "table": {
-      "recipient": "Recipient",
-      "created": "Created",
-      "amountToSend": "Amount to send",
-      "amountToReceive": "Amount to receive",
-      "status": "Status"
-    },
-    "regOffer": {
-      "desc": "Complete identity verification and get instant transfers without sharing your personal data!",
-      "close": "Close",
-      "verify": "Complete verification"
-    }
-  },
+  "terms": "Introduction<br/>These Terms of Use (\"Terms\") govern access to and use of the website, software solutions, and other services provided by Fastorika Limited, registered under Belize law (registration number 000050785) (\"Company\" or \"Fastorika\").<br/>By using the Fastorika website, software, or services, you (\"User\" or \"Client\") confirm that you have read these Terms, understand their content, and agree to comply with them in full.<br/>If you do not agree with any provisions of these Terms, you must immediately stop using the site and Fastorika services.<br/>This agreement is a public offer under Belize law and is legally binding from the moment you start using Fastorika services.<br/><br/>A. General Terms of Use<br/>1. Right to use<br/>By using the Fastorika site and services, you confirm that:<br/>• You are at least 18 years old or the age of majority in your country of residence.<br/>• You have full legal capacity to enter contracts and accept legal obligations.<br/>• You use the service solely for lawful purposes and in accordance with these Terms.<br/><br/>Fastorika does not provide services to persons who:<br/>• Reside in jurisdictions where such services are prohibited by law;<br/>• Are under sanctions or restrictions from international organizations or state bodies;<br/>• Act on behalf of third parties without proper authorization.<br/><br/>2. Modification of Terms<br/>Fastorika reserves the right to change, supplement, or update these Terms at any time.<br/>Changes take effect upon publication on the official Fastorika website (fastorika.com). Continued use after publication confirms consent to the new version. If you disagree, you must stop using Fastorika services.<br/><br/>3. Prohibited Activities<br/>You agree not to use the Fastorika site, software, or services for illegal, fraudulent, or unauthorized activities, including but not limited to:<br/>• Violation of Belize law, your country of residence, or international norms, including AML/CFT rules and sanctions.<br/>• Providing false, incomplete, or misleading information during registration or use.<br/>• Attempts to interfere with site operation, bypass security, or unauthorized access to data/accounts.<br/>• Transmitting or distributing viruses, malicious code, programs, or scripts.<br/>• Posting spam, ads, phishing links, or unwanted materials.<br/>• Operations related to money laundering, terrorist financing, illegal trade, gambling, or other prohibited activities.<br/>• Attempts to bypass identification, KYC, or transaction monitoring.<br/>• Using the service on behalf of a third party without legal basis or power of attorney.<br/>Fastorika may restrict, suspend, or terminate access upon detecting violations or suspicions of illegal activity.<br/><br/>4. Intellectual Property Rights<br/>All materials on the website and in Fastorika services (texts, logos, trademarks, design, software, source code, databases, structure, interface) are the exclusive property of Fastorika Limited or used lawfully. You are granted a limited, non-transferable right to use the Content solely for lawful purposes within these Terms.<br/><br/>5. Service Availability<br/>Fastorika strives to ensure stable platform operation but does not guarantee continuous availability or error-free performance. Access may be limited for maintenance, third-party issues, or force majeure. Fastorika is not liable for indirect losses from temporary unavailability. The company minimizes downtime and notifies users in advance where possible.<br/><br/>6. Use of Third-Party Services<br/>Certain functions, including transfer processing, KYC, or currency exchange, may be handled by external licensed partners under their own terms and privacy policies. Fastorika is not responsible for third-party actions or failures. Interaction with third-party services is at your own risk.<br/><br/>B. Description and Nature of Services<br/>1. Nature of Services<br/>Fastorika provides access to an online platform for user interaction with external licensed financial providers. The service allows initiating transfer requests, tracking status, and receiving notifications/tools. Fastorika is a SaaS provider and does not accept, store, transfer, convert, or manage user funds. All financial operations are performed exclusively by licensed third parties.<br/><br/>2. No Licensed Financial Activity<br/>Fastorika Limited operates in IT and is not a bank, e-money issuer, payment institution, investment, trust, or brokerage company, nor a provider for storing/managing client funds. Fastorika does not operate in Belize and does not serve Belize residents. Under Belize law (IFSC Act, IBC Act), such activities do not require licensing.<br/><br/>3. Commissions and Fees<br/>Using Fastorika services may involve service fees for access/functions or request processing, shown before confirmation. Fastorika does not charge for fund transfers by third-party providers. Third-party fees are set independently and may be auto-deducted. Fastorika does not control or refund third-party fees.<br/><br/>4. Limits and Restrictions<br/>Fastorika and partners may set limits (transaction amount, count per period, by country/currency/user category) for legal compliance, fraud prevention, and stability. Operations may be suspended/rejected if limits are exceeded or additional checks are needed.<br/><br/>5. Responsibility for Data Accuracy<br/>You are fully responsible for the accuracy and timeliness of all data provided during registration/use. Fastorika and partners process based solely on your data and are not liable for delays/losses from incorrect info.<br/><br/>C. Refund Policy<br/>Refunds are possible only if a transaction was not successfully executed/confirmed by the third-party provider. Fastorika is not responsible for refunds if the operation was technically completed and confirmed by the provider.<br/>",
+  "privacy": "1. Introduction<br/>This Policy sets out the framework adopted by Fastorika Limited (“the Company”) to prevent its services from being used for money laundering (ML) or terrorist financing (TF) purposes. Fastorika Limited is committed to complying with international standards, including the FATF Recommendations, EU Anti-Money Laundering Directives (4AMLD, 5AMLD, 6AMLD), GDPR, and the relevant legislation of Belize and other jurisdictions in which the Company operates. The objective of this Policy is to establish clear standards and internal procedures for customer due diligence (CDD), enhanced due diligence (EDD), ongoing monitoring, record-keeping, and reporting of suspicious activities to the competent authorities.<br/><br/>2. Regulatory Framework<br/>This Policy is based on the following legal and regulatory frameworks:<br/>- Financial Action Task Force (FATF) 40 Recommendations<br/>- EU Anti-Money Laundering Directives (4AMLD, 5AMLD, 6AMLD)<br/>- GDPR (data protection obligations)<br/>- Belize Anti-Money Laundering legislation<br/>- Other local AML/CFT laws applicable to the jurisdictions where Fastorika operates<br/><br/>3. Scope<br/><br/>This Policy applies to all employees, directors, contractors, and partners of Fastorika Limited. It covers all services, transactions, and business activities of the Company, including IT solutions, platform services, and any financial integrations.<br/>4. Risk-Based Approach<br/><br/>The Company adopts a risk-based approach to AML/CFT. Clients and transactions are classified into risk categories:<br/>- Low Risk<br/>- Medium Risk<br/>- High Risk (e.g., PEPs, large transactions, offshore jurisdictions)<br/><br/>Risk factors include geographical risk, product risk, client type, and transaction nature.<br/><br/>5. Customer Due D diligence (CDD/KYC)<br/>Fastorika Limited performs the following measures:<br/>- Customer identification (full name, DOB, citizenship, address, document)<br/>- Document authenticity verification<br/>- Enhanced Due Diligence (EDD) for high-risk clients<br/>- Source of Funds (SoF) and Source of Wealth (SoW) verification<br/>- Ongoing monitoring of client operations<br/><br/>6. Politically Exposed Persons (PEP)<br/>The Company applies enhanced due diligence to all identified PEPs. Specialized databases and systems are used for detection.<br/><br/>7. Sanctions and Prohibited Activities<br/>Fastorika Limited screens all clients against international sanctions lists (UN, EU, OFAC, UK). The Company does not accept clients from high-risk FATF jurisdictions or those involved in prohibited activities.<br/>8. Transaction Monitoring<br/><br/>The Company monitors all transactions using automated and manual tools. Alerts are generated for suspicious operations, including structuring, smurfing, and other schemes (TBFC).<br/>9. Reporting Suspicious Operations<br/>Suspicious Activity Reports (SAR/STR) are submitted to competent authorities in Belize (FIU Belize) or the jurisdiction of operation. Reports are filed immediately upon detecting suspicious activity.<br/><br/>10. Data Storage<br/>Client documents, transaction history, and KYC files are stored for at least 5 years after the end of business relations. In some cases, up to 10 years per legislation.<br/><br/>11. Employee Training<br/>All Fastorika Limited employees must undergo annual AML training covering suspicious transaction identification, KYC procedures, and reporting duties.<br/><br/>12. Internal Control<br/>Fastorika Limited appoints a Money Laundering Reporting Officer (MLRO) responsible for AML compliance, regulator reporting, and internal process oversight.<br/><br/>13. Liability for Violations<br/>Violations of this Policy result in disciplinary measures, up to termination of employment/cooperation, and reporting to authorities.<br/>",
   "supportPage": {
     "title": "Support",
     "inputPlaceholder": "Type a message..."
+  },
+  "fastorikaIdShare": {
+    "description": "Share the Fastorika ID registration link and send transfers instantly!",
+    "shareButton": "Share"
   },
   "profilePage": {
     "title": "Profile",
@@ -286,7 +317,19 @@
     "countries": {
       "uzbekistan": "Uzbekistan",
       "russia": "Russia"
-    }
+    },
+    "checkingStatus": "Checking...",
+    "verified": "Verified",
+    "verifiedTitle": "Identity Verified",
+    "verifiedDesc": "Your identity has been verified successfully.",
+    "pending": "Pending",
+    "pendingTitle": "Verification in Progress",
+    "pendingDesc": "Your verification is being reviewed. This usually takes a few minutes.",
+    "checkStatus": "Check Status",
+    "notVerified": "Not Verified",
+    "notVerifiedTitle": "Verification Failed",
+    "notVerifiedDesc": "Your verification was not successful. Please try again.",
+    "tryAgain": "Try Again"
   },
   "verifyModal": {
     "title": "Enter code",
@@ -308,7 +351,7 @@
     },
     "registration": {
       "validationError": "Please check your data",
-      "success": "Registered successfully",
+      "success": "Registration successful! Email confirmation required.",
       "error": "Registration error"
     },
     "verification": {
@@ -321,129 +364,92 @@
       "saveError": "Save error"
     }
   },
-  "noData":"No information"
-  ,
-  "theme": {
-    "light": "Light",
-    "dark": "Dark"
+  "methods": {
+    "debit": "Debit Card",
+    "crypto": "Cryptocurrency",
+    "bank": "Bank Transfer"
   },
-  "unregNav": {
-    "summa": "Amount",
-    "recipient": "Recipient",
-    "paymentSystem": "Payment system",
-    "instructions": "Instructions"
+  "noData": "No information",
+  "yearsOnMarket": "Years on market",
+  "successfulTransfers": "Successful transfers",
+  "countriesWeWork": "Countries we work",
+  "cancel": "Cancel",
+  "verification": {
+    "title": "Complete identity verification in five minutes",
+    "registerTitle": "Complete identity verification in five minutes",
+    "description": "Before you can start transferring funds, we need to verify that you are a real person",
+    "registerDescription": "Before you can start transferring funds, we need to verify that you are a real person",
+    "proceed": "Proceed"
   },
-  "transferViaFastorika": "Transfer via Fastorika",
-  "cardsListDesc": "Visa, Mastercard, Maestro…",
-  "cryptoListDesc": "Bitcoin, Ethereum, USDT…",
-  "bankTransferDesc": "Bank wire via SEPA/SWIFT",
-  "byCardNumber": "By card number",
-  "byUserId": "By Fastorika ID",
-  "userId": "Fastorika ID",
-  "recipientFullName": "Recipient full name",
-  "fullName": "Full Name",
-  "nameWarningMessage": "Recipient’s first and last name must be in Latin letters",
-  "confirmRecipient": "I confirm recipient is",
-  "verified": "verified",
-  "trusted": "trusted",
-  "person": "person",
-  "fillAllFields": "Please fill in all fields",
-  "placeholders": {
-    "firstName": "First name",
-    "lastName": "Last name",
-    "userId": "User ID"
+  "cancelTransaction": {
+    "title": "Cancel transfer?",
+    "subtitle": "Are you sure you want to cancel the transfer?",
+    "description": "If you have any questions or encountered a problem, please contact our support team — we will help you"
   },
-  "fastorikaIdShare": {
-    "description": "Share the Fastorika ID registration link and send transfers instantly!",
-    "shareButton": "Share"
+  "confirm": "Confirm",
+  "delete": "Delete",
+  "deleting": "Deleting...",
+  "loading": "Loading...",
+  "exchangeRate": "Exchange Rate",
+  "loadingRate": "Loading rate...",
+  "kyc": {
+    "title": "Identity Verification",
+    "introTitle": "Verify Your Identity",
+    "introDesc": "To ensure security and comply with regulations, we need to verify your identity. This process takes just a few minutes.",
+    "requirementsTitle": "You will need:",
+    "requirement1": "A valid government-issued ID (passport, driving license, or national ID)",
+    "requirement2": "A device with a camera for taking photos",
+    "requirement3": "Good lighting for clear photos",
+    "startBtn": "Start Verification",
+    "starting": "Starting...",
+    "loadingSDK": "Loading verification...",
+    "sdkLoadError": "Failed to load verification SDK",
+    "initError": "Failed to initialize verification",
+    "startError": "Failed to start verification",
+    "verificationError": "Verification error",
+    "retry": "Retry",
+    "verifiedTitle": "Verification Complete",
+    "verifiedDesc": "Your identity has been verified successfully. You now have full access to all features.",
+    "backToProfile": "Back to Profile",
+    "failedTitle": "Verification Failed",
+    "failedDesc": "Unfortunately, your identity verification was not successful. Please try again or contact support.",
+    "tryAgain": "Try Again",
+    "contactSupport": "Contact Support",
+    "status": {
+      "verified": "Verified",
+      "notVerified": "Not Verified",
+      "pending": "Pending Review"
+    }
   },
-"at":"at ",
-"yearsOnMarket":"Years on market",
-"successfulTransfers":"Successful transfers",
-"countriesWeWork":"Countries we work",
-"noData":"No data",
-"cancel":"Cancel",
-"delete":"Delete",
-"deleting":"Deleting...",
-"loading":"Loading...",
-"exchangeRate":"Exchange Rate",
-"loadingRate":"Loading rate...",
-"kyc": {
-  "title": "Identity Verification",
-  "introTitle": "Verify Your Identity",
-  "introDesc": "To ensure security and comply with regulations, we need to verify your identity. This process takes just a few minutes.",
-  "requirementsTitle": "You will need:",
-  "requirement1": "A valid government-issued ID (passport, driving license, or national ID)",
-  "requirement2": "A device with a camera for taking photos",
-  "requirement3": "Good lighting for clear photos",
-  "startBtn": "Start Verification",
-  "starting": "Starting...",
-  "loadingSDK": "Loading verification...",
-  "sdkLoadError": "Failed to load verification SDK",
-  "initError": "Failed to initialize verification",
-  "startError": "Failed to start verification",
-  "verificationError": "Verification error",
-  "retry": "Retry",
-  "verifiedTitle": "Verification Complete",
-  "verifiedDesc": "Your identity has been verified successfully. You now have full access to all features.",
-  "backToProfile": "Back to Profile",
-  "failedTitle": "Verification Failed",
-  "failedDesc": "Unfortunately, your identity verification was not successful. Please try again or contact support.",
-  "tryAgain": "Try Again",
-  "contactSupport": "Contact Support",
-  "status": {
-    "verified": "Verified",
-    "notVerified": "Not Verified",
-    "pending": "Pending Review"
-  }
-},
-"profilePage": {
-  "checkingStatus": "Checking...",
-  "verified": "Verified",
-  "verifiedTitle": "Identity Verified",
-  "verifiedDesc": "Your identity has been verified successfully.",
-  "pending": "Pending",
-  "pendingTitle": "Verification in Progress",
-  "pendingDesc": "Your verification is being reviewed. This usually takes a few minutes.",
-  "checkStatus": "Check Status",
-  "notVerified": "Not Verified",
-  "notVerifiedTitle": "Verification Failed",
-  "notVerifiedDesc": "Your verification was not successful. Please try again.",
-  "tryAgain": "Try Again"
-},
-"userNotFound": "User not found",
-"searchError": "Search failed",
-"searchingUser": "Searching user...",
-"selectRecipientCard": "Select recipient card",
-"selectCard": "Select card",
-"savedCards": "Saved cards",
-"newCard": "New card",
-"enterNewCardDetails": "Enter new card details",
-"noSavedCards": "No saved cards",
-"selectYourCard": "Select your card",
-"processing": "Processing",
-"addCardModal": {
-  "errors": {
-    "fillRequired": "Please fill all required fields",
-    "invalidCard": "Invalid card number",
-    "invalidMonth": "Invalid month (1-12)",
-    "invalidYear": "Invalid year",
-    "selectCountry": "Please select a country"
-  },
-  "adding": "Adding..."
-},
-"myCards": {
-  "cardAdded": "Card added successfully"
-},
-"transactionInfo": {
-  "notFound": "Transaction not found"
-},
-"loginSuccess": "Logged in successfully",
-"loginError": "Login failed",
-"passwordRequirements": "Password does not meet requirements",
-"enterEmail": "Enter email",
-"enterPhone": "Enter phone number",
-"registrationSuccess": "Registration successful! Email confirmation required.",
-"registrationError": "Registration error",
-"reg-client": "Registration"
+  "userNotFound": "User not found",
+  "searchError": "Search failed",
+  "searchingUser": "Searching user...",
+  "selectRecipientCard": "Select recipient card",
+  "selectCard": "Select card",
+  "savedCards": "Saved cards",
+  "newCard": "New card",
+  "enterNewCardDetails": "Enter new card details",
+  "noSavedCards": "No saved cards",
+  "selectYourCard": "Select your card",
+  "processing": "Processing",
+  "loginSuccess": "Logged in successfully",
+  "loginError": "Login failed",
+  "passwordRequirements": "Password does not meet requirements",
+  "enterEmail": "Enter email",
+  "enterPhone": "Enter phone number",
+  "registrationSuccess": "Registration successful! Email confirmation required.",
+  "registrationError": "Registration error",
+  "reg-client": "Registration",
+  "senderCard": "Payment source",
+  "savedCardsDesc": "Card for transfer payment",
+  "selectSenderCardWarning": "Select the card from which payment will be deducted",
+  "noCardsWarning": "You have no saved cards. Add a card in your profile.",
+  "transferFee": "Transfer",
+  "exchangeRateFee": "Exchange Rate Fee",
+  "receiverFullName": "Recipient full name",
+  "recipientWallet": "Recipient wallet",
+  "walletNameWarning": "Recipient’s first and last name must be in Latin letters",
+  "confirmRecipientVerified": "I confirm the recipient is",
+  "expiryMonth": "Month (MM)",
+  "expiryYear": "Year (YYYY)"
 }
