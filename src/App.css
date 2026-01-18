@@ -67,26 +67,7 @@ section {
 
 
 
-/* ============================================
-   UTILITY CLASSES (Tailwind-like)
-   ============================================ */
-.hidden {
-    display: none !important;
-}
-
-.block {
-    display: block !important;
-}
-
-/* md:block - show on screens > 768px */
-@media (min-width: 769px) {
-    .md\:block {
-        display: block !important;
-    }
-    .md\:hidden {
-        display: none !important;
-    }
-}
+/* Tailwind utility sinflari ishlatiladi; qo'shimcha utilitiylar kerak emas */
 
 /* ============================================
    LIGHT MODE
