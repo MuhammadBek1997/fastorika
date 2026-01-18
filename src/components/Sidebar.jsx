@@ -62,7 +62,7 @@ const Sidebar = () => {
                 {isSideMobileMenuOpen && (
                     <div className="fixed inset-0 bg-black/40 md:hidden" onClick={() => setIsSideMobileMenuOpen(false)}></div>
                 )}
-                <div className={`${isSideMobileMenuOpen ? 'block' : 'hidden'} sidebar-sticky-list md:block z-20`} id='navbar-sticky'>
+                <div className={`sidebar-sticky-list ${isSideMobileMenuOpen ? 'sidebar-menu-open' : 'sidebar-menu-closed'}`} id='navbar-sticky'>
                     <div className="sidebar-list">
                         <NavLink
                             to={'/transactions'}

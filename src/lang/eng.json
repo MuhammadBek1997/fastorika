@@ -127,9 +127,13 @@
     },
     "status": {
       "waiting": "In progress",
+      "processing": "Processing",
+      "toPay": "To pay",
       "support": "Support",
       "success": "Delivered",
+      "delivered": "Delivered",
       "cancel": "Declined",
+      "rejected": "Rejected",
       "cancelled": "Declined"
     },
     "toCard": "to card ****",
@@ -142,9 +146,13 @@
     "title": "Transaction number",
     "status": {
       "waiting": "In progress",
+      "processing": "Processing",
+      "toPay": "To pay",
       "support": "Support",
       "success": "Delivered",
+      "delivered": "Delivered",
       "cancel": "Declined",
+      "rejected": "Rejected",
       "cancelled": "Declined",
       "notFound": "Transaction not found"
     },

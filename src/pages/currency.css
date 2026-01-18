@@ -465,3 +465,93 @@
 .user-found svg {
   flex-shrink: 0;
 }
+
+/* Payment Method Dropdown - Figma Style */
+.method-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 0.5rem;
+  border-radius: 1rem;
+  padding: 0.5rem;
+  z-index: 50;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+#light .method-dropdown-menu {
+  background-color: var(--bg-light);
+  border: 1px solid var(--border-light);
+}
+
+#dark .method-dropdown-menu {
+  background-color: var(--bg-dark);
+  border: 1px solid var(--border-dark);
+}
+
+.method-option {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background-color 0.2s ease;
+}
+
+#light .method-option:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+#dark .method-option:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+#light .method-option.active {
+  background-color: rgba(0, 215, 150, 0.1);
+}
+
+#dark .method-option.active {
+  background-color: rgba(0, 215, 150, 0.15);
+}
+
+.method-option-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.method-option-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#light .method-option-icon {
+  background-color: var(--bg-body-light);
+}
+
+#dark .method-option-icon {
+  background-color: var(--bg-body-dark);
+}
+
+.method-option span {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.method-option-check {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: #00D796;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

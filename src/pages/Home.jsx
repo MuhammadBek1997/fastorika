@@ -25,7 +25,7 @@ const Home = () => {
       currencyName: 'RUB'
     },
     {
-      flag: 'https://img.icons8.com/color/96/european-union.png',
+      flag: 'https://img.icons8.com/fluency/96/european-union-circular-flag.png',
       currencyName: 'EUR'
     },
     {

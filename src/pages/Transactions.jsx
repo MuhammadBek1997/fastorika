@@ -6,24 +6,67 @@ import { ArrowLeftRight, Check, Clock, List, MessagesSquare, MinusCircle, X } fr
 const Transactions = () => {
   let { t, theme, navigate, transactions } = useGlobalContext()
   // Safe fallbacks for translations that were reported missing in list rows
+  // Backend status mapping - same as admin panel
+  const statusConfig = {
+    TO_PAY: { key: 'toPay', icon: 'clock', class: 'toPay' },
+    PROCESSING: { key: 'processing', icon: 'clock', class: 'processing' },
+    DELIVERED: { key: 'delivered', icon: 'check', class: 'success' },
+    REJECTED: { key: 'rejected', icon: 'minus', class: 'cancel' },
+    SUPPORT: { key: 'support', icon: 'message', class: 'support' },
+    // Legacy mapping for old data
+    waiting: { key: 'processing', icon: 'clock', class: 'processing' },
+    success: { key: 'delivered', icon: 'check', class: 'success' },
+    cancel: { key: 'rejected', icon: 'minus', class: 'cancel' },
+    support: { key: 'support', icon: 'message', class: 'support' }
+  }
+
+  const getStatusInfo = (status) => {
+    return statusConfig[status] || statusConfig.PROCESSING
+  }
+
   const translateStatus = (statusKey) => {
-    const k = `transactions.status.${statusKey}`
-    const v = t(k)
-    return v === k ? t(`transactionInfo.status.${statusKey}`) : v
+    // Try multiple translation paths
+    const paths = [
+      `transactions.status.${statusKey}`,
+      `transactionInfo.status.${statusKey}`,
+      statusKey
+    ]
+    for (const path of paths) {
+      const v = t(path)
+      if (v !== path) return v
+    }
+    return statusKey
   }
   const toCardPrimary = t('transactions.toCard')
   const toCardResolved = toCardPrimary === 'transactions.toCard' ? t('global.toCard') : toCardPrimary
-  let currency = [
-    {
-      flag: 'https://img.icons8.com/color/96/usa-circular.png',
-      currencyName: 'USD'
-    }
+  // Fiat currencies
+  const currency = [
+    { flag: 'https://img.icons8.com/color/96/usa-circular.png', currencyName: 'USD' },
+    { flag: 'https://img.icons8.com/color/96/uzbekistan-circular.png', currencyName: 'UZS' },
+    { flag: 'https://img.icons8.com/color/96/russian-federation-circular.png', currencyName: 'RUB' },
+    { flag: 'https://img.icons8.com/fluency/96/european-union-circular-flag.png', currencyName: 'EUR' },
+    { flag: 'https://img.icons8.com/color/96/great-britain-circular.png', currencyName: 'GBP' },
+    { flag: 'https://img.icons8.com/color/96/turkey-circular.png', currencyName: 'TRY' },
+    { flag: 'https://img.icons8.com/color/96/kazakhstan-circular.png', currencyName: 'KZT' }
   ]
+
+  // Crypto currencies (for receiving only)
+  const cryptoCurrencies = [
+    { code: 'USDT', name: 'Tether USD', icon: '💵' },
+    { code: 'BTC', name: 'Bitcoin', icon: '₿' },
+    { code: 'ETH', name: 'Ethereum', icon: 'Ξ' },
+    { code: 'USDC', name: 'USD Coin', icon: '💲' },
+    { code: 'BNB', name: 'Binance Coin', icon: '🔶' }
+  ]
+
   const [isMyTransCurOpen, setIsMyTransCurOpen] = useState(false)
   const [isOtheTransCurOpen, setIsOtheTransCurOpen] = useState(false)
   const [myTransCur, setMyTransCur] = useState(currency[0])
-  const [otherTransCur, setOtherTransCur] = useState(currency[0])
+  const [otherTransCur, setOtherTransCur] = useState(currency[1])
+  const [selectedCrypto, setSelectedCrypto] = useState(null) // null = fiat, object = crypto
   const [changeTransCards, setChangeTransCards] = useState(false)
+  const [sendAmount, setSendAmount] = useState('1000')
+  const [receiveAmount, setReceiveAmount] = useState('12560000')
   const [openIndex, setOpenIndex] = useState(null);
   const [regoffer, setRegoffer] = useState(localStorage.getItem("regoffer") || "show")
 
@@ -81,15 +124,19 @@ const Transactions = () => {
               <p>
                 {t("yousend")}
               </p>
-              <input type="text" value="1000" readOnly />
+              <input
+                type="text"
+                value={sendAmount}
+                onChange={(e) => setSendAmount(e.target.value)}
+              />
             </div>
             <div className="currTransDropdown">
               <button
                 onClick={() => {
                   setIsMyTransCurOpen(!isMyTransCurOpen)
+                  setIsOtheTransCurOpen(false)
                 }}
                 className="currTransToggle"
-
               >
                 <img src={myTransCur.flag} alt="" className="currImg" />
                 <span className="currCode">{myTransCur?.currencyName.toUpperCase()}</span>
@@ -104,6 +151,7 @@ const Transactions = () => {
                     <button
                       key={index}
                       onClick={() => {
+                        setMyTransCur(cur)
                         setIsMyTransCurOpen(false)
                       }}
                       className={`currOption ${myTransCur.currencyName === cur.currencyName ? 'active' : ''}`}
@@ -124,18 +172,31 @@ const Transactions = () => {
               <p>
                 {t("willtake")}
               </p>
-              <input type="text" value={"12 560 000"} readOnly />
+              <input
+                type="text"
+                value={receiveAmount}
+                onChange={(e) => setReceiveAmount(e.target.value)}
+              />
             </div>
             <div className="currTransDropdown">
               <button
                 onClick={() => {
                   setIsOtheTransCurOpen(!isOtheTransCurOpen)
+                  setIsMyTransCurOpen(false)
                 }}
                 className="currTransToggle"
-
               >
-                <img src={otherTransCur.flag} alt="" className="currImg" />
-                <span className="currCode">{otherTransCur?.currencyName.toUpperCase()}</span>
+                {selectedCrypto ? (
+                  <>
+                    <span style={{ fontSize: '1.25rem' }}>{selectedCrypto.icon}</span>
+                    <span className="currCode">{selectedCrypto.code}</span>
+                  </>
+                ) : (
+                  <>
+                    <img src={otherTransCur.flag} alt="" className="currImg" />
+                    <span className="currCode">{otherTransCur?.currencyName.toUpperCase()}</span>
+                  </>
+                )}
                 <svg className="ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                   <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
                 </svg>
@@ -143,16 +204,35 @@ const Transactions = () => {
 
               {isOtheTransCurOpen && (
                 <div className="currTransDropdownMenu">
+                  {/* Fiat currencies */}
                   {currency.map((cur, index) => (
                     <button
-                      key={index}
+                      key={`fiat-${index}`}
                       onClick={() => {
+                        setOtherTransCur(cur)
+                        setSelectedCrypto(null)
                         setIsOtheTransCurOpen(false)
                       }}
-                      className={`currOption ${otherTransCur.currencyName === cur.currencyName ? 'active' : ''}`}
+                      className={`currOption ${!selectedCrypto && otherTransCur.currencyName === cur.currencyName ? 'active' : ''}`}
                     >
                       <img src={cur.flag} alt="" className="currImg" />
                       <span>{cur.currencyName}</span>
+                    </button>
+                  ))}
+                  {/* Divider */}
+                  <div style={{ borderTop: '1px solid var(--border-light)', margin: '0.5rem 0' }}></div>
+                  {/* Crypto currencies */}
+                  {cryptoCurrencies.map((crypto) => (
+                    <button
+                      key={`crypto-${crypto.code}`}
+                      onClick={() => {
+                        setSelectedCrypto(crypto)
+                        setIsOtheTransCurOpen(false)
+                      }}
+                      className={`currOption ${selectedCrypto?.code === crypto.code ? 'active' : ''}`}
+                    >
+                      <span style={{ fontSize: '1.25rem', marginRight: '0.5rem' }}>{crypto.icon}</span>
+                      <span>{crypto.code}</span>
                     </button>
                   ))}
                 </div>
@@ -241,27 +321,10 @@ const Transactions = () => {
             </thead>
             <tbody>
   {transactions.length > 0 &&
-    transactions.map((transaction, index) => (
+    transactions.map((transaction, index) => {
+      const statusInfo = getStatusInfo(transaction.status)
+      return (
       <>
-        {(() => {
-          // Normalize status for translation lookup
-          const s = (transaction.status || '').toLowerCase();
-          const map = {
-            pending: 'waiting',
-            waiting: 'waiting',
-            inreview: 'support',
-            review: 'support',
-            support: 'support',
-            delivered: 'success',
-            completed: 'success',
-            success: 'success',
-            canceled: 'cancel',
-            cancelled: 'cancel',
-            cancel: 'cancel'
-          };
-          transaction.__normStatus = map[s] || s || 'waiting';
-          return null;
-        })()}
                     <tr key={index} className='transaction-list-rowD' onClick={() => navigate(`transaction/${transaction.id}`)}>
                       <td className='transaction-list-name'>
                         <div>
@@ -272,7 +335,10 @@ const Transactions = () => {
                             {transaction.type === "send" ? transaction.receiverName : transaction.sanderName}
                           </h4>
                           <p>
-                            {toCardResolved} {transaction.receiverCardNumber.slice(-4)}
+                            {transaction.receiverCardNumber
+                              ? `${toCardResolved} ${transaction.receiverCardNumber.slice(-4)}`
+                              : transaction.currencyInOther
+                            }
                           </p>
                         </div>
 
@@ -289,39 +355,14 @@ const Transactions = () => {
                       <td className='transaction-list-otherCur'>
                         {transaction.amountInOther} {transaction.currencyInOther}
                       </td>
-                      <td className={`transaction-list-status 
-                    ${transaction.status === "waiting"
-                          ?
-                          "waiting"
-                          :
-                          transaction.status === "support"
-                            ?
-                            "support"
-                            :
-                            transaction.status === "success"
-                              ?
-                              "success"
-                              :
-                              "cancel"
-                        }`}>
+                      <td className={`transaction-list-status ${statusInfo.class}`}>
                         <div>
-                          {
-                            transaction.status === "TO_PAY"
-                              ?
-                              <Clock size={15} />
-                              :
-                              transaction.status === "support"
-                                ?
-                                <MessagesSquare size={15} />
-                                :
-                                transaction.status === "success"
-                                  ?
-                                  <Check size={15} />
-                                  :
-                                  <MinusCircle size={15} />
-                          }
+                          {statusInfo.icon === 'clock' && <Clock size={15} />}
+                          {statusInfo.icon === 'check' && <Check size={15} />}
+                          {statusInfo.icon === 'minus' && <MinusCircle size={15} />}
+                          {statusInfo.icon === 'message' && <MessagesSquare size={15} />}
                           <p>
-                            {translateStatus(transaction.__normStatus)}
+                            {translateStatus(statusInfo.key)}
                           </p>
                         </div>
                       </td>
@@ -336,7 +377,10 @@ const Transactions = () => {
                             {transaction.type === "send" ? transaction.receiverName : transaction.sanderName}
                           </h4>
                           <p>
-                            {toCardResolved} {transaction.receiverCardNumber.slice(-4)}
+                            {transaction.receiverCardNumber
+                              ? `${toCardResolved} ${transaction.receiverCardNumber.slice(-4)}`
+                              : transaction.currencyInOther
+                            }
                           </p>
                         </div>
 
@@ -345,48 +389,23 @@ const Transactions = () => {
                         <h5>
                         {transaction.date}
                         </h5>
-                        <div className={`transaction-list-status 
-                          ${transaction.status === "waiting"
-                            ?
-                            "waiting"
-                            :
-                            transaction.status === "support"
-                              ?
-                              "support"
-                              :
-                              transaction.status === "success"
-                                ?
-                                "success"
-                                :
-                                "cancel"
-                          }`}>
+                        <div className={`transaction-list-status ${statusInfo.class}`}>
                           <div>
-                            {
-                              transaction.status === "waiting"
-                                ?
-                                <Clock size={15} />
-                                :
-                                transaction.status === "support"
-                                ?
-                                <MessagesSquare size={15} />
-                                :
-                                transaction.status === "success"
-                                ?
-                                <Check size={15} />
-                                :
-                                <MinusCircle size={15}/>
-                            }
+                            {statusInfo.icon === 'clock' && <Clock size={15} />}
+                            {statusInfo.icon === 'check' && <Check size={15} />}
+                            {statusInfo.icon === 'minus' && <MinusCircle size={15} />}
+                            {statusInfo.icon === 'message' && <MessagesSquare size={15} />}
                           </div>
                           <p>
                           -{transaction.amountInOther} {transaction.currencyInOther}
                         </p>
                         </div>
-                        
+
                       </td>
                     </tr>
 
                   </>
-                ))
+                )})
               }
               {
                 transactions.length === 0 && (

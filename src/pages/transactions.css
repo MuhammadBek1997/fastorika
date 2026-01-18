@@ -298,3 +298,61 @@
     transform: rotate(360deg);
   }
 }
+
+/* Currency Dropdown Styles */
+.currTransDropdown {
+  position: relative;
+}
+
+.currTransDropdownMenu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  min-width: 170px;
+  max-height: 300px;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 50;
+  animation: fadeIn 0.2s ease;
+}
+
+#light .currTransDropdownMenu {
+  background-color: var(--bg-light);
+  border: 1px solid var(--border-light);
+}
+
+#dark .currTransDropdownMenu {
+  background-color: var(--bg-dark);
+  border: 1px solid var(--border-dark);
+}
+
+/* Custom scrollbar for dropdown */
+.currTransDropdownMenu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.currTransDropdownMenu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.currTransDropdownMenu::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+#dark .currTransDropdownMenu::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

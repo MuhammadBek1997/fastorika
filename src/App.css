@@ -68,6 +68,27 @@ section {
 
 
 /* ============================================
+   UTILITY CLASSES (Tailwind-like)
+   ============================================ */
+.hidden {
+    display: none !important;
+}
+
+.block {
+    display: block !important;
+}
+
+/* md:block - show on screens > 768px */
+@media (min-width: 769px) {
+    .md\:block {
+        display: block !important;
+    }
+    .md\:hidden {
+        display: none !important;
+    }
+}
+
+/* ============================================
    LIGHT MODE
    ============================================ */
 #light {
@@ -3006,6 +3027,33 @@ nav.scrolled {
     width: 100%;
 }
 
+/* Sidebar menu states */
+.sidebar-menu-closed {
+    display: block;
+}
+
+.sidebar-menu-open {
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .sidebar-menu-closed {
+        display: none !important;
+    }
+
+    .sidebar-menu-open {
+        display: block !important;
+        z-index: 20;
+    }
+}
+
+/* Ensure burger button is visible at exactly 768px */
+@media (max-width: 768px) {
+    .md\:hidden {
+        display: inline-flex !important;
+    }
+}
+
 
 
 
@@ -3523,6 +3571,16 @@ nav.scrolled {
     border: 1px solid #844DBB;
     background-color: #8F52CC26;
 }
+.transaction-list-status.toPay div{
+    color: #F59E0B;
+    border: 1px solid #F59E0B;
+    background-color: #F59E0B1A;
+}
+.transaction-list-status.processing div{
+    color: #0BC2FF;
+    border: 1px solid #0BC2FF;
+    background-color: #0BC2FF1A;
+}
 
 .transaction-list-rowM{
     display: none;
@@ -3636,6 +3694,14 @@ nav.scrolled {
 .transaction-info-statusbar.support{
     color: #844DBB;
     background-color: #8F52CC26;
+}
+.transaction-info-statusbar.toPay{
+    color: #F59E0B;
+    background-color: #F59E0B1A;
+}
+.transaction-info-statusbar.processing{
+    color: #0BC2FF;
+    background-color: #0BC2FF1A;
 }
 .transaction-info-datalist{
     width: 95%;
@@ -4115,6 +4181,7 @@ nav.scrolled {
 }
 
 .date-input-container {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;

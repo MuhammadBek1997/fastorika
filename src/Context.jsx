@@ -643,17 +643,8 @@ let mockUsers = [
         const dateStr = createdDate.toISOString().split('T')[0]
         const timeStr = createdDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
 
-        // Map backend status to UI status
-        const statusMap = {
-          'TO_PAY': 'waiting',
-          'PROCESSING': 'waiting',
-          'DELIVERED': 'success',
-          'COMPLETED': 'success',
-          'REJECTED': 'cancel',
-          'CANCELLED': 'cancel',
-          'IN_REVIEW': 'support',
-          'SUPPORT': 'support'
-        }
+        // Keep backend status as-is (TO_PAY, PROCESSING, DELIVERED, REJECTED, SUPPORT)
+        // UI components handle the mapping
 
         // Determine type based on isSender/isReceiver
         const type = tx.isSender ? 'send' : 'receive'
@@ -667,13 +658,13 @@ let mockUsers = [
           amountInOther: tx.amountReceived || tx.amountInOther || 0,
           currency: tx.sourceCurrency || tx.currency || 'USD',
           currencyInOther: tx.destinationCurrency || tx.currencyInOther || 'UZS',
-          status: statusMap[tx.status] || 'waiting',
+          status: tx.status || 'PROCESSING',
           type: type,
           isSender: tx.isSender || false,
           isReceiver: tx.isReceiver || false,
           counterpartyName: tx.counterpartyName || '',
           receiverName: tx.counterpartyName || tx.receiverName || '',
-          receiverCardNumber: tx.receiverCardNumber || '****-****-****-****',
+          receiverCardNumber: tx.receiverCard || tx.receiverCardNumber || null,
           receiverPhoneNumber: tx.receiverPhoneNumber || '',
           receiverState: tx.destinationCountry || tx.receiverCountryName || '',
           senderName: tx.senderName || tx.sanderName || '',

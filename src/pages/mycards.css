@@ -16,6 +16,7 @@
   flex-direction: column;
   justify-content: space-between;
   min-height: 180px;
+  width: calc(510px - 200px);
 }
 
 #dark .cardTile {

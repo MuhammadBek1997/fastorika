@@ -28,7 +28,7 @@ const UnRegCur = () => {
             currencyName: 'RUB'
         },
         {
-            flag: 'https://img.icons8.com/color/96/european-union.png',
+            flag: 'https://img.icons8.com/fluency/96/european-union-circular-flag.png',
             currencyName: 'EUR'
         },
         {
@@ -513,21 +513,27 @@ const UnRegCur = () => {
                             <ChevronRight size={16} style={{ transform: isMethodOpen ? 'rotate(90deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }} />
                         </button>
                         {isMethodOpen && (
-                            <div className="country-dropdown-menu">
+                            <div className="method-dropdown-menu">
                                 {methods.map((state, index) => (
                                     <button
                                         key={index}
                                         onClick={() => handleMethodSelect(state)}
-                                        className={`country-option ${curMethod === state ? 'active' : ''}`}
-                                        style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                                        className={`method-option ${curMethod === state ? 'active' : ''}`}
                                     >
-                                        <span>{state}</span>
+                                        <div className="method-option-left">
+                                            <div className="method-option-icon">
+                                                {state === t('methods.debit') && <CreditCard size={18} />}
+                                                {state === t('methods.crypto') && <Bitcoin size={18} />}
+                                                {state === t('methods.bank') && <BanknoteArrowUp size={18} />}
+                                            </div>
+                                            <span>{state}</span>
+                                        </div>
                                         {curMethod === state && (
-                                            <img
-                                                src={`/images/ruleDone${theme}.png`}
-                                                alt="Selected"
-                                                style={{ width: 18, height: 18 }}
-                                            />
+                                            <div className="method-option-check">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
+                                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                                </svg>
+                                            </div>
                                         )}
                                     </button>
                                 ))}
