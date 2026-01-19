@@ -533,27 +533,27 @@ const handleAppleLogin = async (appleResponse) => {
     } catch { }
   };
 
-  // FAQ Data
+  // FAQ Data - using i18n translations
   const faqData = [
     {
-      question: "Как отправить деньги?",
-      answer: "Pul o'tkazmasini amalga oshirish uchun ilovaga kiring, 'Pul yuborish' bo'limini tanlang, qabul qiluvchining ma'lumotlarini kiriting (telefon raqami yoki karta raqami), summani ko'rsating va to'lovni tasdiqlang."
+      question: t('faqItems.q1.question'),
+      answer: t('faqItems.q1.answer')
     },
     {
-      question: "Какая комиссия взимается за перевод?",
-      answer: "Komissiya summasi o'tkazma turiga va miqdoriga bog'liq. Ichki o'tkazmalar uchun 0.5% dan 2% gacha, xalqaro o'tkazmalar uchun esa 2% dan 5% gacha komissiya olinadi. Aniq summani o'tkazma yuborishdan oldin ko'rishingiz mumkin."
+      question: t('faqItems.q2.question'),
+      answer: t('faqItems.q2.answer')
     },
     {
-      question: "Сколько денег получит адресат?",
-      answer: "Qabul qiluvchi siz yuborgan summadan komissiya miqdorini ayirib tashlangandan keyingi summani oladi. Agar siz to'liq summani yubormoqchi bo'lsangiz, komissiyani o'zingiz to'lash variantini tanlashingiz mumkin."
+      question: t('faqItems.q3.question'),
+      answer: t('faqItems.q3.answer')
     },
     {
-      question: "Сколько времени занимает перевод?",
-      answer: "O'tkazma tezligi yo'nalishga bog'liq. Bir bank ichidagi o'tkazmalar bir necha daqiqada, boshqa banklarga 10 daqiqadan 24 soatgacha, xalqaro o'tkazmalar esa 1-5 ish kuni ichida bajariladi."
+      question: t('faqItems.q4.question'),
+      answer: t('faqItems.q4.answer')
     },
     {
-      question: "Какие лимиты установлены на переводы?",
-      answer: "Kunlik limit tasdiqlangan foydalanuvchilar uchun 50 million so'mgacha, oylik limit esa 200 million so'mgacha. Tasdiqlanmagan hisoblar uchun limitlar ancha pastroq bo'ladi. Xalqaro o'tkazmalar uchun alohida limitlar amal qiladi."
+      question: t('faqItems.q5.question'),
+      answer: t('faqItems.q5.answer')
     }
   ];
 

@@ -462,5 +462,27 @@
   "walletNameWarning": "Recipient’s first and last name must be in Latin letters",
   "confirmRecipientVerified": "I confirm the recipient is",
   "expiryMonth": "Month (MM)",
-  "expiryYear": "Year (YYYY)"
+  "expiryYear": "Year (YYYY)",
+  "faqItems": {
+    "q1": {
+      "question": "How do I send money?",
+      "answer": "To make a transfer, log into the app, select 'Send Money', enter the recipient's details (phone number or card number), specify the amount and confirm the payment."
+    },
+    "q2": {
+      "question": "What commission is charged for transfers?",
+      "answer": "The commission amount depends on the type and amount of the transfer. For internal transfers, 0.5% to 2% commission is charged, and for international transfers, 2% to 5%. You can see the exact amount before sending the transfer."
+    },
+    "q3": {
+      "question": "How much money will the recipient receive?",
+      "answer": "The recipient will receive the amount you sent minus the commission. If you want to send the full amount, you can choose the option to pay the commission yourself."
+    },
+    "q4": {
+      "question": "How long does a transfer take?",
+      "answer": "Transfer speed depends on the destination. Transfers within the same bank take a few minutes, to other banks from 10 minutes to 24 hours, and international transfers take 1-5 business days."
+    },
+    "q5": {
+      "question": "What are the transfer limits?",
+      "answer": "The daily limit for verified users is up to $10,000, and the monthly limit is up to $50,000. Unverified accounts have much lower limits. Separate limits apply to international transfers."
+    }
+  }
 }
