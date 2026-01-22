@@ -88,7 +88,9 @@ const MyCards = () => {
                 expiry = c.expire || c.expiry || c.expireDate || '11/25'
               }
 
-              const brand = (c.brand || 'VISA').toUpperCase()
+              const brandText = typeof c.network === 'string'
+                ? c.network
+                : (c.cardData?.network || c.cardData?.cardNetwork || '')
               return (
                 <div key={c.id ?? c.cardId ?? idx} className='cardTile'>
                   <div className='cardHeader'>
@@ -130,14 +132,7 @@ const MyCards = () => {
 
                   <div className='cardFooter'>
                       <span className='cardExpiry'>{expiry}</span>
-                      {brand.includes('VISA') ? (
-                        <span className='cardBrandVisa'>VISA</span>
-                      ) : (
-                        <div className='cardBrandMastercard' title={brand}>
-                           <span className='mc-circle mc-red'></span>
-                           <span className='mc-circle mc-orange'></span>
-                        </div>
-                      )}
+                      <span className='cardBrandText'>{brandText}</span>
                   </div>
                 </div>
               )

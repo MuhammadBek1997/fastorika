@@ -144,6 +144,17 @@
   justify-content: space-between;
 }
 
+.cardBrandText {
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #333;
+}
+
+#dark .cardBrandText {
+  color: #fff;
+}
+
 .cardExpiry {
   font-size: 0.9rem;
   font-weight: 600;
