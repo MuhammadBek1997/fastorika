@@ -18,7 +18,7 @@ const AboutRoute = () => {
                     </div>
                 </div>
                 <h3>
-                    About Us
+                    {t("aboutUs")}
                 </h3>
             </div>
         </div>

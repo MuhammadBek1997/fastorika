@@ -24,7 +24,22 @@ export const apiFetch = async (path, options = {}) => {
     },
   };
 
-  return fetch(`${API_BASE}${path}`, mergedOptions);
+  const response = await fetch(`${API_BASE}${path}`, mergedOptions);
+
+  // Check if token expired (401 Unauthorized)
+  if (response.status === 401) {
+    // Clear authentication data
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem('token');
+      localStorage.removeItem('user');
+      localStorage.removeItem('logged');
+
+      // Redirect to login page
+      window.location.href = '/login';
+    }
+  }
+
+  return response;
 };
 
 
