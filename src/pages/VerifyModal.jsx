@@ -11,7 +11,7 @@ const VerifyModal = ({ email, onClose }) => {
   const [submitting, setSubmitting] = useState(false)
   const [resending, setResending] = useState(false)
   const [error, setError] = useState('') // Add error state
-  const [countdown, setCountdown] = useState(60)
+  const [countdown, setCountdown] = useState(600) // 10 daqiqa = 600 sekund
   const [canResend, setCanResend] = useState(false)
 
   const maskEmail = (e) => {
@@ -25,7 +25,28 @@ const VerifyModal = ({ email, onClose }) => {
 
   const handleChange = (index, value) => {
     setError('') // Clear error on input
-    const v = value.replace(/\D/g, '').slice(0, 1)
+
+    // Faqat raqamlarni olish
+    const cleanValue = value.replace(/\D/g, '')
+
+    // Agar 1 dan ko'p raqam bo'lsa - paste qilingan (fallback)
+    if (cleanValue.length > 1) {
+      const pastedDigits = cleanValue.slice(0, 6).split('')
+      const newDigits = [...digits]
+      for (let i = 0; i < 6; i++) {
+        newDigits[i] = pastedDigits[i] || ''
+      }
+      setDigits(newDigits)
+      // Oxirgi to'ldirilgan inputga focus
+      const lastIndex = Math.min(pastedDigits.length, 6) - 1
+      if (lastIndex >= 0) {
+        inputsRef.current[lastIndex]?.focus()
+      }
+      return
+    }
+
+    // Oddiy bitta raqam kiritish
+    const v = cleanValue.slice(0, 1)
     const next = [...digits]
     next[index] = v
     setDigits(next)
@@ -37,6 +58,25 @@ const VerifyModal = ({ email, onClose }) => {
   const handleKeyDown = (index, e) => {
     if (e.key === 'Backspace' && !digits[index] && index > 0) {
       inputsRef.current[index - 1]?.focus()
+    }
+  }
+
+  // Paste handler - 6 talik kodni to'liq paste qilish uchun
+  const handlePaste = (e) => {
+    e.preventDefault()
+    const pastedData = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6)
+    if (pastedData.length > 0) {
+      const newDigits = [...digits]
+      for (let i = 0; i < 6; i++) {
+        newDigits[i] = pastedData[i] || ''
+      }
+      setDigits(newDigits)
+      setError('')
+      // Oxirgi to'ldirilgan inputga focus
+      const lastIndex = Math.min(pastedData.length, 6) - 1
+      if (lastIndex >= 0) {
+        inputsRef.current[lastIndex]?.focus()
+      }
     }
   }
 
@@ -94,7 +134,7 @@ const VerifyModal = ({ email, onClose }) => {
       })
       if (!res.ok) throw new Error('Resend error')
       toast.success(t('toast.verification.resent') || 'Code resent')
-      setCountdown(60)
+      setCountdown(600) // 10 daqiqa
       setCanResend(false)
       setDigits(['','','','','',''])
       inputsRef.current[0]?.focus()
@@ -138,9 +178,10 @@ const VerifyModal = ({ email, onClose }) => {
                 value={d}
                 onChange={(e) => handleChange(i, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(i, e)}
+                onPaste={handlePaste}
                 inputMode="numeric"
                 pattern="[0-9]*"
-                maxLength={1}
+                autoComplete="one-time-code"
                 className={`verify-code-input ${error ? 'error' : ''}`}
               />
             ))}
