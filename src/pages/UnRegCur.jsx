@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import './currency.css'
 import { useNavigate, useLocation } from "react-router-dom"
 import { useGlobalContext } from "../Context"
@@ -74,8 +74,7 @@ const UnRegCur = () => {
         }
         return currency[1]
     })
-    const [changeCurrencyCards, setChangeCurrencyCards] = useState(false)
-    const [sendAmount, setSendAmount] = useState(transferData?.sendAmount || '0')
+        const [sendAmount, setSendAmount] = useState(transferData?.sendAmount || '0')
     const [receiveAmount, setReceiveAmount] = useState(transferData?.receiveAmount || '0')
     const [exchangeRate, setExchangeRate] = useState(null)
     const [isLoadingRate, setIsLoadingRate] = useState(false)
@@ -92,6 +91,7 @@ const UnRegCur = () => {
     const [isLoadingCards, setIsLoadingCards] = useState(false)
     const [isCardsExpanded, setIsCardsExpanded] = useState(false)
     const [isFeeExpanded, setIsFeeExpanded] = useState(false)
+    const isSwapping = useRef(false)
 
     // Crypto state
     const cryptoCurrencies = [
@@ -261,8 +261,8 @@ const UnRegCur = () => {
                 const rateData = await getExchangeRate(myCurrency.currencyName, otherCurrency.currencyName)
                 setExchangeRate(rateData)
 
-                // Auto-calculate receive amount when rate is fetched
-                if (sendAmount) {
+                // Auto-calculate receive amount when rate is fetched (skip during swap)
+                if (sendAmount && !isSwapping.current) {
                     const amount = parseFloat(sendAmount.replace(/\s/g, ''))
                     if (!isNaN(amount)) {
                         const converted = amount * rateData.rate
@@ -282,6 +282,7 @@ const UnRegCur = () => {
 
     // Update receive amount when send amount changes - WITH FEE CALCULATION
     useEffect(() => {
+        if (isSwapping.current) return // Skip recalculation during swap
         if (exchangeRate && sendAmount) {
             const amount = parseFloat(sendAmount.replace(/\s/g, ''))
             if (!isNaN(amount) && amount > 0) {
@@ -328,7 +329,7 @@ const UnRegCur = () => {
                         {t('specifyAmount')}
                     </h2>
                 </div>
-                <div className='currency-transfer-cont' style={{ flexDirection: !changeCurrencyCards ? "column" : "column-reverse" }}>
+                <div className='currency-transfer-cont'>
                     <div className='currency-transfer-top'>
                         <div className='currency-transfer-top-cash'>
                             <p>
@@ -389,7 +390,19 @@ const UnRegCur = () => {
                             )}
                         </div>
                     </div>
-                    <button type='button' className='changeBtn' onClick={() => { setChangeCurrencyCards(!changeCurrencyCards) }}>
+                    <button type='button' className='changeBtn' onClick={() => {
+                        isSwapping.current = true
+                        // Swap amounts
+                        const tempAmount = sendAmount
+                        setSendAmount(receiveAmount.replace(/,/g, ''))
+                        setReceiveAmount(tempAmount)
+                        // Swap currencies
+                        const tempCur = myCurrency
+                        setMyCurrency(otherCurrency)
+                        setOtherCurrency(tempCur)
+                        // Reset flag after state updates
+                        setTimeout(() => { isSwapping.current = false }, 100)
+                    }}>
                         <ArrowUpDown/>
                     </button>
                     <div className='currency-transfer-bottom'>

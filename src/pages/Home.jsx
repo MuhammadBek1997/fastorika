@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useGlobalContext } from '../Context'
 import { ArrowUpDown, Banknote, Bitcoin, ChevronDown, ChevronRight, CreditCard, LucideBanknoteArrowUp } from 'lucide-react'
 import { getExchangeRate, calculateTransactionFees } from '../api'
@@ -47,8 +47,7 @@ const Home = () => {
   const [isOtheCurOpen, setIsOtheCurOpen] = useState(false)
   const [myCur, setMyCur] = useState(currency[0])
   const [otherCur, setOtherCur] = useState(currency[1])
-  const [changeCards, setChangeCards] = useState(false)
-  const [sendAmount, setSendAmount] = useState('0')
+    const [sendAmount, setSendAmount] = useState('0')
   const [receiveAmount, setReceiveAmount] = useState('0')
   const [isMethodOpen, setIsMethodOpen] = useState(false)
   const [curMethod, setMethod] = useState("")
@@ -56,6 +55,7 @@ const Home = () => {
   const [isLoadingRate, setIsLoadingRate] = useState(false)
   const [feeCalculation, setFeeCalculation] = useState(null)
   const [isFeeExpanded, setIsFeeExpanded] = useState(false)
+  const isSwapping = useRef(false)
 
   // Crypto state
   const cryptoCurrencies = [
@@ -92,8 +92,8 @@ const Home = () => {
         const rateData = await getExchangeRate(myCur.currencyName, otherCur.currencyName)
         setExchangeRate(rateData)
 
-        // Auto-calculate receive amount when rate is fetched
-        if (sendAmount) {
+        // Auto-calculate receive amount when rate is fetched (skip during swap)
+        if (sendAmount && !isSwapping.current) {
           const amount = parseFloat(sendAmount.replace(/\s/g, ''))
           if (!isNaN(amount)) {
             const converted = amount * rateData.rate
@@ -113,6 +113,7 @@ const Home = () => {
 
   // Update receive amount when send amount changes - WITH FEE CALCULATION
   useEffect(() => {
+    if (isSwapping.current) return // Skip recalculation during swap
     if (exchangeRate && sendAmount) {
       const amount = parseFloat(sendAmount.replace(/\s/g, ''))
       if (!isNaN(amount) && amount > 0) {
@@ -163,7 +164,7 @@ const Home = () => {
           </div>
         </div>
         <div className='hero-right'>
-          <div className='hero-transfer-cont' style={{ flexDirection: !changeCards ? "column" : "column-reverse" }}>
+          <div className='hero-transfer-cont'>
             <div className='hero-transfer-top'>
               <div className='hero-transfer-top-cash'>
                 <p>
@@ -221,7 +222,19 @@ const Home = () => {
                 )}
               </div>
             </div>
-            <button type='button' className='changeBtn' onClick={() => { setChangeCards(!changeCards) }}>
+            <button type='button' className='changeBtn' onClick={() => {
+              isSwapping.current = true
+              // Swap amounts
+              const tempAmount = sendAmount
+              setSendAmount(receiveAmount.replace(/,/g, ''))
+              setReceiveAmount(tempAmount)
+              // Swap currencies
+              const tempCur = myCur
+              setMyCur(otherCur)
+              setOtherCur(tempCur)
+              // Reset flag after state updates
+              setTimeout(() => { isSwapping.current = false }, 100)
+            }}>
               <ArrowUpDown/>
             </button>
             <div className='hero-transfer-bottom'>
