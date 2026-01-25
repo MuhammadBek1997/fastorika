@@ -337,7 +337,23 @@ const UnRegCur = () => {
                             <input
                                 type="text"
                                 value={sendAmount}
-                                onChange={(e) => setSendAmount(e.target.value)}
+                                onChange={(e) => {
+                                    let val = e.target.value
+                                    // Remove non-numeric characters except decimal point
+                                    val = val.replace(/[^0-9.]/g, '')
+                                    // Remove leading zeros (but keep "0." for decimals)
+                                    val = val.replace(/^0+(?=\d)/, '')
+                                    // Only allow one decimal point
+                                    const parts = val.split('.')
+                                    if (parts.length > 2) {
+                                        val = parts[0] + '.' + parts.slice(1).join('')
+                                    }
+                                    // Limit decimal places to 2
+                                    if (parts.length === 2 && parts[1].length > 2) {
+                                        val = parts[0] + '.' + parts[1].slice(0, 2)
+                                    }
+                                    setSendAmount(val || '0')
+                                }}
                             />
                         </div>
                         <div className="currDropdown">
@@ -384,7 +400,19 @@ const UnRegCur = () => {
                             <input
                                 type="text"
                                 value={receiveAmount}
-                                onChange={(e) => setReceiveAmount(e.target.value)}
+                                onChange={(e) => {
+                                    let val = e.target.value
+                                    val = val.replace(/[^0-9.]/g, '')
+                                    val = val.replace(/^0+(?=\d)/, '')
+                                    const parts = val.split('.')
+                                    if (parts.length > 2) {
+                                        val = parts[0] + '.' + parts.slice(1).join('')
+                                    }
+                                    if (parts.length === 2 && parts[1].length > 2) {
+                                        val = parts[0] + '.' + parts[1].slice(0, 2)
+                                    }
+                                    setReceiveAmount(val || '0')
+                                }}
                             />
                         </div>
                         <div className="currDropdown">
