@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useGlobalContext } from '../Context'
 import { ArrowUpDown, Banknote, Bitcoin, ChevronDown, ChevronRight, CreditCard, LucideBanknoteArrowUp } from 'lucide-react'
 import { getExchangeRate, calculateTransactionFees } from '../api'
+import SEO from '../components/SEO'
 
 const Home = () => {
 
@@ -133,8 +134,14 @@ const Home = () => {
 
 
   return (
-    <section>
-      <div className='hero'>
+    <>
+      <SEO
+        title="Fastorika"
+        description="Send money internationally with Fastorika. Fast, secure and low-cost transfers to bank accounts, cards and crypto wallets worldwide. Available 24/7."
+        canonical="https://fastorika.com/"
+      />
+      <section>
+        <div className='hero'>
         <div className='hero-left'>
           <h1>
             {t("heroHead")}
@@ -702,6 +709,7 @@ const Home = () => {
         </div>
       </div>
     </section>
+    </>
   )
 }
 

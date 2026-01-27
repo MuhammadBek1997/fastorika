@@ -1,12 +1,18 @@
-
 import { useGlobalContext } from '../Context'
+import SEO from '../components/SEO'
 
 const AboutUs = () => {
 
   let { t } = useGlobalContext();
 
   return (
-    <section>
+    <>
+      <SEO
+        title="About Us"
+        description="Learn about Fastorika - your trusted partner for fast and secure international money transfers. Discover our mission and values."
+        canonical="https://fastorika.com/about"
+      />
+      <section>
       <div className='about-hero'>
         <div className="about-hero-left">
           <h1>
@@ -136,6 +142,7 @@ const AboutUs = () => {
         </button>
       </div>
     </section>
+    </>
   )
 }
 
