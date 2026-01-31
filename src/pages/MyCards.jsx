@@ -15,7 +15,6 @@ const MyCards = () => {
   }, [user?.userId, cardsRefreshKey])
 
   useEffect(() => {
-    console.log('Cards:', cards)
   }, [cards])
 
   const toggleMenu = (cardId) => {

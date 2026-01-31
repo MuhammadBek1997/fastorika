@@ -70,7 +70,6 @@ const UnRegInstruction = () => {
               const { recipient, feeCalculation, sendAmount, fromCurrency, toCurrency, paymentMethod, cryptoDetails, bankDetails, cryptoCurrency, senderCard } = transferData
 
               // Log sender card info (card from which payment will be taken via Volet)
-              console.log('Sender card (payment source):', senderCard)
 
               // Determine payment method type based on paymentMethod string
               let paymentMethodType = 'DEBIT_CARD'
@@ -183,15 +182,12 @@ const UnRegInstruction = () => {
                 }
               }
 
-              console.log('Creating transaction:', JSON.stringify(transactionRequest, null, 2))
 
               // Step 1: Create transaction
               const transaction = await createTransaction(transactionRequest)
-              console.log('Transaction created:', transaction)
 
               // Step 2: Initialize Volet payment
               const paymentData = await initVoletPayment(transaction.transactionId)
-              console.log('Payment initialized:', paymentData)
 
               // Step 3: Redirect to Volet payment page
               const formData = paymentData?.formData || paymentData?.data?.formData || paymentData
@@ -240,7 +236,6 @@ const UnRegInstruction = () => {
                   }
                 })
 
-                console.log('Submitting Volet form:', form.action, Object.fromEntries(new FormData(form)))
                 document.body.appendChild(form)
                 form.submit()
               } else if (hasActionUrl) {

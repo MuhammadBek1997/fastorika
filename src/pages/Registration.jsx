@@ -363,8 +363,6 @@ const Registration = () => {
                             })
 
                             const responseData = await response.json()
-                            console.log('Registration response:', responseData)
-                            console.log('Response status:', response.status)
 
                             if (!response.ok) {
                                 const errorMessage = responseData?.message || responseData?.error || 'Registration failed'
@@ -375,7 +373,6 @@ const Registration = () => {
                             // Backend returns: { success: true, data: {}, timestamp: ... }
                             // Data might be empty object, that's okay - user is created and verification email sent
                             if (responseData.success) {
-                                console.log('Registration successful, showing verify modal')
                                 toast.success(t('registrationSuccess') || 'Ro\'yxatdan o\'tdingiz! Email tasdiqlash kerak.')
 
                                 // Show verification modal

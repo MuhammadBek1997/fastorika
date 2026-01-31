@@ -86,14 +86,12 @@ const KycVerification = () => {
           adaptIframeHeight: true
         })
         .on('idCheck.onStepCompleted', (payload) => {
-          console.log('Step completed:', payload)
         })
         .on('idCheck.onError', (error) => {
           console.error('Verification error:', error)
           setError(error?.message || t('kyc.verificationError'))
         })
         .on('idCheck.onApplicantStatusChanged', (payload) => {
-          console.log('Status changed:', payload)
           // Reload KYC status when verification completes
           if (payload?.reviewStatus === 'completed') {
             loadKycStatus()

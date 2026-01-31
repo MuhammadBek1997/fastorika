@@ -271,7 +271,6 @@ export const AppProvider = ({ children }) => {
         }
 
         const responseData = await response.json();
-        console.log('Auth check response:', responseData);
 
         // Backend returns: { success: true, data: { id, email, phone, status, role, createdAt } }
         const userData = responseData?.data || responseData;
@@ -354,7 +353,6 @@ export const AppProvider = ({ children }) => {
       });
 
       const responseData = await response.json();
-      console.log('Login response:', responseData);
 
       if (!response.ok) {
         // Handle error response
@@ -779,7 +777,6 @@ let mockUsers = [
     try {
       setKycLoading(true)
       const statusData = await getKycStatus()
-      console.log('KYC status loaded:', statusData)
       setKycStatus(statusData?.verificationStatus || statusData?.status || null)
     } catch (e) {
       console.warn('KYC status load error:', e?.message || e)
@@ -794,7 +791,6 @@ let mockUsers = [
     try {
       setKycLoading(true)
       const result = await startKycVerification(userId)
-      console.log('KYC initiated:', result)
       setKycAccessToken(result.accessToken)
       setKycApplicantId(result.applicantId)
       setKycStatus('PENDING')
@@ -811,7 +807,6 @@ let mockUsers = [
   const refreshKycToken = async () => {
     try {
       const newToken = await refreshKycAccessToken()
-      console.log('KYC token refreshed')
       setKycAccessToken(newToken)
       return newToken
     } catch (e) {

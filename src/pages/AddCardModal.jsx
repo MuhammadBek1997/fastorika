@@ -236,7 +236,6 @@ const AddCardModal = () => {
         if (!validateForm()) return
 
         const payload = buildPayload()
-        console.log('Add card payload:', payload)
 
         try {
             setSubmitting(true)

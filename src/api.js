@@ -48,7 +48,6 @@ const fetchUsers = async () => {
   try {
     const response = await apiFetch('admin/users?page=0&size=10');
     const dataAdmins = await response.json();
-    console.log(dataAdmins);
     return dataAdmins;
   } catch (error) {
     console.error('Error:', error);
@@ -80,10 +79,8 @@ const fetchUsers = async () => {
  */
 export const getCurrentUser = async () => {
   try {
-    console.log('Fetching current user');
     const res = await apiFetch('users/me', { method: 'GET' });
     const response = await res.json();
-    console.log('Current user response:', response);
 
     if (!res.ok) {
       throw new Error(response?.message || 'Failed to load user');
@@ -110,7 +107,6 @@ export const getCurrentUser = async () => {
  */
 export const updateCurrentUser = async (userData) => {
   try {
-    console.log('Updating current user:', userData);
     const res = await apiFetch('users/me', {
       method: 'PUT',
       headers: {
@@ -120,7 +116,6 @@ export const updateCurrentUser = async (userData) => {
     });
 
     const response = await res.json();
-    console.log('Update user response:', response);
 
     if (!res.ok) {
       throw new Error(response?.message || 'Failed to update user');
@@ -158,7 +153,6 @@ export const updateCurrentUser = async (userData) => {
  */
 export const getUserCards = async () => {
   try {
-    console.log('Fetching user cards');
     const res = await apiFetch('cards/my', { method: 'GET' });
     const response = await res.json();
 
@@ -194,7 +188,6 @@ export const getUserCards = async () => {
  */
 export const getCardRequirements = async (countryCode) => {
   try {
-    console.log('Fetching card requirements for:', countryCode);
     const res = await apiFetch(`cards/requirements/${countryCode}`, {
       method: 'GET'
     });
@@ -227,7 +220,6 @@ export const getCardRequirements = async (countryCode) => {
  */
 export const addCard = async (cardData) => {
   try {
-    console.log('Adding new card:', cardData);
     const res = await apiFetch('cards', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -235,7 +227,6 @@ export const addCard = async (cardData) => {
     });
 
     const response = await res.json();
-    console.log('Add card response:', response);
 
     if (!res.ok) {
       throw new Error(response?.message || 'Failed to add card');
@@ -262,7 +253,6 @@ export const addCard = async (cardData) => {
  */
 export const deleteCard = async (cardId) => {
   try {
-    console.log('Deleting card:', cardId);
     const res = await apiFetch(`cards/${cardId}`, {
       method: 'DELETE'
     });
@@ -324,7 +314,6 @@ export const deleteCard = async (cardId) => {
  */
 export const initVoletPayment = async (transactionId) => {
   try {
-    console.log('Initializing Volet payment for transaction:', transactionId);
 
     const res = await apiFetch(`payments/volet/init/${transactionId}`, {
       method: 'POST',
@@ -334,7 +323,6 @@ export const initVoletPayment = async (transactionId) => {
     });
 
     const response = await res.json();
-    console.log('Volet payment init response:', response);
 
     if (!res.ok) {
       throw new Error(response?.message || 'Failed to initialize payment');
@@ -392,7 +380,6 @@ export const initVoletPayment = async (transactionId) => {
  */
 export const getAllCountries = async () => {
   try {
-    console.log('Fetching all countries');
     const res = await apiFetch('countries', { method: 'GET' });
     const response = await res.json();
 
@@ -429,7 +416,6 @@ export const getAllCountries = async () => {
  */
 export const getCountryById = async (countryId) => {
   try {
-    console.log('Fetching country by ID:', countryId);
     const res = await apiFetch(`countries/${countryId}`, { method: 'GET' });
     const response = await res.json();
 
@@ -480,7 +466,6 @@ export const getCountryById = async (countryId) => {
  */
 export const getExchangeRate = async (baseCurrency, targetCurrency) => {
   try {
-    console.log(`Fetching exchange rate: ${baseCurrency} -> ${targetCurrency}`);
 
     const url = `https://hexarate.paikama.co/api/rates/${baseCurrency}/${targetCurrency}/latest`;
 
@@ -496,7 +481,6 @@ export const getExchangeRate = async (baseCurrency, targetCurrency) => {
     }
 
     const data = await response.json();
-    console.log('Exchange rate response:', data);
 
     if (data.status_code !== 200) {
       throw new Error('Invalid exchange rate response');
@@ -628,7 +612,6 @@ export const convertCurrency = async (amount, fromCurrency, toCurrency) => {
  */
 export const createTransaction = async (transactionData) => {
   try {
-    console.log('Creating transaction:', transactionData);
 
     const res = await apiFetch('transactions', {
       method: 'POST',
@@ -639,7 +622,6 @@ export const createTransaction = async (transactionData) => {
     });
 
     const response = await res.json();
-    console.log('Transaction response:', response);
 
     if (!res.ok) {
       throw new Error(response?.message || 'Failed to create transaction');
@@ -669,14 +651,12 @@ export const createTransaction = async (transactionData) => {
  */
 export const getCountryFees = async (countryId) => {
   try {
-    console.log('Fetching fees for country:', countryId);
 
     const res = await apiFetch(`countries/${countryId}/fees`, {
       method: 'GET'
     });
 
     const response = await res.json();
-    console.log('Country fees response:', response);
 
     if (!res.ok) {
       // If endpoint doesn't exist, return default fees
@@ -769,14 +749,12 @@ export const calculateTransactionFees = (amountSent, transferFeePercentage, exch
  */
 export const fetchMyTransactions = async (page = 0, size = 20) => {
   try {
-    console.log(`Fetching my transactions: page=${page}, size=${size}`);
 
     const res = await apiFetch(`transactions/my?page=${page}&size=${size}`, {
       method: 'GET'
     });
 
     const response = await res.json();
-    console.log('My transactions response:', response);
 
     if (!res.ok) {
       throw new Error(response?.message || 'Failed to load transactions');
@@ -830,14 +808,12 @@ export const fetchMyTransactions = async (page = 0, size = 20) => {
  */
 export const fetchMyTransactionDetails = async (transactionId) => {
   try {
-    console.log(`Fetching transaction details: ${transactionId}`);
 
     const res = await apiFetch(`transactions/my/${transactionId}`, {
       method: 'GET'
     });
 
     const response = await res.json();
-    console.log('Transaction details response:', response);
 
     if (!res.ok) {
       throw new Error(response?.message || 'Failed to load transaction details');
@@ -870,14 +846,12 @@ export const fetchMyTransactionDetails = async (transactionId) => {
  */
 export const verifyClientByFastorikaId = async (fastorikaId) => {
   try {
-    console.log('Verifying client by Fastorika ID:', fastorikaId);
 
     const res = await apiFetch(`clients/verify/${fastorikaId}`, {
       method: 'GET'
     });
 
     const response = await res.json();
-    console.log('Verify client response:', response);
 
     if (!res.ok) {
       throw new Error(response?.message || 'Client not found or not verified');
@@ -938,14 +912,12 @@ export const verifyClientByFastorikaId = async (fastorikaId) => {
  */
 export const findClientByFastorikaId = async (fastorikaId) => {
   try {
-    console.log('Finding client by Fastorika ID:', fastorikaId);
 
     const res = await apiFetch(`clients/by-fastorika-id/${fastorikaId}`, {
       method: 'GET'
     });
 
     const response = await res.json();
-    console.log('Find client response:', response);
 
     if (!res.ok) {
       if (res.status === 404) {
@@ -980,7 +952,6 @@ export const findClientByFastorikaId = async (fastorikaId) => {
  */
 export const startKycVerification = async (userId) => {
   try {
-    console.log('Starting KYC verification for user:', userId);
 
     const res = await apiFetch('kyc/start', {
       method: 'POST',
@@ -991,7 +962,6 @@ export const startKycVerification = async (userId) => {
     });
 
     const response = await res.json();
-    console.log('KYC start response:', response);
 
     if (!res.ok) {
       throw new Error(response?.message || 'Failed to start KYC verification');
@@ -1012,14 +982,12 @@ export const startKycVerification = async (userId) => {
  */
 export const refreshKycAccessToken = async () => {
   try {
-    console.log('Refreshing KYC access token');
 
     const res = await apiFetch('kyc/refresh-token', {
       method: 'GET'
     });
 
     const response = await res.json();
-    console.log('KYC refresh token response:', response);
 
     if (!res.ok) {
       throw new Error(response?.message || 'Failed to refresh KYC access token');
@@ -1044,14 +1012,12 @@ export const refreshKycAccessToken = async () => {
  */
 export const getKycStatus = async () => {
   try {
-    console.log('Fetching KYC status');
 
     const res = await apiFetch('kyc/status', {
       method: 'GET'
     });
 
     const response = await res.json();
-    console.log('KYC status response:', response);
 
     if (!res.ok) {
       throw new Error(response?.message || 'Failed to get KYC status');

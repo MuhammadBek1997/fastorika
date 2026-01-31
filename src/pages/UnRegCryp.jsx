@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import { useGlobalContext } from "../Context"
 import { ChevronLeft, Wallet, AlertCircle, ChevronRight, ArrowRight } from "lucide-react"
+import { toast } from "react-toastify"
 
 const UnRegCryp = () => {
   const { t, theme } = useGlobalContext()
@@ -89,12 +90,12 @@ const UnRegCryp = () => {
 
   const handleContinue = () => {
     if (!walletAddress || !termsChecked) {
-      alert(t("fillAllFields") || "Please fill all required fields")
+      toast.error(t("fillAllFields") || "Please fill all required fields")
       return
     }
 
     if (!validateWalletAddress(walletAddress)) {
-      alert(t("invalidWalletAddress") || "Invalid wallet address for selected network")
+      toast.error(t("invalidWalletAddress") || "Invalid wallet address for selected network")
       return
     }
 
@@ -106,7 +107,6 @@ const UnRegCryp = () => {
       receiverName: receiverName || null
     }
 
-    console.log('Continue with crypto payment', cryptoDetails)
 
     // Navigate to instruction/confirmation page
     navigate('/instruction', {

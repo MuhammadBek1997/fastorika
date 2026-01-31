@@ -16,7 +16,7 @@ i18next
 .init({
     fallbackLng:'ru',
     lng:language,
-    debug:true,
+    debug: false,
     resources:{
         ru:{translation:rusLang},
         en:{translation:engLang}

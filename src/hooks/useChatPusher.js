@@ -115,7 +115,6 @@ export const useChatPusher = ({
 
     // Connection state
     pusher.connection.bind('connected', () => {
-      console.log('Pusher ulandi');
       setIsConnected(true);
 
       // User online status yuborish
@@ -123,7 +122,6 @@ export const useChatPusher = ({
     });
 
     pusher.connection.bind('disconnected', () => {
-      console.log('Pusher uzildi');
       setIsConnected(false);
     });
 

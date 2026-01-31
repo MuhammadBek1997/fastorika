@@ -306,7 +306,6 @@ const UnRegCur = () => {
                 try {
                     setIsLoadingCards(true)
                     const cards = await getUserCards()
-                    console.log('Fetched cards:', cards)
                     setMyCards(cards || [])
                     // Don't auto-select - let user choose
                 } catch (error) {
