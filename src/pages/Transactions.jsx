@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import './transactions.css'
 import { useGlobalContext } from '../Context'
 import { ArrowLeftRight, Check, Clock, List, MessagesSquare, MinusCircle, X } from 'lucide-react'
+import { getExchangeRate, calculateTransactionFees } from '../api'
 
 const Transactions = () => {
   let { t, theme, navigate, transactions } = useGlobalContext()
@@ -64,10 +65,18 @@ const Transactions = () => {
   const [myTransCur, setMyTransCur] = useState(currency[0])
   const [otherTransCur, setOtherTransCur] = useState(currency[1])
   const [selectedCrypto, setSelectedCrypto] = useState(null) // null = fiat, object = crypto
-  const [changeTransCards, setChangeTransCards] = useState(false)
-  const [sendAmount, setSendAmount] = useState('1000')
-  const [receiveAmount, setReceiveAmount] = useState('12560000')
+  const [sendAmount, setSendAmount] = useState('0')
+  const [receiveAmount, setReceiveAmount] = useState('0')
   const [openIndex, setOpenIndex] = useState(null);
+
+  // Exchange rate state
+  const [exchangeRate, setExchangeRate] = useState(null)
+  const [isLoadingRate, setIsLoadingRate] = useState(false)
+  const isSwapping = useRef(false)
+
+  // Fee configuration
+  const DEFAULT_TRANSFER_FEE = 10
+  const DEFAULT_EXCHANGE_RATE_FEE = 2
   const [regoffer, setRegoffer] = useState(localStorage.getItem("regoffer") || "show")
 
   // Fastorika ID ad banner states
@@ -103,6 +112,55 @@ const Transactions = () => {
     }
   }, [regoffer])
 
+  // Fetch exchange rate when currencies change
+  useEffect(() => {
+    const fetchExchangeRate = async () => {
+      if (myTransCur.currencyName === otherTransCur.currencyName) {
+        setExchangeRate({ rate: 1 })
+        return
+      }
+
+      try {
+        setIsLoadingRate(true)
+        const rateData = await getExchangeRate(myTransCur.currencyName, otherTransCur.currencyName)
+        setExchangeRate(rateData)
+
+        // Auto-calculate receive amount when rate is fetched (skip during swap)
+        if (sendAmount && !isSwapping.current) {
+          const amount = parseFloat(sendAmount.replace(/\s/g, ''))
+          if (!isNaN(amount)) {
+            const converted = amount * rateData.rate
+            setReceiveAmount(converted.toLocaleString('en-US', { maximumFractionDigits: 2 }))
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch exchange rate:', error)
+        setExchangeRate(null)
+      } finally {
+        setIsLoadingRate(false)
+      }
+    }
+
+    fetchExchangeRate()
+  }, [myTransCur.currencyName, otherTransCur.currencyName])
+
+  // Update receive amount when send amount changes - WITH FEE CALCULATION
+  useEffect(() => {
+    if (isSwapping.current) return
+    if (exchangeRate && sendAmount) {
+      const amount = parseFloat(sendAmount.replace(/\s/g, ''))
+      if (!isNaN(amount) && amount > 0) {
+        const calculation = calculateTransactionFees(
+          amount,
+          DEFAULT_TRANSFER_FEE,
+          DEFAULT_EXCHANGE_RATE_FEE,
+          exchangeRate.rate
+        )
+        setReceiveAmount(calculation.amountReceived.toLocaleString('en-US', { maximumFractionDigits: 2 }))
+      }
+    }
+  }, [sendAmount, exchangeRate])
+
   const handleRegoffer = () => {
     localStorage.setItem("regoffer", "hide");
     setRegoffer("hide")
@@ -118,7 +176,7 @@ const Transactions = () => {
   return (
     <div className='transactions' id='webSection'>
       <div className="transactions-navbar">
-        <div className={`transactions-transfer-cont ${!changeTransCards ? "transrow" : "transreverse"}`}>
+        <div className="transactions-transfer-cont">
           <div className='transactions-transfer-top'>
             <div className='transactions-transfer-top-cash'>
               <p>
@@ -127,7 +185,19 @@ const Transactions = () => {
               <input
                 type="text"
                 value={sendAmount}
-                onChange={(e) => setSendAmount(e.target.value)}
+                onChange={(e) => {
+                  let val = e.target.value
+                  val = val.replace(/[^0-9.]/g, '')
+                  val = val.replace(/^0+(?=\d)/, '')
+                  const parts = val.split('.')
+                  if (parts.length > 2) {
+                    val = parts[0] + '.' + parts.slice(1).join('')
+                  }
+                  if (parts.length === 2 && parts[1].length > 2) {
+                    val = parts[0] + '.' + parts[1].slice(0, 2)
+                  }
+                  setSendAmount(val || '0')
+                }}
               />
             </div>
             <div className="currTransDropdown">
@@ -164,9 +234,23 @@ const Transactions = () => {
               )}
             </div>
           </div>
-          <button type='button' className='changeTransBtn' onClick={() => { setChangeTransCards(!changeTransCards) }}>
-           <ArrowLeftRight/>
-          </button>
+          <button type='button' className='changeTransBtn' onClick={() => {
+              isSwapping.current = true
+              // Swap amounts
+              const tempAmount = sendAmount
+              setSendAmount(receiveAmount.replace(/,/g, ''))
+              setReceiveAmount(tempAmount)
+              // Swap currencies
+              const tempCur = myTransCur
+              setMyTransCur(otherTransCur)
+              setOtherTransCur(tempCur)
+              // Clear crypto selection when swapping
+              setSelectedCrypto(null)
+              // Reset flag after state updates
+              setTimeout(() => { isSwapping.current = false }, 100)
+            }}>
+              <ArrowLeftRight/>
+            </button>
           <div className='transactions-transfer-bottom'>
             <div className='transactions-transfer-bottom-cash'>
               <p>
@@ -175,7 +259,7 @@ const Transactions = () => {
               <input
                 type="text"
                 value={receiveAmount}
-                onChange={(e) => setReceiveAmount(e.target.value)}
+                readOnly
               />
             </div>
             <div className="currTransDropdown">

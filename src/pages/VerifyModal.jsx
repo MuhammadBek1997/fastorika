@@ -89,10 +89,10 @@ const VerifyModal = ({ email, onClose }) => {
     }
     try {
       setSubmitting(true)
-      const res = await apiFetch('auth/verify', {
+      const res = await apiFetch('auth/verify-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, code })
+        body: JSON.stringify({ email, verificationCode: code })
       })
       if (!res.ok) throw new Error('Verify error')
       toast.success(t('toast.verification.success'))
