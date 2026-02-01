@@ -1,17 +1,16 @@
 /* Modal Overlay */
 .modal-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     background: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1000;
-    padding: 1rem;
+    padding: clamp(0.5rem, 2vw, 1rem);
     animation: fadeIn 0.2s ease;
+    box-sizing: border-box;
+    overflow: auto;
 }
 
 @keyframes fadeIn {
@@ -26,12 +25,14 @@
 /* Modal Container */
 .modal-container {
     background: white;
-    border-radius: 16px;
-    padding: 2rem;
-    max-width: 420px;
-    width: 100%;
+    border-radius: clamp(0.75rem, 2vw, 1rem);
+    padding: clamp(1rem, 3vw, 2rem);
+    max-width: min(420px, calc(100vw - 2rem));
+    width: calc(100% - 1rem);
     animation: slideUp 0.3s ease;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    box-sizing: border-box;
+    margin: auto;
 }
 
 #dark .modal-container {
@@ -269,42 +270,56 @@
 }
 
 /* Mobile Responsive */
-@media (max-width: 480px) {
+@media (max-width: 600px) {
+    .modal-overlay {
+        padding: 0.5rem;
+    }
+
     .modal-container {
-        padding: 1.5rem;
-        margin: 1rem;
-        max-width: calc(100% - 2rem);
+        padding: clamp(0.75rem, 3vw, 1.5rem);
+        max-width: calc(100vw - 1rem);
+        width: 100%;
+        margin: 0.5rem;
     }
 
     .modal-title {
-        font-size: 1.1rem;
+        font-size: clamp(1rem, 4vw, 1.1rem);
     }
 
     .modal-buttons {
         flex-direction: column;
+        gap: 0.5rem;
     }
 
     .modal-btn {
         width: 100%;
+        padding: clamp(0.5rem, 2vw, 0.875rem) clamp(0.75rem, 3vw, 1.25rem);
+        font-size: clamp(0.85rem, 3vw, 0.95rem);
     }
 
     /* Verification modal - buttons stay in row on mobile */
     .verification-modal .modal-buttons {
         flex-direction: row;
     }
-    .verification-icon{
-        width: 2rem;
+    .verification-icon {
+        width: clamp(1.5rem, 6vw, 2.5rem);
+        height: auto;
     }
-    .verification-title{
-        font-size: 0.8rem;
+    .verification-icon img {
+        width: 100%;
+        height: auto;
     }
-    .verification-description{
-        font-size: 0.7rem;
+    .verification-title {
+        font-size: clamp(0.75rem, 3vw, 1rem);
+    }
+    .verification-description {
+        font-size: clamp(0.65rem, 2.5vw, 0.875rem);
     }
     .verification-modal .modal-btn {
         width: auto;
         flex: 1;
-        padding: 0.5rem 1rem;
+        padding: clamp(0.4rem, 2vw, 0.6rem) clamp(0.5rem, 2vw, 1rem);
+        font-size: clamp(0.75rem, 2.5vw, 0.9rem);
     }
 
     /* Cancel modal - buttons stay in row on mobile */
@@ -315,18 +330,34 @@
     .cancel-modal .modal-btn {
         width: auto;
         flex: 1;
-        padding: 0.5rem 1rem;
+        padding: clamp(0.4rem, 2vw, 0.6rem) clamp(0.5rem, 2vw, 1rem);
     }
 
     .cancel-modal .modal-title {
-        font-size: 1rem;
+        font-size: clamp(0.9rem, 3.5vw, 1rem);
     }
 
     .cancel-modal .modal-subtitle {
-        font-size: 0.8rem;
+        font-size: clamp(0.7rem, 2.5vw, 0.8rem);
     }
 
     .cancel-modal .modal-description {
-        font-size: 0.75rem;
+        font-size: clamp(0.65rem, 2vw, 0.75rem);
+    }
+}
+
+/* Very small screens */
+@media (max-width: 375px) {
+    .modal-overlay {
+        padding: 0.25rem;
+    }
+
+    .modal-container {
+        padding: 0.75rem;
+        border-radius: 0.75rem;
+    }
+
+    .verification-modal .modal-buttons {
+        gap: 0.25rem;
     }
 }
