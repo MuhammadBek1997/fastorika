@@ -5,7 +5,11 @@ import { ArrowLeftRight, Check, Clock, List, MessagesSquare, MinusCircle, X } fr
 import { getExchangeRate, calculateTransactionFees } from '../api'
 
 const Transactions = () => {
-  let { t, theme, navigate, transactions } = useGlobalContext()
+  let { t, theme, navigate, transactions, globalDropdownKey, closeAllDropdowns } = useGlobalContext()
+
+  // Track if this component triggered the global close to avoid self-closing loop
+  const selfTriggered = useRef(false)
+
   // Safe fallbacks for translations that were reported missing in list rows
   // Backend status mapping - same as admin panel
   const statusConfig = {
@@ -62,6 +66,15 @@ const Transactions = () => {
 
   const [isMyTransCurOpen, setIsMyTransCurOpen] = useState(false)
   const [isOtheTransCurOpen, setIsOtheTransCurOpen] = useState(false)
+
+  // Close local dropdowns when global close signal is triggered from other components
+  useEffect(() => {
+    if (globalDropdownKey > 0 && !selfTriggered.current) {
+      setIsMyTransCurOpen(false)
+      setIsOtheTransCurOpen(false)
+    }
+    selfTriggered.current = false
+  }, [globalDropdownKey])
   const [myTransCur, setMyTransCur] = useState(currency[0])
   const [otherTransCur, setOtherTransCur] = useState(currency[1])
   const [selectedCrypto, setSelectedCrypto] = useState(null) // null = fiat, object = crypto
@@ -203,6 +216,10 @@ const Transactions = () => {
             <div className="currTransDropdown">
               <button
                 onClick={() => {
+                  if (!isMyTransCurOpen) {
+                    selfTriggered.current = true
+                    closeAllDropdowns()
+                  }
                   setIsMyTransCurOpen(!isMyTransCurOpen)
                   setIsOtheTransCurOpen(false)
                 }}
@@ -265,6 +282,10 @@ const Transactions = () => {
             <div className="currTransDropdown">
               <button
                 onClick={() => {
+                  if (!isOtheTransCurOpen) {
+                    selfTriggered.current = true
+                    closeAllDropdowns()
+                  }
                   setIsOtheTransCurOpen(!isOtheTransCurOpen)
                   setIsMyTransCurOpen(false)
                 }}

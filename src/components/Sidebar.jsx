@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { useGlobalContext } from '../Context'
 import { ArrowRightCircle, CreditCard, User, Settings as SettingsIcon, MessageCircle, LogOut } from 'lucide-react'
@@ -7,7 +7,19 @@ const Sidebar = () => {
     const [themeSideOpen, setThemeSideOpen] = useState(false)
     const [langSideOpen, setLangSideOpen] = useState(false)
     const [isSideMobileMenuOpen, setIsSideMobileMenuOpen] = useState(false)
-    let { t, theme, navigate, toggleTheme, languages, currentLang, currentLanguage, handleChange, handleLogout } = useGlobalContext()
+    let { t, theme, navigate, toggleTheme, languages, currentLang, currentLanguage, handleChange, handleLogout, globalDropdownKey, closeAllDropdowns } = useGlobalContext()
+
+    // Track if this component triggered the global close to avoid self-closing loop
+    const selfTriggered = useRef(false)
+
+    // Close local dropdowns when global close signal is triggered from other components
+    useEffect(() => {
+        if (globalDropdownKey > 0 && !selfTriggered.current) {
+            setThemeSideOpen(false)
+            setLangSideOpen(false)
+        }
+        selfTriggered.current = false
+    }, [globalDropdownKey])
 
 
 
@@ -164,6 +176,10 @@ const Sidebar = () => {
                     <div className="themeDropdown">
                         <button
                             onClick={() => {
+                                if (!themeSideOpen) {
+                                    selfTriggered.current = true
+                                    closeAllDropdowns()
+                                }
                                 setThemeSideOpen(!themeSideOpen)
                                 setLangSideOpen(false)
                             }}
@@ -218,6 +234,10 @@ const Sidebar = () => {
                     <div className="langDropdown">
                         <button
                             onClick={() => {
+                                if (!langSideOpen) {
+                                    selfTriggered.current = true
+                                    closeAllDropdowns()
+                                }
                                 setLangSideOpen(!langSideOpen)
                                 setThemeSideOpen(false)
                             }}

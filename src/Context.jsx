@@ -26,6 +26,10 @@ export const AppProvider = ({ children }) => {
   const [selPayment, setSelPayment] = useState("currency");
   const [addCardModal,setAddCardModal] = useState(false)
 
+  // Global Dropdown Coordination - closes all dropdowns across components
+  const [globalDropdownKey, setGlobalDropdownKey] = useState(0)
+  const closeAllDropdowns = () => setGlobalDropdownKey(prev => prev + 1)
+
   // Transfer Flow State - persists data across transfer steps
   const [transferData, setTransferData] = useState({
     // Step 1: Currency/Amount (UnRegCur)
@@ -1150,6 +1154,10 @@ let mockUsers = [
       setSelPayment,
       addCardModal,
       setAddCardModal,
+
+      // Global Dropdown Coordination
+      globalDropdownKey,
+      closeAllDropdowns,
 
       // Transfer Flow
       transferData,
