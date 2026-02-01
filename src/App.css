@@ -3932,6 +3932,7 @@ nav.scrolled {
 
 .addCardModal-cont {
     min-width: 27rem;
+    max-width: calc(100vw - 2rem);
     padding: 1rem;
     border-radius: 2rem;
     z-index: 100;
@@ -5647,7 +5648,10 @@ nav.scrolled {
 
     .addCardModal-cont {
         width: 90%;
-        height: 80%;
+        min-width: unset;
+        max-width: 100%;
+        height: auto;
+        max-height: 90vh;
         overflow: auto;
     }
 
@@ -5672,5 +5676,30 @@ nav.scrolled {
 
     .calendar-picker {
         left: 0.5rem;
+    }
+
+    .addCardModal-cont {
+        width: 95%;
+        padding: 1rem;
+    }
+
+    .verify-modal-cont {
+        width: 95%;
+        padding: 1rem;
+    }
+
+    .verify-modal-header h2 {
+        font-size: 1.1rem;
+    }
+
+    .verify-code-inputs {
+        gap: 0.3rem;
+    }
+
+    .verify-code-input {
+        width: 36px;
+        height: 42px;
+        font-size: 1rem;
+        border-radius: 0.5rem;
     }
 }

@@ -360,6 +360,11 @@ const UnRegCur = () => {
                             <button
                                 onClick={() => {
                                     setIsMyCurrencyOpen(!isMyCurrencyOpen)
+                                    // Boshqa dropdownlarni yopish
+                                    setIsOtherCurrencyOpen(false)
+                                    setIsCryptoOpen(false)
+                                    setIsNetworkOpen(false)
+                                    setIsMethodOpen(false)
                                 }}
                                 className="currToggle"
                             >
@@ -432,7 +437,14 @@ const UnRegCur = () => {
                             {curMethod === t('methods.crypto') ? (
                                 <>
                                     <button
-                                        onClick={() => setIsCryptoOpen(!isCryptoOpen)}
+                                        onClick={() => {
+                                            setIsCryptoOpen(!isCryptoOpen)
+                                            // Boshqa dropdownlarni yopish
+                                            setIsMyCurrencyOpen(false)
+                                            setIsOtherCurrencyOpen(false)
+                                            setIsNetworkOpen(false)
+                                            setIsMethodOpen(false)
+                                        }}
                                         className="currToggle"
                                     >
                                         <span style={{ fontSize: '1.25rem' }}>{selectedCrypto.icon}</span>
@@ -464,6 +476,11 @@ const UnRegCur = () => {
                                     <button
                                         onClick={() => {
                                             setIsOtherCurrencyOpen(!isOtherCurrencyOpen)
+                                            // Boshqa dropdownlarni yopish
+                                            setIsMyCurrencyOpen(false)
+                                            setIsCryptoOpen(false)
+                                            setIsNetworkOpen(false)
+                                            setIsMethodOpen(false)
                                         }}
                                         className="currToggle"
                                     >
@@ -503,7 +520,14 @@ const UnRegCur = () => {
                 <div className="currency-bottom">
                     <div className="date-input-container" style={{ padding: "0" }}>
                         <button
-                            onClick={() => setIsMethodOpen(!isMethodOpen)}
+                            onClick={() => {
+                                setIsMethodOpen(!isMethodOpen)
+                                // Boshqa dropdownlarni yopish
+                                setIsMyCurrencyOpen(false)
+                                setIsOtherCurrencyOpen(false)
+                                setIsCryptoOpen(false)
+                                setIsNetworkOpen(false)
+                            }}
                             className="country-select-btn"
                         >
                             {
@@ -593,7 +617,15 @@ const UnRegCur = () => {
                         </div>
                         {/* Accordion Header */}
                         <button
-                            onClick={() => setIsCardsExpanded(!isCardsExpanded)}
+                            onClick={() => {
+                                setIsCardsExpanded(!isCardsExpanded)
+                                // Boshqa dropdownlarni yopish
+                                setIsMyCurrencyOpen(false)
+                                setIsOtherCurrencyOpen(false)
+                                setIsCryptoOpen(false)
+                                setIsNetworkOpen(false)
+                                setIsMethodOpen(false)
+                            }}
                             className="date-input-container"
                             style={{ width: '100%' }}
                         >

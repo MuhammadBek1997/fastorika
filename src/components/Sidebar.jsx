@@ -52,11 +52,18 @@ const Sidebar = () => {
                 </button>
                 <div className='sidebar-logo'>
                     <div className='forD'>
-                        <img src={`/images/logoside${theme}.svg`} alt="Logo" />
+                        <img
+                            src={`/images/logoside${theme || 'light'}.svg`}
+                            alt="Fastorika Logo"
+                            onError={(e) => { e.target.src = '/images/logosidelight.svg' }}
+                        />
                     </div>
                     <div className='forM'>
-                        <img src={`/images/logo${theme}.svg`} alt="Logo" />
-
+                        <img
+                            src={`/images/logo${theme || 'light'}.svg`}
+                            alt="Fastorika Logo"
+                            onError={(e) => { e.target.src = '/images/logolight.svg' }}
+                        />
                     </div>
                 </div>
                 {isSideMobileMenuOpen && (

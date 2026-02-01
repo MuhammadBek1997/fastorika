@@ -21,7 +21,11 @@ const VerificationModal = ({ isOpen, onClose, onConfirm, isLoggedIn = true }) =>
                 {/* Header - Icon and Title in row */}
                 <div className="verification-header">
                     <div className="verification-icon">
-                        <img src={`/images/verified${theme}.png`} alt="" />
+                        <img
+                            src={`/images/verified${theme || 'light'}.png`}
+                            alt="Verified"
+                            onError={(e) => { e.target.src = '/images/verifiedlight.png' }}
+                        />
                     </div>
                     <h2 className="verification-title">
                         {title}

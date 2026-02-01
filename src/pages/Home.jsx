@@ -199,6 +199,10 @@ const Home = () => {
                 <button
                   onClick={() => {
                     setIsMyCurOpen(!isMyCurOpen)
+                    // Boshqa dropdownlarni yopish
+                    setIsOtheCurOpen(false)
+                    setIsCryptoOpen(false)
+                    setIsMethodOpen(false)
                   }}
                   className="currToggle"
 
@@ -272,7 +276,13 @@ const Home = () => {
                 {curMethod === t('methods.crypto') ? (
                   <>
                     <button
-                      onClick={() => setIsCryptoOpen(!isCryptoOpen)}
+                      onClick={() => {
+                        setIsCryptoOpen(!isCryptoOpen)
+                        // Boshqa dropdownlarni yopish
+                        setIsMyCurOpen(false)
+                        setIsOtheCurOpen(false)
+                        setIsMethodOpen(false)
+                      }}
                       className="currToggle"
                     >
                       <span style={{ fontSize: '1.25rem' }}>{selectedCrypto.icon}</span>
@@ -304,6 +314,10 @@ const Home = () => {
                     <button
                       onClick={() => {
                         setIsOtheCurOpen(!isOtheCurOpen)
+                        // Boshqa dropdownlarni yopish
+                        setIsMyCurOpen(false)
+                        setIsCryptoOpen(false)
+                        setIsMethodOpen(false)
                       }}
                       className="currToggle"
                     >
@@ -342,7 +356,13 @@ const Home = () => {
             </h3>
             <div className="hero-method-container">
               <button
-                onClick={() => setIsMethodOpen(!isMethodOpen)}
+                onClick={() => {
+                  setIsMethodOpen(!isMethodOpen)
+                  // Boshqa dropdownlarni yopish
+                  setIsMyCurOpen(false)
+                  setIsOtheCurOpen(false)
+                  setIsCryptoOpen(false)
+                }}
                 className="hero-method-btn"
               >
                 {

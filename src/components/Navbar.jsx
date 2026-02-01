@@ -92,7 +92,12 @@ const Navbar = () => {
                         </svg>
                     </button>
                     <Link to={'/'} className="logo">
-                        <img src={`/images/logo${theme}.svg`} className="h-8" alt="Logo" />
+                        <img
+                            src={`/images/logo${theme || 'light'}.svg`}
+                            className="h-8"
+                            alt="Fastorika Logo"
+                            onError={(e) => { e.target.src = '/images/logolight.svg' }}
+                        />
                     </Link>
 
                 </div>

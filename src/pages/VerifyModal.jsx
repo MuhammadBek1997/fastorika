@@ -145,9 +145,11 @@ const VerifyModal = ({ email, onClose }) => {
     }
   }
 
+  const currentTheme = theme || 'light'
+
   return (
-    <div className="addCardModal" data-theme={theme} style={{
-      background:`url(/images/BG${theme}.png) 100% 0px no-repeat,${theme=="light" ? "#FFFFFF" : "#5B5B5B"}`
+    <div className="addCardModal" data-theme={currentTheme} style={{
+      background:`url(/images/BG${currentTheme}.png) 100% 0px no-repeat,${currentTheme==="light" ? "#FFFFFF" : "#5B5B5B"}`
     }}>
       <div className="addCardModal-cont verify-modal-cont">
         <div className="verify-modal-header">
