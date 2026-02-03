@@ -1,0 +1,317 @@
+/**
+ * React Hook - Chat STOMP client for Spring Boot backend
+ *
+ * Foydalanish (CLIENT uchun):
+ *
+ * const {
+ *   messages,
+ *   sendMessage,
+ *   isConnected,
+ *   isLoading,
+ *   error,
+ *   markAsRead
+ * } = useChatStomp();
+ */
+
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { Client } from '@stomp/stompjs';
+
+const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/$/, '') || '';
+
+export const useChatStomp = () => {
+  const stompClientRef = useRef(null);
+  const subscriptionRef = useRef(null);
+
+  const [isConnected, setIsConnected] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [chatRoomId, setChatRoomId] = useState(null);
+  const [userId, setUserId] = useState(null);
+
+  // Get JWT token
+  const getToken = useCallback(() => {
+    return sessionStorage.getItem('token') || localStorage.getItem('token') || '';
+  }, []);
+
+  // API call helper
+  const apiCall = useCallback(async (endpoint, method = 'GET', body = null) => {
+    const token = getToken();
+    if (!token) {
+      throw new Error('No authentication token');
+    }
+
+    const url = `${API_BASE}${endpoint}`;
+    const options = {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    };
+
+    if (body) {
+      options.body = JSON.stringify(body);
+    }
+
+    const response = await fetch(url, options);
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `HTTP ${response.status}`);
+    }
+
+    return response.json();
+  }, [getToken]);
+
+  // Get WebSocket URL from API base
+  const getWsUrl = useCallback(() => {
+    const baseUrl = API_BASE || window.location.origin;
+    return baseUrl.replace(/^http/, 'ws') + '/ws-chat';
+  }, []);
+
+  // Load user info and chat history
+  const loadInitialData = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      // Get user info
+      const userResponse = await apiCall('users/me');
+      const userData = userResponse?.data || userResponse;
+      setUserId(userData.id);
+
+      // Load chat history
+      const chatResponse = await apiCall('chat/my?page=0&size=100');
+      const chatData = chatResponse?.data;
+
+      if (chatData && chatData.content && chatData.content.length > 0) {
+        // Extract chatRoomId from first message
+        setChatRoomId(chatData.content[0].chatRoomId);
+
+        // Transform messages
+        const transformedMessages = chatData.content.map(msg => ({
+          id: msg.id,
+          chatRoomId: msg.chatRoomId,
+          senderId: msg.senderId,
+          senderFullName: msg.senderFullName,
+          senderType: msg.senderId === userData.id ? 'user' : 'admin',
+          content: msg.messageText,
+          messageText: msg.messageText,
+          createdAt: msg.createdAt,
+          isRead: msg.isRead
+        }));
+
+        setMessages(transformedMessages);
+      }
+
+      return userData;
+    } catch (err) {
+      console.error('Load initial data error:', err);
+      if (err.message !== 'No authentication token') {
+        setError(err.message);
+      }
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [apiCall]);
+
+  // Connect to WebSocket
+  const connect = useCallback(async () => {
+    const token = getToken();
+    if (!token) {
+      setError('No authentication token');
+      setIsLoading(false);
+      return;
+    }
+
+    // Load initial data first
+    const userData = await loadInitialData();
+    if (!userData) return;
+
+    const wsUrl = getWsUrl();
+
+    // Create STOMP client
+    const client = new Client({
+      brokerURL: wsUrl,
+      connectHeaders: {
+        'Authorization': `Bearer ${token}`
+      },
+      debug: (str) => {
+        if (import.meta.env.DEV) {
+          console.log('[STOMP]', str);
+        }
+      },
+      reconnectDelay: 5000,
+      heartbeatIncoming: 4000,
+      heartbeatOutgoing: 4000
+    });
+
+    client.onConnect = () => {
+      console.log('STOMP connected');
+      setIsConnected(true);
+      setError(null);
+      stompClientRef.current = client;
+
+      // Subscribe to user's chat topic
+      const topic = `/topic/chat.${userData.id}`;
+      subscriptionRef.current = client.subscribe(topic, (frame) => {
+        try {
+          const message = JSON.parse(frame.body);
+
+          // Transform incoming message
+          const transformedMessage = {
+            id: message.id,
+            chatRoomId: message.chatRoomId,
+            senderId: message.senderId,
+            senderFullName: message.senderFullName,
+            senderType: message.senderId === userData.id ? 'user' : 'admin',
+            content: message.messageText,
+            messageText: message.messageText,
+            createdAt: message.createdAt,
+            isRead: message.isRead
+          };
+
+          // Update chatRoomId if not set
+          if (message.chatRoomId && !chatRoomId) {
+            setChatRoomId(message.chatRoomId);
+          }
+
+          // Add message to list (avoid duplicates)
+          setMessages(prev => {
+            const exists = prev.some(m => m.id === transformedMessage.id);
+            if (exists) return prev;
+            return [...prev, transformedMessage];
+          });
+        } catch (err) {
+          console.error('Message parse error:', err);
+        }
+      });
+
+      console.log('Subscribed to topic:', topic);
+    };
+
+    client.onStompError = (frame) => {
+      console.error('STOMP error:', frame.headers['message'], frame.body);
+      setError(frame.headers['message'] || 'STOMP connection error');
+      setIsConnected(false);
+    };
+
+    client.onWebSocketClose = () => {
+      console.log('WebSocket closed');
+      setIsConnected(false);
+    };
+
+    client.onWebSocketError = (event) => {
+      console.error('WebSocket error:', event);
+      setError('WebSocket connection error');
+      setIsConnected(false);
+    };
+
+    client.activate();
+  }, [getToken, getWsUrl, loadInitialData, chatRoomId]);
+
+  // Disconnect from WebSocket
+  const disconnect = useCallback(() => {
+    if (subscriptionRef.current) {
+      subscriptionRef.current.unsubscribe();
+      subscriptionRef.current = null;
+    }
+
+    if (stompClientRef.current) {
+      stompClientRef.current.deactivate();
+      stompClientRef.current = null;
+    }
+
+    setIsConnected(false);
+  }, []);
+
+  // Send message
+  const sendMessage = useCallback(async (messageText) => {
+    if (!messageText?.trim()) return false;
+
+    const client = stompClientRef.current;
+    if (!client || !client.connected) {
+      setError('WebSocket not connected');
+      return false;
+    }
+
+    try {
+      const payload = {
+        chatRoomId: chatRoomId || null,
+        messageText: messageText.trim()
+      };
+
+      client.publish({
+        destination: '/app/chat.send',
+        body: JSON.stringify(payload)
+      });
+
+      return true;
+    } catch (err) {
+      console.error('Send message error:', err);
+      setError('Failed to send message');
+      return false;
+    }
+  }, [chatRoomId]);
+
+  // Mark messages as read
+  const markAsRead = useCallback(async () => {
+    try {
+      await apiCall('chat/my/read', 'POST');
+
+      // Update local state
+      setMessages(prev => prev.map(m => ({ ...m, isRead: true })));
+    } catch (err) {
+      console.error('Mark as read error:', err);
+    }
+  }, [apiCall]);
+
+  // Connect on mount
+  useEffect(() => {
+    const token = getToken();
+    if (token) {
+      connect();
+    } else {
+      setIsLoading(false);
+    }
+
+    return () => {
+      disconnect();
+    };
+  }, []);
+
+  // Reconnect when token changes
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const token = getToken();
+      if (token && !isConnected) {
+        connect();
+      } else if (!token && isConnected) {
+        disconnect();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, [getToken, isConnected, connect, disconnect]);
+
+  return {
+    // State
+    isConnected,
+    isLoading,
+    error,
+    messages,
+    chatRoomId,
+    userId,
+
+    // Actions
+    sendMessage,
+    markAsRead,
+    connect,
+    disconnect
+  };
+};
+
+export default useChatStomp;

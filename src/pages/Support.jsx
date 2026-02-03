@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import './settings.css'
 import { useGlobalContext } from '../Context'
 import { ArrowUp, Paperclip } from 'lucide-react'
-import useChatPusher from '../hooks/useChatPusher'
+import useChatStomp from '../hooks/useChatStomp'
 
 const Support = () => {
   const { t, user } = useGlobalContext()
@@ -12,24 +12,11 @@ const Support = () => {
   const {
     messages,
     sendMessage,
-    startChat,
-    currentChatId,
-    isConnected
-  } = useChatPusher({
-    serverUrl: import.meta.env.VITE_CHAT_SERVER_URL,
-    pusherKey: import.meta.env.VITE_PUSHER_KEY,
-    pusherCluster: import.meta.env.VITE_PUSHER_CLUSTER,
-    userId: user?.id,
-    userName: user ? `${user.name || ''} ${user.surname || ''}`.trim() : 'User',
-    userType: 'user'
-  })
-
-  // Start chat automatically on mount if user is logged in
-  useEffect(() => {
-    if (user?.id && isConnected && !currentChatId) {
-      startChat().catch(err => console.error("Error starting chat:", err))
-    }
-  }, [user, isConnected, currentChatId, startChat])
+    isConnected,
+    isLoading,
+    error,
+    markAsRead
+  } = useChatStomp()
 
   // Scroll to bottom on new message
   useEffect(() => {
@@ -38,10 +25,19 @@ const Support = () => {
     }
   }, [messages])
 
+  // Mark messages as read when component mounts or messages change
+  useEffect(() => {
+    if (isConnected && messages.length > 0) {
+      markAsRead()
+    }
+  }, [isConnected, messages.length, markAsRead])
+
   const handleSendMessage = async () => {
     if (message.trim()) {
-      await sendMessage(message)
-      setMessage('')
+      const success = await sendMessage(message)
+      if (success) {
+        setMessage('')
+      }
     }
   }
 
@@ -59,9 +55,9 @@ const Support = () => {
       grouped.push({
         ...msg,
         type: 'message',
-        id: msg._id,
+        id: msg.id,
         sender: msg.senderType,
-        text: msg.content,
+        text: msg.content || msg.messageText,
         time: new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         fileName: msg.fileUrl ? msg.fileUrl.split('/').pop() : null
       })
@@ -70,6 +66,17 @@ const Support = () => {
   }
 
   const displayMessages = getGroupedMessages()
+
+  // Status message
+  const getStatusMessage = () => {
+    if (isLoading) return t('connecting') || 'Подключение...'
+    if (error) return error
+    if (!isConnected) return t('disconnected') || 'Отключено'
+    if (displayMessages.length === 0) return t('startChat') || 'Начните общение'
+    return null
+  }
+
+  const statusMessage = getStatusMessage()
 
   return (
     <div id='webSection' className='supportRoute'>
@@ -80,12 +87,16 @@ const Support = () => {
       </div>
       <div className="support-body">
         <div className='support-conversations'>
-          {displayMessages.length === 0 && (
-            <div style={{ textAlign: 'center', padding: '20px', color: '#888' }}>
-              {isConnected ? (t('startChat') || 'Начните общение') : (t('connecting') || 'Подключение...')}
+          {statusMessage && (
+            <div style={{
+              textAlign: 'center',
+              padding: '20px',
+              color: error ? '#ef4444' : '#888'
+            }}>
+              {statusMessage}
             </div>
           )}
-          
+
           {displayMessages.map((msg) => (
             <React.Fragment key={msg.id}>
               {msg.type === 'date' ? (
@@ -121,7 +132,7 @@ const Support = () => {
         </div>
 
         <div className='support-input-cont'>
-          <button className="support-attach-btn">
+          <button className="support-attach-btn" disabled={!isConnected}>
             <Paperclip size={20} />
           </button>
           <input
@@ -130,8 +141,13 @@ const Support = () => {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+            disabled={!isConnected}
           />
-          <button onClick={handleSendMessage} className="support-send-btn">
+          <button
+            onClick={handleSendMessage}
+            className="support-send-btn"
+            disabled={!isConnected || !message.trim()}
+          >
             <ArrowUp size={20} />
           </button>
         </div>
