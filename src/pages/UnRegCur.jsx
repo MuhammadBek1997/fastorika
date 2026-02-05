@@ -640,19 +640,6 @@ const UnRegCur = () => {
                         opacity: !curMethod ? 0.5 : 1
                     }}
                     onClick={() => {
-                        // Check if user is not logged in - show verification modal
-                        if (!isLoggedIn) {
-                            setShowVerificationModal(true)
-                            return
-                        }
-
-                        // Check if user is logged in but not verified
-                        if (isLoggedIn && kycStatus !== 'VERIFIED') {
-                            setShowVerificationModal(true)
-                            return
-                        }
-
-                        // Proceed with transfer (only for verified users)
                         proceedWithTransfer()
                     }}
                 >

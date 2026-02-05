@@ -379,6 +379,7 @@
     "crypto": "Cryptocurrency",
     "bank": "Bank Transfer"
   },
+  "selectPayMethod": "Debit Card",
   "noData": "No information",
   "yearsOnMarket": "Years on market",
   "successfulTransfers": "Successful transfers",

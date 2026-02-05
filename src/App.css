@@ -2120,8 +2120,13 @@ nav.scrolled {
         font-size: 0.7rem;
     }
 
+    .hero-right-cardInfo .hero-method-container{
+        margin-bottom: 1rem;
+    }
+
+    .hero-right-cardInfo,
     .hero-right-transferBtn {
-        padding: 1rem;
+        padding: 0rem;
     }
 
     .hero-right-transferBtn button {

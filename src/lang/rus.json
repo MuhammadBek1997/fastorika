@@ -379,6 +379,7 @@
     "crypto": "Криптовалюта",
     "bank": "Банковский перевод"
   },
+  "selectPayMethod": "Дебетовая карта",
   "noData": "Нет информации",
   "yearsOnMarket": "Года на рынке",
   "successfulTransfers": "Успешных переводов",

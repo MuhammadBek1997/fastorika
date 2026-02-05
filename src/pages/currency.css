@@ -395,6 +395,27 @@
     width: 90%;
   }
 
+  .currency-continueBtn {
+    font-size: 1rem;
+    padding: 0.9rem;
+  }
+
+  .methodInfo h3 {
+    font-size: 1rem;
+  }
+
+  .methodInfo p {
+    font-size: 0.85rem;
+  }
+
+  .method-option {
+    padding: 0.85rem 1rem;
+  }
+
+  .method-option span {
+    font-size: 1rem;
+  }
+
 }
 
 /* User ID Search Styles */
