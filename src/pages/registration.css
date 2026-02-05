@@ -134,6 +134,7 @@
   color: var(--text-primary);
 }
 
+#dark .phone-input-container input { color: #fff; }
 #dark .phone-dropdown-item { color: #fff; }
 .phone-dropdown {
   position: absolute;
