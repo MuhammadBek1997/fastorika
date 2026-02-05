@@ -186,6 +186,14 @@
   font-size: 1rem;
 }
 
+#light .currency-input-container input {
+  color: var(--text-light);
+}
+
+#dark .currency-input-container input {
+  color: var(--text-dark);
+}
+
 .terms-row {
   display: flex;
   justify-content: space-between;
@@ -238,8 +246,23 @@
 }
 
 /* Input placeholder color tuning */
-.currency-input-container input::placeholder {
-  color: var(--text-secondary);
+#light .currency-input-container input::placeholder {
+  color: var(--text-secondary-light);
+  opacity: 0.7;
+}
+
+#dark .currency-input-container input::placeholder {
+  color: var(--text-secondary-dark);
+  opacity: 0.7;
+}
+
+#light .cur-phone-input::placeholder {
+  color: var(--text-secondary-light);
+  opacity: 0.7;
+}
+
+#dark .cur-phone-input::placeholder {
+  color: var(--text-secondary-dark);
   opacity: 0.7;
 }
 
@@ -633,8 +656,15 @@
   cursor: pointer;
   font-size: 0.875rem;
   font-family: inherit;
-  color: var(--text-primary);
   border-right: 1px solid rgba(128, 128, 128, 0.2);
+}
+
+#light .cur-phone-country-btn {
+  color: var(--text-light);
+}
+
+#dark .cur-phone-country-btn {
+  color: var(--text-dark);
 }
 
 .cur-phone-country-btn svg {
@@ -674,10 +704,17 @@
   gap: 0.5rem;
   cursor: pointer;
   text-align: left;
-  color: var(--text-primary);
   font-size: 0.875rem;
   font-family: inherit;
   transition: background-color 0.15s ease;
+}
+
+#light .cur-phone-option {
+  color: var(--text-light);
+}
+
+#dark .cur-phone-option {
+  color: var(--text-dark);
 }
 
 .cur-phone-option:hover {
@@ -699,5 +736,12 @@
   padding: 0.75rem;
   font-size: 0.875rem;
   font-family: inherit;
-  color: var(--text-primary);
+}
+
+#light .cur-phone-input {
+  color: var(--text-light);
+}
+
+#dark .cur-phone-input {
+  color: var(--text-dark);
 }
