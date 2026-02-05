@@ -13,7 +13,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://fastorika20-production.up.railway.app',
+        target: 'https://api.fastorika.com',
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {

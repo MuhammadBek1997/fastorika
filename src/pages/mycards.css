@@ -20,7 +20,7 @@
 }
 
 #dark .cardTile {
-  background: var(--bg-body-dark);
+  background: var(--bg-dark);
   box-shadow: 0 1px 2px var(--shadow-dark);
   border: 1px solid rgba(255, 255, 255, 0.06);
 }

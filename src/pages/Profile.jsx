@@ -314,70 +314,37 @@ const Profile = () => {
               <label className="date-input-label">
                 {t('profilePage.labels.phone')}
               </label>
-              <div className="date-input-container" style={{ display: 'flex', alignItems: 'center', padding: 0 }}>
+              <div className="date-input-container phone-input-container">
                 {/* Country Code Dropdown */}
-                <div style={{ position: 'relative' }}>
+                <div className="phone-country-wrapper">
                   <button
                     type="button"
+                    className="phone-country-btn"
                     onClick={() => setIsPhoneCountryDropdownOpen(!isPhoneCountryDropdownOpen)}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.25rem',
-                      padding: '0.75rem',
-                      border: 'none',
-                      background: 'transparent',
-                      cursor: 'pointer',
-                      fontSize: '0.9rem',
-                      borderRight: '1px solid var(--border-light, #e5e7eb)'
-                    }}
                   >
                     <span>{selectedPhoneCountry.flag}</span>
                     <span>{selectedPhoneCountry.code}</span>
-                    <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style={{ marginLeft: '4px' }}>
+                    <svg width="10" height="6" viewBox="0 0 10 6" fill="none">
                       <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                   </button>
                   {isPhoneCountryDropdownOpen && (
-                    <div style={{
-                      position: 'absolute',
-                      top: '100%',
-                      left: 0,
-                      background: 'var(--bg-secondary, #fff)',
-                      border: '1px solid var(--border-light, #e5e7eb)',
-                      borderRadius: '8px',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                      zIndex: 100,
-                      minWidth: '180px',
-                      maxHeight: '200px',
-                      overflowY: 'auto'
-                    }}>
+                    <div className="phone-country-dropdown">
                       {countryCodes.map((country, idx) => (
                         <button
                           key={`${country.code}-${country.country}-${idx}`}
                           type="button"
+                          className={`phone-country-option ${selectedPhoneCountry.code === country.code && selectedPhoneCountry.country === country.country ? 'active' : ''}`}
                           onClick={() => {
                             const phoneWithoutCode = getPhoneWithoutCode(profilePhone, selectedPhoneCountry.code)
                             setSelectedPhoneCountry(country)
                             setProfilePhone(`${country.code}${phoneWithoutCode}`)
                             setIsPhoneCountryDropdownOpen(false)
                           }}
-                          style={{
-                            width: '100%',
-                            padding: '0.5rem 0.75rem',
-                            border: 'none',
-                            background: selectedPhoneCountry.code === country.code && selectedPhoneCountry.country === country.country ? 'rgba(0, 210, 106, 0.1)' : 'transparent',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.5rem',
-                            cursor: 'pointer',
-                            textAlign: 'left',
-                            color: 'inherit'
-                          }}
                         >
                           <span>{country.flag}</span>
-                          <span style={{ flex: 1 }}>{country.name}</span>
-                          <span style={{ opacity: 0.6 }}>{country.code}</span>
+                          <span className="phone-country-option-name">{country.name}</span>
+                          <span className="phone-country-option-code">{country.code}</span>
                         </button>
                       ))}
                     </div>
@@ -386,14 +353,13 @@ const Profile = () => {
                 {/* Phone Number Input */}
                 <input
                   type="text"
-                  className="date-input-field"
+                  className="phone-number-input"
                   value={getPhoneWithoutCode(profilePhone, selectedPhoneCountry.code)}
                   onChange={(e) => {
                     const val = e.target.value.replace(/\D/g, '')
                     setProfilePhone(`${selectedPhoneCountry.code}${val}`)
                   }}
-                  style={{ flex: 1, border: 'none' }}
-                  placeholder="90 123 45 67"
+                  placeholder="901234567"
                 />
               </div>
 
@@ -521,10 +487,6 @@ const Profile = () => {
           <button
             className="save-btn"
             disabled={!hasChanges}
-            style={{
-              backgroundColor: hasChanges ? '#00D796' : (theme === 'dark' ? '#363636' : '#F0F0F0'),
-              cursor: hasChanges ? 'pointer' : 'not-allowed'
-            }}
             onClick={async () => {
               const token = sessionStorage.getItem('token')
               if (!token) { setProfileStatus({ type: 'error', message: t('toast.authRequired') }); toast.error(t('toast.authRequired')); return; }

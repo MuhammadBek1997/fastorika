@@ -2,8 +2,8 @@ import { useState, useEffect, useRef } from "react"
 import './currency.css'
 import { useNavigate, useLocation } from "react-router-dom"
 import { useGlobalContext } from "../Context"
-import { ArrowUpDown, ChevronRight, ChevronDown, CreditCard, Wallet, AlertCircle, Bitcoin, BanknoteArrowUp } from "lucide-react"
-import { getExchangeRate, calculateTransactionFees, getUserCards } from "../api"
+import { ArrowUpDown, ChevronRight, ChevronDown, CreditCard, Bitcoin, BanknoteArrowUp } from "lucide-react"
+import { getExchangeRate, calculateTransactionFees } from "../api"
 import VerificationModal from "../components/VerificationModal"
 import CancelTransactionModal from "../components/CancelTransactionModal"
 
@@ -84,12 +84,8 @@ const UnRegCur = () => {
     const [transferFeePercentage, setTransferFeePercentage] = useState(10) // 10% transfer fee
     const [exchangeRateFeePercentage, setExchangeRateFeePercentage] = useState(2) // 2% exchange rate fee
 
-    // Saved cards state
+    // Auth state
     const isLoggedIn = !!sessionStorage.getItem('token')
-    const [myCards, setMyCards] = useState([])
-    const [selectedCard, setSelectedCard] = useState(null)
-    const [isLoadingCards, setIsLoadingCards] = useState(false)
-    const [isCardsExpanded, setIsCardsExpanded] = useState(false)
     const [isFeeExpanded, setIsFeeExpanded] = useState(false)
     const isSwapping = useRef(false)
 
@@ -146,18 +142,8 @@ const UnRegCur = () => {
 
     // Function to proceed with transfer after verification check
     const proceedWithTransfer = () => {
-        // Build sender card data
-        const senderCardData = selectedCard ? {
-            cardId: selectedCard.id || selectedCard.cardId,
-            cardNumber: (selectedCard.cardData?.cardNumber || selectedCard.cardNumber),
-            cardNetwork: (selectedCard.cardNetwork || selectedCard.cardData?.cardNetwork || selectedCard.brand || 'VISA'),
-            cardHolderName: (selectedCard.cardData?.cardHolderName || selectedCard.cardHolderName),
-            expiryMonth: (selectedCard.cardData?.expiryMonth || selectedCard.expiryMonth),
-            expiryYear: (selectedCard.cardData?.expiryYear || selectedCard.expiryYear),
-            bankName: selectedCard.bankName
-        } : null
-
         // Build transfer data and save to global context
+        // Note: Sender card is not collected here - user enters it on payment system (Volet)
         const newTransferData = {
             sendAmount,
             receiveAmount,
@@ -170,7 +156,6 @@ const UnRegCur = () => {
             feeCalculation: feeCalculation || null,
             transferFeePercentage,
             exchangeRateFeePercentage,
-            senderCard: senderCardData,
             step1Completed: true
         }
 
@@ -299,25 +284,6 @@ const UnRegCur = () => {
         }
     }, [sendAmount, exchangeRate, transferFeePercentage, exchangeRateFeePercentage])
 
-    // Fetch saved cards when ANY payment method is selected (sender card is always needed)
-    useEffect(() => {
-        const fetchMyCards = async () => {
-            if (isLoggedIn && curMethod) {
-                try {
-                    setIsLoadingCards(true)
-                    const cards = await getUserCards()
-                    setMyCards(cards || [])
-                    // Don't auto-select - let user choose
-                } catch (error) {
-                    console.error('Failed to fetch cards:', error)
-                    setMyCards([])
-                } finally {
-                    setIsLoadingCards(false)
-                }
-            }
-        }
-        fetchMyCards()
-    }, [isLoggedIn, curMethod])
 
 
     return (
@@ -562,11 +528,11 @@ const UnRegCur = () => {
                                     :
                                     <div className="currency-selected-method">
                                         <div className='methodIcon'>
-                                            <img src={`/images/cardIcon${theme}.png`} alt="Card Icon" />
+                                            <CreditCard />
                                         </div>
                                         <div className='methodInfo'>
                                             <h3>
-                                                {t("noCard")}
+                                                {t("selectPayMethod") || "Выберите способ оплаты"}
                                             </h3>
                                             <p>
                                                 {t('cardsListDesc')}
@@ -606,125 +572,6 @@ const UnRegCur = () => {
                     </div>
                 </div>
 
-                {/* Sender Card Selection - shown for ALL payment methods when user is logged in */}
-                {isLoggedIn && curMethod && (
-                    <div className="saved-cards-accordion" style={{ margin: '1rem 0' }}>
-                        {/* Section Header */}
-                        <div className="currency-payMethod" style={{ marginBottom: '0.5rem' }}>
-                            <h3 style={{ fontSize: '0.9rem', opacity: 0.8 }}>
-                                {t('senderCard') || 'Откуда списать средства'}
-                            </h3>
-                        </div>
-                        {/* Accordion Header */}
-                        <button
-                            onClick={() => {
-                                setIsCardsExpanded(!isCardsExpanded)
-                                // Boshqa dropdownlarni yopish
-                                setIsMyCurrencyOpen(false)
-                                setIsOtherCurrencyOpen(false)
-                                setIsCryptoOpen(false)
-                                setIsNetworkOpen(false)
-                                setIsMethodOpen(false)
-                            }}
-                            className="date-input-container"
-                            style={{ width: '100%' }}
-                        >
-                            <div className="currency-selected-method">
-                                <div className='methodIcon'>
-                                    <CreditCard size={24} />
-                                </div>
-                                <div className='methodInfo'>
-                                    <h3>
-                                        {selectedCard
-                                            ? `•••• •••• •••• ${(selectedCard.cardData?.cardNumber || selectedCard.cardNumber)?.slice(-4) || '****'}`
-                                            : (t('selectCard') || 'Выберите карту')
-                                        }
-                                    </h3>
-                                    <p>
-                                        {selectedCard
-                                            ? `${selectedCard.cardNetwork || selectedCard.cardData?.cardNetwork || selectedCard.brand || 'VISA'} ${selectedCard.bankName ? `• ${selectedCard.bankName}` : ''}`
-                                            : (t('savedCardsDesc') || 'Карта для оплаты перевода')
-                                        }
-                                    </p>
-                                </div>
-                            </div>
-                            <ChevronRight
-                                size={16}
-                                style={{
-                                    transform: isCardsExpanded ? 'rotate(90deg)' : 'rotate(0deg)',
-                                    transition: 'transform 0.2s'
-                                }}
-                            />
-                        </button>
-
-                        {/* Accordion Content */}
-                        {isCardsExpanded && (
-                            <div className="country-dropdown-menu" style={{ position: 'relative', marginTop: '0.5rem' }}>
-                                {isLoadingCards ? (
-                                    <div style={{ padding: '1rem', textAlign: 'center', opacity: 0.6 }}>
-                                        {t('loading') || 'Yuklanmoqda...'}
-                                    </div>
-                                ) : myCards.length > 0 ? (
-                                    <>
-                                        {myCards.map((card, index) => {
-                                            const cardUniqueId = card.id || card.cardId || index
-                                            const selectedUniqueId = selectedCard?.id || selectedCard?.cardId
-                                            const isSelected = selectedCard && (selectedUniqueId === cardUniqueId)
-
-                                            return (
-                                                <button
-                                                    key={cardUniqueId}
-                                                    onClick={() => {
-                                                        setSelectedCard(card)
-                                                        setIsCardsExpanded(false)
-                                                    }}
-                                                    className={`country-option ${isSelected ? 'active' : ''}`}
-                                                    style={{
-                                                        display: 'flex',
-                                                        justifyContent: 'space-between',
-                                                        alignItems: 'center',
-                                                        padding: '0.75rem 1rem'
-                                                    }}
-                                                >
-                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                                                        <CreditCard size={18} style={{ opacity: 0.7 }} />
-                                                        <div style={{ textAlign: 'left' }}>
-                                                            <div style={{ fontWeight: 500 }}>
-                                                                •••• {(card.cardData?.cardNumber || card.cardNumber)?.slice(-4) || '****'}
-                                                            </div>
-                                                            <div style={{ fontSize: '0.8rem', opacity: 0.6, marginTop: '2px' }}>
-                                                                {card.cardNetwork || card.cardData?.cardNetwork || card.brand || 'VISA'} {card.bankName ? `• ${card.bankName}` : ''}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    {isSelected && (
-                                                        <div style={{
-                                                            width: '20px',
-                                                            height: '20px',
-                                                            borderRadius: '50%',
-                                                            background: '#22c55e',
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                            justifyContent: 'center'
-                                                        }}>
-                                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
-                                                                <polyline points="20 6 9 17 4 12"></polyline>
-                                                            </svg>
-                                                        </div>
-                                                    )}
-                                                </button>
-                                            )
-                                        })}
-                                    </>
-                                ) : (
-                                    <div style={{ padding: '1rem', textAlign: 'center', opacity: 0.6 }}>
-                                        {t('noSavedCards') || 'Saqlangan kartalar yo\'q'}
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                    </div>
-                )}
                 {/* Fee Accordion */}
                 <div className="fee-accordion" style={{ marginTop: '1rem' }}>
                     <button
@@ -785,43 +632,6 @@ const UnRegCur = () => {
                     )}
                 </div>
 
-{/* Warning if no sender card selected */}
-                {isLoggedIn && curMethod && !selectedCard && myCards.length > 0 && (
-                    <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.5rem',
-                        padding: '0.75rem',
-                        borderRadius: '0.5rem',
-                        margin: '1rem',
-                        backgroundColor: theme === 'dark' ? 'rgba(234, 179, 8, 0.1)' : 'rgba(234, 179, 8, 0.08)',
-                        border: '1px solid rgba(234, 179, 8, 0.25)'
-                    }}>
-                        <AlertCircle size={18} style={{ color: '#eab308', flexShrink: 0 }} />
-                        <p style={{ fontSize: '0.85rem', opacity: 0.9, margin: 0 }}>
-                            {t("selectSenderCardWarning") || "Выберите карту, с которой будет списана оплата"}
-                        </p>
-                    </div>
-                )}
-
-                {/* Warning if no cards available */}
-                {isLoggedIn && curMethod && myCards.length === 0 && !isLoadingCards && (
-                    <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.5rem',
-                        padding: '0.75rem',
-                        borderRadius: '0.5rem',
-                        margin: '1rem',
-                        backgroundColor: theme === 'dark' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(239, 68, 68, 0.08)',
-                        border: '1px solid rgba(239, 68, 68, 0.25)'
-                    }}>
-                        <AlertCircle size={18} style={{ color: '#ef4444', flexShrink: 0 }} />
-                        <p style={{ fontSize: '0.85rem', opacity: 0.9, margin: 0 }}>
-                            {t("noCardsWarning") || "У вас нет сохраненных карт. Добавьте карту в профиле."}
-                        </p>
-                    </div>
-                )}
 
                 <button
                     className="currency-continueBtn"

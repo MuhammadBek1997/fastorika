@@ -16,7 +16,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Client } from '@stomp/stompjs';
 
-const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/$/, '') || '';
+// Chat API now on main backend (api.fastorika.com)
+// Keep trailing slash for proper URL concatenation
+const API_BASE = (import.meta.env.VITE_API_URL || 'https://api.fastorika.com/api/').replace(/\/?$/, '/');
 
 export const useChatStomp = () => {
   const stompClientRef = useRef(null);
@@ -64,9 +66,9 @@ export const useChatStomp = () => {
     return response.json();
   }, [getToken]);
 
-  // Get WebSocket URL from API base
+  // Get WebSocket URL from API base (remove /api/ path for WebSocket)
   const getWsUrl = useCallback(() => {
-    const baseUrl = API_BASE || window.location.origin;
+    const baseUrl = API_BASE.replace(/\/api\/?$/, '') || window.location.origin;
     return baseUrl.replace(/^http/, 'ws') + '/ws-chat';
   }, []);
 

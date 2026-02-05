@@ -3,6 +3,7 @@ import { useGlobalContext } from '../Context'
 import AddCardModal from './AddCardModal'
 import { deleteCard } from '../api'
 import { toast } from 'react-toastify'
+import { CreditCard } from 'lucide-react'
 import './mycards.css'
 
 const MyCards = () => {
@@ -95,7 +96,7 @@ const MyCards = () => {
                   <div className='cardHeader'>
                     <div className='cardHeader-left'>
                       <div className='cardInfoIcon'>
-                        <img src={`/images/cardIcon${theme}.png`} alt='Card Icon' />
+                        <CreditCard size={20} />
                       </div>
                       <h3 className='cardBankName'>{c.bankName || t('myCards.unknownBank') || '—'}</h3>
                     </div>
