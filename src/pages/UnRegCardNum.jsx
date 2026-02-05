@@ -205,44 +205,22 @@ const UnRegCardNum = () => {
                                     <span className="label-icon"><Phone /></span>
                                     <span className="label-text">{t("phoneNumber") || "Номер телефона"}</span>
                                 </div>
-                                <div className="currency-input-container" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0' }}>
+                                <div className="currency-input-container cur-phone-container">
                                     {/* Country Code Dropdown */}
-                                    <div style={{ position: 'relative' }}>
+                                    <div className="cur-phone-country-wrapper">
                                         <button
                                             type="button"
                                             onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
-                                            style={{
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '0.25rem',
-                                                padding: '0.75rem',
-                                                border: 'none',
-                                                background: 'transparent',
-                                                cursor: 'pointer',
-                                                fontSize: '1rem',
-                                                borderRight: '1px solid var(--border-light, #e5e7eb)'
-                                            }}
+                                            className="cur-phone-country-btn"
                                         >
-                                            <span>{selectedCountry.flag}</span>
+                                            <img src={`https://flagcdn.com/w40/${selectedCountry.country.toLowerCase()}.png`} alt="" style={{width:20,height:14,objectFit:'cover',borderRadius:2}} />
                                             <span>{selectedCountry.code}</span>
-                                            <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style={{ marginLeft: '4px' }}>
+                                            <svg width="10" height="6" viewBox="0 0 10 6" fill="none">
                                                 <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                                             </svg>
                                         </button>
                                         {isCountryDropdownOpen && (
-                                            <div style={{
-                                                position: 'absolute',
-                                                top: '100%',
-                                                left: 0,
-                                                background: theme === 'dark' ? '#2a2a2a' : '#fff',
-                                                border: '1px solid var(--border-light, #e5e7eb)',
-                                                borderRadius: '8px',
-                                                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                                                zIndex: 100,
-                                                minWidth: '180px',
-                                                maxHeight: '200px',
-                                                overflowY: 'auto'
-                                            }}>
+                                            <div className="cur-phone-dropdown">
                                                 {countryCodes.map((country, idx) => (
                                                     <button
                                                         key={`${country.code}-${country.country}-${idx}`}
@@ -252,21 +230,11 @@ const UnRegCardNum = () => {
                                                             setPhonePrefix(country.code)
                                                             setIsCountryDropdownOpen(false)
                                                         }}
-                                                        style={{
-                                                            width: '100%',
-                                                            padding: '0.5rem 0.75rem',
-                                                            border: 'none',
-                                                            background: selectedCountry.code === country.code && selectedCountry.country === country.country ? 'rgba(0, 210, 106, 0.1)' : 'transparent',
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                            gap: '0.5rem',
-                                                            cursor: 'pointer',
-                                                            textAlign: 'left'
-                                                        }}
+                                                        className={`cur-phone-option ${selectedCountry.code === country.code && selectedCountry.country === country.country ? 'active' : ''}`}
                                                     >
-                                                        <span>{country.flag}</span>
-                                                        <span style={{ flex: 1 }}>{country.name}</span>
-                                                        <span style={{ opacity: 0.6 }}>{country.code}</span>
+                                                        <img src={`https://flagcdn.com/w40/${country.country.toLowerCase()}.png`} alt="" style={{width:20,height:14,objectFit:'cover',borderRadius:2}} />
+                                                        <span className="cur-phone-option-name">{country.name}</span>
+                                                        <span className="cur-phone-option-code">{country.code}</span>
                                                     </button>
                                                 ))}
                                             </div>
@@ -281,14 +249,7 @@ const UnRegCardNum = () => {
                                             setPhoneRest(val.slice(0, 12))
                                         }}
                                         placeholder="00 000 00 00"
-                                        style={{
-                                            flex: 1,
-                                            border: 'none',
-                                            outline: 'none',
-                                            background: 'transparent',
-                                            padding: '0.75rem',
-                                            fontSize: '1rem'
-                                        }}
+                                        className="cur-phone-input"
                                     />
                                 </div>
                             </div>
@@ -578,44 +539,22 @@ const UnRegCardNum = () => {
                                     <span className="label-icon"><Phone /></span>
                                     <span className="label-text">{t("phoneNumber")}</span>
                                 </div>
-                                <div className="currency-input-container" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0' }}>
+                                <div className="currency-input-container cur-phone-container">
                                     {/* Country Code Dropdown */}
-                                    <div style={{ position: 'relative' }}>
+                                    <div className="cur-phone-country-wrapper">
                                         <button
                                             type="button"
                                             onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
-                                            style={{
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '0.25rem',
-                                                padding: '0.75rem',
-                                                border: 'none',
-                                                background: 'transparent',
-                                                cursor: 'pointer',
-                                                fontSize: '1rem',
-                                                borderRight: '1px solid var(--border-light, #e5e7eb)'
-                                            }}
+                                            className="cur-phone-country-btn"
                                         >
-                                            <span>{selectedCountry.flag}</span>
+                                            <img src={`https://flagcdn.com/w40/${selectedCountry.country.toLowerCase()}.png`} alt="" style={{width:20,height:14,objectFit:'cover',borderRadius:2}} />
                                             <span>{selectedCountry.code}</span>
-                                            <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style={{ marginLeft: '4px' }}>
+                                            <svg width="10" height="6" viewBox="0 0 10 6" fill="none">
                                                 <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                                             </svg>
                                         </button>
                                         {isCountryDropdownOpen && (
-                                            <div style={{
-                                                position: 'absolute',
-                                                top: '100%',
-                                                left: 0,
-                                                background: theme === 'dark' ? '#2a2a2a' : '#fff',
-                                                border: '1px solid var(--border-light, #e5e7eb)',
-                                                borderRadius: '8px',
-                                                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                                                zIndex: 100,
-                                                minWidth: '180px',
-                                                maxHeight: '200px',
-                                                overflowY: 'auto'
-                                            }}>
+                                            <div className="cur-phone-dropdown">
                                                 {countryCodes.map((country, idx) => (
                                                     <button
                                                         key={`${country.code}-${country.country}-${idx}`}
@@ -625,22 +564,11 @@ const UnRegCardNum = () => {
                                                             setPhonePrefix(country.code)
                                                             setIsCountryDropdownOpen(false)
                                                         }}
-                                                        style={{
-                                                            width: '100%',
-                                                            padding: '0.5rem 0.75rem',
-                                                            border: 'none',
-                                                            background: selectedCountry.code === country.code && selectedCountry.country === country.country ? 'rgba(0, 210, 106, 0.1)' : 'transparent',
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                            gap: '0.5rem',
-                                                            cursor: 'pointer',
-                                                            textAlign: 'left',
-                                                            color: 'inherit'
-                                                        }}
+                                                        className={`cur-phone-option ${selectedCountry.code === country.code && selectedCountry.country === country.country ? 'active' : ''}`}
                                                     >
-                                                        <span>{country.flag}</span>
-                                                        <span style={{ flex: 1 }}>{country.name}</span>
-                                                        <span style={{ opacity: 0.6 }}>{country.code}</span>
+                                                        <img src={`https://flagcdn.com/w40/${country.country.toLowerCase()}.png`} alt="" style={{width:20,height:14,objectFit:'cover',borderRadius:2}} />
+                                                        <span className="cur-phone-option-name">{country.name}</span>
+                                                        <span className="cur-phone-option-code">{country.code}</span>
                                                     </button>
                                                 ))}
                                             </div>
@@ -655,14 +583,7 @@ const UnRegCardNum = () => {
                                             setPhoneRest(val.slice(0, 12))
                                         }}
                                         placeholder="00 000 00 00"
-                                        style={{
-                                            flex: 1,
-                                            border: 'none',
-                                            outline: 'none',
-                                            background: 'transparent',
-                                            padding: '0.75rem',
-                                            fontSize: '1rem'
-                                        }}
+                                        className="cur-phone-input"
                                     />
                                 </div>
                             </div>

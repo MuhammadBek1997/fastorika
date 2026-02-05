@@ -423,44 +423,22 @@ const AddCardModal = () => {
 
                         <div className="addCardModal-form-group" style={{ marginBottom: '0.75rem' }}>
                             <label htmlFor="phoneNumber">{t('addCardModal.phoneNumber') || 'Phone Number'} *</label>
-                            <div className="date-input-container" style={{ display: 'flex', alignItems: 'center', padding: 0 }}>
+                            <div className="date-input-container addcard-phone-container">
                                 {/* Country Code Dropdown */}
-                                <div style={{ position: 'relative' }}>
+                                <div className="addcard-phone-country-wrapper">
                                     <button
                                         type="button"
                                         onClick={() => setIsPhoneCountryDropdownOpen(!isPhoneCountryDropdownOpen)}
-                                        style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '0.25rem',
-                                            padding: '0.75rem',
-                                            border: 'none',
-                                            background: 'transparent',
-                                            cursor: 'pointer',
-                                            fontSize: '0.9rem',
-                                            borderRight: '1px solid var(--border-light, #e5e7eb)'
-                                        }}
+                                        className="addcard-phone-country-btn"
                                     >
-                                        <span>{selectedPhoneCountry.flag}</span>
+                                        <img src={`https://flagcdn.com/w40/${selectedPhoneCountry.country.toLowerCase()}.png`} alt="" style={{width:20,height:14,objectFit:'cover',borderRadius:2}} />
                                         <span>{selectedPhoneCountry.code}</span>
-                                        <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style={{ marginLeft: '4px' }}>
+                                        <svg width="10" height="6" viewBox="0 0 10 6" fill="none">
                                             <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                                         </svg>
                                     </button>
                                     {isPhoneCountryDropdownOpen && (
-                                        <div style={{
-                                            position: 'absolute',
-                                            top: '100%',
-                                            left: 0,
-                                            background: theme === 'dark' ? '#2a2a2a' : '#fff',
-                                            border: '1px solid var(--border-light, #e5e7eb)',
-                                            borderRadius: '8px',
-                                            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                                            zIndex: 100,
-                                            minWidth: '180px',
-                                            maxHeight: '200px',
-                                            overflowY: 'auto'
-                                        }}>
+                                        <div className="addcard-phone-dropdown">
                                             {countryCodes.map((c, idx) => (
                                                 <button
                                                     key={`${c.code}-${c.country}-${idx}`}
@@ -469,22 +447,11 @@ const AddCardModal = () => {
                                                         setSelectedPhoneCountry(c)
                                                         setIsPhoneCountryDropdownOpen(false)
                                                     }}
-                                                    style={{
-                                                        width: '100%',
-                                                        padding: '0.5rem 0.75rem',
-                                                        border: 'none',
-                                                        background: selectedPhoneCountry.code === c.code && selectedPhoneCountry.country === c.country ? 'rgba(0, 210, 106, 0.1)' : 'transparent',
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        gap: '0.5rem',
-                                                        cursor: 'pointer',
-                                                        textAlign: 'left',
-                                                        color: 'inherit'
-                                                    }}
+                                                    className={`addcard-phone-option ${selectedPhoneCountry.code === c.code && selectedPhoneCountry.country === c.country ? 'active' : ''}`}
                                                 >
-                                                    <span>{c.flag}</span>
-                                                    <span style={{ flex: 1 }}>{c.name}</span>
-                                                    <span style={{ opacity: 0.6 }}>{c.code}</span>
+                                                    <img src={`https://flagcdn.com/w40/${c.country.toLowerCase()}.png`} alt="" style={{width:20,height:14,objectFit:'cover',borderRadius:2}} />
+                                                    <span className="addcard-phone-option-name">{c.name}</span>
+                                                    <span className="addcard-phone-option-code">{c.code}</span>
                                                 </button>
                                             ))}
                                         </div>
@@ -497,7 +464,7 @@ const AddCardModal = () => {
                                     value={phoneNumber}
                                     onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, ''))}
                                     placeholder="1234567890"
-                                    style={{ flex: 1, border: 'none', padding: '0.75rem' }}
+                                    className="addcard-phone-input"
                                 />
                             </div>
                         </div>

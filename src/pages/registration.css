@@ -42,6 +42,10 @@
   border-radius: 1rem;
   width: 100%;
   margin: -0.5rem 0;
+  border: none;
+  outline: none;
+  font-size: inherit;
+  font-family: inherit;
 }
 
 #dark .registration-cont-form input { background-color: var(--bg-body-dark); }
@@ -78,24 +82,30 @@
 .phone-country-btn {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.8rem 1rem;
+  gap: 0.4rem;
+  padding: 0 0.8rem;
   border: none;
   background: transparent;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.8rem;
+  font-family: inherit;
   white-space: nowrap;
   border-right: 1px solid rgba(128, 128, 128, 0.2);
   transition: background 0.2s;
   border-radius: 1rem 0 0 1rem;
 }
+#dark .phone-country-btn { color: #fff; }
+#light .phone-country-btn { color: #000; }
 
 .phone-country-btn:hover {
   background: rgba(0, 210, 106, 0.05);
 }
 
 .phone-country-btn .flag {
-  font-size: 1.25rem;
+  width: 20px;
+  height: 14px;
+  object-fit: cover;
+  border-radius: 2px;
 }
 
 .phone-country-btn .code {
@@ -117,11 +127,14 @@
   border: none !important;
   border-radius: 0 1rem 1rem 0 !important;
   background: transparent !important;
-  padding: 0.8rem 1rem !important;
+  padding: 0.8rem !important;
   margin: 0 !important;
-  font-size: 1rem;
+  font-size: 0.8rem;
+  font-family: inherit;
+  color: var(--text-primary);
 }
 
+#dark .phone-dropdown-item { color: #fff; }
 .phone-dropdown {
   position: absolute;
   top: calc(100% + 4px);
@@ -133,7 +146,9 @@
   max-height: 240px;
   overflow-y: auto;
   animation: dropdownFadeIn 0.2s ease;
+  scrollbar-width: none;
 }
+.phone-dropdown::-webkit-scrollbar { display: none; }
 
 @keyframes dropdownFadeIn {
   from {
@@ -166,6 +181,8 @@
   background: transparent;
   cursor: pointer;
   text-align: left;
+  color: var(--text-primary);
+  font-family: inherit;
   transition: background 0.15s;
 }
 
@@ -178,7 +195,10 @@
 }
 
 .phone-dropdown-item .flag {
-  font-size: 1.25rem;
+  width: 24px;
+  height: 16px;
+  object-fit: cover;
+  border-radius: 2px;
 }
 
 .phone-dropdown-item .name {

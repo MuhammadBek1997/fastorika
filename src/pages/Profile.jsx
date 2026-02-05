@@ -322,7 +322,7 @@ const Profile = () => {
                     className="phone-country-btn"
                     onClick={() => setIsPhoneCountryDropdownOpen(!isPhoneCountryDropdownOpen)}
                   >
-                    <span>{selectedPhoneCountry.flag}</span>
+                    <img src={`https://flagcdn.com/w40/${selectedPhoneCountry.country.toLowerCase()}.png`} alt="" style={{width:20,height:14,objectFit:'cover',borderRadius:2}} />
                     <span>{selectedPhoneCountry.code}</span>
                     <svg width="10" height="6" viewBox="0 0 10 6" fill="none">
                       <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -342,7 +342,7 @@ const Profile = () => {
                             setIsPhoneCountryDropdownOpen(false)
                           }}
                         >
-                          <span>{country.flag}</span>
+                          <img src={`https://flagcdn.com/w40/${country.country.toLowerCase()}.png`} alt="" style={{width:20,height:14,objectFit:'cover',borderRadius:2}} />
                           <span className="phone-country-option-name">{country.name}</span>
                           <span className="phone-country-option-code">{country.code}</span>
                         </button>

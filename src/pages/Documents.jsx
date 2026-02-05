@@ -35,12 +35,6 @@ const Documents = () => {
                         <ChevronRight />
                     </div>
                 </Link>
-                <Link to={'/termService'}>
-                    <div className="date-input-container">
-                        {t('documentsPage.amlPrivacy')}
-                        <ChevronRight />
-                    </div>
-                </Link>
                 <Link to={'/serviceTerm'}>
                     <div className="date-input-container">
                         {t('documentsPage.termService')}

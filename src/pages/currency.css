@@ -555,3 +555,93 @@
   align-items: center;
   justify-content: center;
 }
+
+/* Phone Input with Country Code */
+.cur-phone-container {
+  display: flex;
+  align-items: center;
+  padding: 0 !important;
+}
+
+.cur-phone-country-wrapper {
+  position: relative;
+}
+
+.cur-phone-country-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.75rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-family: inherit;
+  color: var(--text-primary);
+  border-right: 1px solid rgba(128, 128, 128, 0.2);
+}
+
+.cur-phone-country-btn svg {
+  margin-left: 4px;
+  opacity: 0.6;
+}
+
+.cur-phone-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  min-width: 180px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+#light .cur-phone-dropdown {
+  background: var(--bg-light);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+#dark .cur-phone-dropdown {
+  background: var(--bg-dark);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cur-phone-option {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  text-align: left;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-family: inherit;
+  transition: background-color 0.15s ease;
+}
+
+.cur-phone-option:hover {
+  background: rgba(0, 210, 106, 0.1);
+}
+
+.cur-phone-option.active {
+  background: rgba(0, 210, 106, 0.15);
+}
+
+.cur-phone-option-name { flex: 1; }
+.cur-phone-option-code { opacity: 0.6; }
+
+.cur-phone-input {
+  flex: 1;
+  border: none !important;
+  outline: none;
+  background: transparent !important;
+  padding: 0.75rem;
+  font-size: 0.875rem;
+  font-family: inherit;
+  color: var(--text-primary);
+}

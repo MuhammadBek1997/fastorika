@@ -2898,6 +2898,12 @@ nav.scrolled {
     padding: 0.5rem;
     border-radius: 1rem;
     margin: 0.5rem 0;
+    transition: opacity 0.2s;
+}
+
+.reg-clientBtn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
 }
 
 .pswrule {

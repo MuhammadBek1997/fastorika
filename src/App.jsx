@@ -1,9 +1,10 @@
-import { Route, Routes, Navigate } from 'react-router-dom';
+import { Route, Routes, Navigate, useSearchParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import './App.css';
 import { useGlobalContext } from './Context';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import VerifyModal from './pages/VerifyModal';
 
 // Layouts
 import PublicLayout from './layouts/PublicLayout';
@@ -30,7 +31,6 @@ import Faqs from './pages/Faqs';
 import AboutRoute from './pages/AboutRoute';
 import PoliticsAML from './pages/PoliticsAML';
 import PoliticsAndCon from './pages/PoliticsAndCon';
-import TermService from './pages/TermService';
 import ServiceTerm from './pages/ServiceTerm';
 
 // Unregistered Transfer Pages
@@ -85,6 +85,40 @@ const PublicRoute = ({ children }) => {
   return children;
 };
 
+// Email linkdan kelganda: /verify?code=123456&email=user@example.com
+const VerifyRoute = () => {
+  const [searchParams] = useSearchParams();
+  const { navigate } = useGlobalContext();
+
+  const code = searchParams.get('code') || '';
+  const email = searchParams.get('email') || '';
+
+  if (!email) return <Navigate to="/login" replace />;
+
+  return (
+    <VerifyModal
+      email={email}
+      initialCode={code.length === 6 ? code : undefined}
+      onClose={(responseData) => {
+        // Backend verify-email javobida token qaytarsa → dashboard
+        const data = responseData?.data || responseData;
+        if (data?.accessToken) {
+          sessionStorage.setItem('token', data.accessToken);
+          localStorage.setItem('token', data.accessToken);
+          if (data.refreshToken) localStorage.setItem('refreshToken', data.refreshToken);
+          if (data.tokenType) localStorage.setItem('tokenType', data.tokenType);
+          if (data.user) localStorage.setItem('user', JSON.stringify(data.user));
+          localStorage.setItem('logged', 'true');
+          window.location.href = '/transactions';
+          return;
+        }
+        // Token yo'q → login sahifasiga
+        navigate('/login');
+      }}
+    />
+  );
+};
+
 function App() {
   const { theme } = useGlobalContext();
 
@@ -107,6 +141,7 @@ function App() {
         {/* Pending Transfer Flow - Highest Priority */}
         {hasPendingTransfer && (
           <>
+            <Route path="/verify" element={<VerifyRoute />} />
             <Route path="/currency" element={<PendingLayout><UnRegCur /></PendingLayout>} />
             <Route path="/crypto" element={<PendingLayout><UnRegCryp /></PendingLayout>} />
             <Route path="/bank-transfer" element={<PendingLayout><UnRegBankTransfer /></PendingLayout>} />
@@ -123,24 +158,26 @@ function App() {
             <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
             <Route path="/about" element={<PublicLayout><AboutUs /></PublicLayout>} />
 
+            {/* Verify Route - email link */}
+            <Route path="/verify" element={<VerifyRoute />} />
+
             {/* Auth Routes */}
-            <Route 
-              path="/login" 
+            <Route
+              path="/login"
               element={
                 <PublicRoute>
                   <AuthLayout><Login /></AuthLayout>
                 </PublicRoute>
-              } 
+              }
             />
-            <Route 
-              path="/registration" 
+            <Route
+              path="/registration"
               element={
                 <PublicRoute>
                   <AuthLayout><Registration /></AuthLayout>
                 </PublicRoute>
-              } 
+              }
             />
-
             {/* Protected Routes */}
             <Route
               path="/transactions"
@@ -219,14 +256,6 @@ function App() {
               element={
                 <ProtectedRoute>
                   <PrivateLayout><PoliticsAML /></PrivateLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/termService"
-              element={
-                <ProtectedRoute>
-                  <PrivateLayout><TermService /></PrivateLayout>
                 </ProtectedRoute>
               }
             />

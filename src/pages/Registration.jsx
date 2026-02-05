@@ -7,18 +7,18 @@ import { toast } from 'react-toastify'
 import VerifyModal from './VerifyModal'
 
 const Registration = () => {
-    let { 
-        t, 
-        theme, 
-        handleChange, 
-        languages, 
-        currentLang, 
-        currentLanguage, 
-        toggleTheme, 
-        cancelLogin, 
+    let {
+        t,
+        theme,
+        handleChange,
+        languages,
+        currentLang,
+        currentLanguage,
+        toggleTheme,
+        cancelLogin,
         navigate,
-        handleGoogleLogin,  // ← Qo'shing
-        handleAppleLogin    // ← Qo'shing
+        handleGoogleLogin,
+        handleAppleLogin
     } = useGlobalContext()
     
     const location = useLocation()
@@ -61,37 +61,33 @@ const Registration = () => {
     }, [location.state])
 
     const checkPsw = (rule) => {
-        if (rule == "case" && psw.split('').find((item) => item == item.toUpperCase())) return true
-        if (rule == "length" && psw.split('').length >= 8) return true
+        if (rule == "case" && /[A-Z]/.test(psw)) return true
+        if (rule == "length" && psw.length >= 8) return true
         if (rule == "match" && psw === accPsw && accPsw > '') return true
     }
+
+    const isFormValid = mail && phone && checkPsw("length") && checkPsw("case") && checkPsw("match")
 
     let forNum = new Date().getTime()
 
     // Verification modal yopilganda avtomatik login
-    const handleVerifyClose = async () => {
+    const handleVerifyClose = (responseData) => {
         setShowVerifyModal(false)
-        
-        // Agar Google/Apple dan kelgan bo'lsa
-        if (location.state?.fromGoogle || location.state?.fromApple) {
-            const email = location.state.email
-            const password = location.state.firebaseUid
-            
-            if (email && password) {
-                try {
-                    const { handleLogin } = useGlobalContext()
-                    const success = await handleLogin(email, password)
-                    if (success) {
-                        navigate('/transactions')
-                    }
-                } catch (error) {
-                    console.error('Auto login failed:', error)
-                }
-            }
-        } else {
-            // Oddiy registratsiya uchun login sahifasiga yo'naltirish
-            navigate('/login')
+
+        // verify-email javobidan token olish
+        const data = responseData?.data || responseData
+        if (data?.accessToken) {
+            sessionStorage.setItem('token', data.accessToken)
+            localStorage.setItem('token', data.accessToken)
+            if (data.refreshToken) localStorage.setItem('refreshToken', data.refreshToken)
+            if (data.tokenType) localStorage.setItem('tokenType', data.tokenType)
+            if (data.user) localStorage.setItem('user', JSON.stringify(data.user))
+            localStorage.setItem('logged', 'true')
+            window.location.href = '/transactions'
+            return
         }
+
+        navigate('/login')
     }
 
     return (
@@ -102,7 +98,7 @@ const Registration = () => {
         }}>
             <nav className='flex justify-between p-3'>
                 <button onClick={() => cancelLogin()} className='logo'>
-                    <img src={`/images/logo${theme}.png`} alt="" />
+                    <img src={`/images/logo${theme}.svg`} alt="" />
                 </button>
                 <div className="dropdowns-cont" style={{ top: "1rem" }}>
                     {/* Theme Dropdown */}
@@ -249,7 +245,7 @@ const Registration = () => {
                             onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
                             className={`phone-country-btn ${isCountryDropdownOpen ? 'open' : ''}`}
                         >
-                            <span className="flag">{selectedCountry.flag}</span>
+                            <img className="flag" src={`https://flagcdn.com/w40/${selectedCountry.country.toLowerCase()}.png`} alt="" />
                             <span className="code">{selectedCountry.code}</span>
                             <svg width="10" height="6" viewBox="0 0 10 6" fill="none">
                                 <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -269,7 +265,7 @@ const Registration = () => {
                                         }}
                                         className={`phone-dropdown-item ${selectedCountry.code === country.code && selectedCountry.country === country.country ? 'active' : ''}`}
                                     >
-                                        <span className="flag">{country.flag}</span>
+                                        <img className="flag" src={`https://flagcdn.com/w40/${country.country.toLowerCase()}.png`} alt="" />
                                         <span className="name">{country.name}</span>
                                         <span className="dial-code">{country.code}</span>
                                     </button>
@@ -330,7 +326,7 @@ const Registration = () => {
                         Emailni tasdiqlash
                     </button>
                 ) : (
-                    <button className='reg-clientBtn' onClick={async () => {
+                    <button className='reg-clientBtn' disabled={!isFormValid} onClick={async () => {
                         try {
                             // Validate password
                             if (!checkPsw("length") || !checkPsw("case") || !checkPsw("match")) {

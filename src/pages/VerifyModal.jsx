@@ -4,15 +4,16 @@ import { apiFetch } from "../api"
 import { toast } from "react-toastify"
 import { X, Clock, Mail } from "lucide-react"
 
-const VerifyModal = ({ email, onClose }) => {
+const VerifyModal = ({ email, onClose, initialCode }) => {
   const { t, theme } = useGlobalContext()
   const [digits, setDigits] = useState(['', '', '', '', '', ''])
   const inputsRef = useRef([])
   const [submitting, setSubmitting] = useState(false)
   const [resending, setResending] = useState(false)
-  const [error, setError] = useState('') // Add error state
+  const [error, setError] = useState('')
   const [countdown, setCountdown] = useState(600) // 10 daqiqa = 600 sekund
   const [canResend, setCanResend] = useState(false)
+  const autoVerifyTriggered = useRef(false)
 
   const maskEmail = (e) => {
     try {
@@ -82,31 +83,46 @@ const VerifyModal = ({ email, onClose }) => {
 
   const code = digits.join('')
 
-  const handleVerify = async () => {
-    if (code.length !== 6) {
-      setError(t('toast.verification.error')) // Set error instead of toast
-      return
-    }
+  // Umumiy verify funksiyasi
+  const doVerify = async (verificationCode) => {
     try {
       setSubmitting(true)
       const res = await apiFetch('auth/verify-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, verificationCode: code })
+        body: JSON.stringify({ email, verificationCode })
       })
       if (!res.ok) throw new Error('Verify error')
+      const data = await res.json().catch(() => ({}))
       toast.success(t('toast.verification.success'))
-      onClose?.()
+      onClose?.(data)
     } catch (err) {
-      setError(t('toast.verification.error')) // Set error instead of toast
-    } finally {
+      setError(t('toast.verification.error'))
       setSubmitting(false)
     }
   }
 
+  const handleVerify = async () => {
+    if (code.length !== 6) {
+      setError(t('toast.verification.error'))
+      return
+    }
+    await doVerify(code)
+  }
+
   useEffect(() => {
-    inputsRef.current[0]?.focus()
-  }, [])
+    // Agar initialCode mavjud bo'lsa, inputlarni to'ldirish
+    if (initialCode && initialCode.length === 6 && !autoVerifyTriggered.current) {
+      const codeDigits = initialCode.split('')
+      setDigits(codeDigits)
+      autoVerifyTriggered.current = true
+      // 1 sekunddan keyin avtomatik tasdiqlash
+      const timer = setTimeout(() => doVerify(initialCode), 1000)
+      return () => clearTimeout(timer)
+    } else {
+      inputsRef.current[0]?.focus()
+    }
+  }, [initialCode])
 
   useEffect(() => {
     if (countdown <= 0) {
