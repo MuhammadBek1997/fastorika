@@ -4,6 +4,8 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "rewrites": [
+    { "source": "/admin", "destination": "https://adminfastorika.vercel.app/" },
+    { "source": "/admin/:path*", "destination": "https://adminfastorika.vercel.app/:path*" },
     {
       "source": "/((?!assets/).*)",
       "destination": "/index.html"
