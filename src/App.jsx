@@ -85,10 +85,9 @@ const PublicRoute = ({ children }) => {
   return children;
 };
 
-// Email linkdan kelganda: /verify?code=123456&email=user@example.com
+// Email linkdan kelganda: /verify-email?code=123456&email=user@example.com
 const VerifyRoute = () => {
   const [searchParams] = useSearchParams();
-  const { navigate } = useGlobalContext();
 
   const code = searchParams.get('code') || '';
   const email = searchParams.get('email') || '';
@@ -113,7 +112,7 @@ const VerifyRoute = () => {
           return;
         }
         // Token yo'q → login sahifasiga
-        navigate('/login');
+        window.location.href = '/login';
       }}
     />
   );
@@ -142,6 +141,7 @@ function App() {
         {hasPendingTransfer && (
           <>
             <Route path="/verify" element={<VerifyRoute />} />
+            <Route path="/verify-email" element={<VerifyRoute />} />
             <Route path="/currency" element={<PendingLayout><UnRegCur /></PendingLayout>} />
             <Route path="/crypto" element={<PendingLayout><UnRegCryp /></PendingLayout>} />
             <Route path="/bank-transfer" element={<PendingLayout><UnRegBankTransfer /></PendingLayout>} />
@@ -158,8 +158,9 @@ function App() {
             <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
             <Route path="/about" element={<PublicLayout><AboutUs /></PublicLayout>} />
 
-            {/* Verify Route - email link */}
+            {/* Verify Route - email link (backend /verify-email jo'natadi) */}
             <Route path="/verify" element={<VerifyRoute />} />
+            <Route path="/verify-email" element={<VerifyRoute />} />
 
             {/* Auth Routes */}
             <Route
