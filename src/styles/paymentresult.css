@@ -1,0 +1,109 @@
+.payment-result-container {
+    min-height: 100vh;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.payment-result-card {
+    width: 100%;
+    max-width: 480px;
+    padding: 3rem 2rem;
+    border-radius: 1.5rem;
+    text-align: center;
+    background: var(--bg-light);
+}
+
+#dark .payment-result-card {
+    background: var(--bg-dark);
+    border: 1px solid var(--border-dark);
+}
+
+.payment-result-icon {
+    margin-bottom: 1.5rem;
+}
+
+.payment-result-icon.success {
+    color: #22c55e;
+}
+
+.payment-result-icon.fail {
+    color: #ef4444;
+}
+
+.payment-result-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+#dark .payment-result-title {
+    color: var(--text-dark);
+}
+
+.payment-result-text {
+    font-size: 0.9rem;
+    color: var(--text-secondary-light);
+    margin-bottom: 2rem;
+    line-height: 1.5;
+}
+
+#dark .payment-result-text {
+    color: var(--text-secondary-dark);
+}
+
+.payment-result-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.payment-result-btn {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+    background: var(--btn-primary);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.payment-result-btn:hover {
+    background: var(--btn-primary-hover);
+}
+
+.payment-result-btn-outline {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+    background: transparent;
+    color: var(--btn-primary);
+    border: 1px solid var(--btn-primary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.payment-result-btn-outline:hover {
+    background: var(--btn-primary);
+    color: white;
+}
+
+@media (max-width: 480px) {
+    .payment-result-container {
+        padding: 1rem;
+    }
+
+    .payment-result-card {
+        padding: 2rem 1.5rem;
+    }
+
+    .payment-result-title {
+        font-size: 1.25rem;
+    }
+}

@@ -7,14 +7,14 @@ import { toast } from 'react-toastify'
 import '../styles/unreginstruction.css'
 
 const UnRegInstruction = () => {
-  const { t } = useGlobalContext()
+  const { t, transferData: contextTransferData } = useGlobalContext()
   const navigate = useNavigate()
   const location = useLocation()
   const [isChecked, setIsChecked] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
-  // Get all transfer data from previous pages
-  const transferData = location.state || {}
+  // Get all transfer data from previous pages (merge context + location.state)
+  const transferData = { ...contextTransferData, ...(location.state || {}) }
 
   const steps = [
     t('step1Instructions'),

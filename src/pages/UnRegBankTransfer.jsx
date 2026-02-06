@@ -24,15 +24,33 @@ const UnRegBankTransfer = () => {
     exchangeRateFeePercentage = 2
   } = transferData
 
-  // Popular banks list (can be expanded)
+  // O'zbekiston banklari
+  const uzbekBanks = [
+    { code: 'NBU', name: "O'zmilliybank (NBU)", country: 'UZ', swift: 'NBFAUZ2X' },
+    { code: 'SQB', name: "O'zsanoatqurilishbank (SQB)", country: 'UZ', swift: 'UZHOUZ22' },
+    { code: 'XALQ', name: 'Xalq Banki', country: 'UZ', swift: 'XACAUZ22' },
+    { code: 'KAPITALBANK', name: 'Kapitalbank', country: 'UZ', swift: 'KACHUZ22' },
+    { code: 'IPOTEKA', name: 'Ipoteka Bank', country: 'UZ', swift: 'IPBKUZ22' },
+    { code: 'HAMKOR', name: 'Hamkorbank', country: 'UZ', swift: 'HAMKUZ22' },
+    { code: 'ASAKA', name: 'Asaka Bank', country: 'UZ', swift: 'ASBKUZ22' },
+    { code: 'AGROBANK', name: 'Agrobank', country: 'UZ', swift: 'PAKHUZ22' },
+    { code: 'OFB', name: 'Orient Finans Bank', country: 'UZ', swift: 'ORFBUZ22' },
+  ]
+
+  // Rossiya banklari
+  const russiaBanks = [
+    { code: 'SBERBANK', name: 'Sberbank (Сбербанк)', country: 'RU', swift: 'SABRRUMM' },
+    { code: 'VTB', name: 'VTB Bank (ВТБ)', country: 'RU', swift: 'VTBRRUMM' },
+    { code: 'GAZPROM', name: 'Gazprombank (Газпромбанк)', country: 'RU', swift: 'GAZPRUMM' },
+    { code: 'ALFA', name: 'Alfa-Bank (Альфа-Банк)', country: 'RU', swift: 'ALFARUMM' },
+    { code: 'ROSSIYA', name: 'Bank Rossiya (Банк Россия)', country: 'RU', swift: 'ROSYRU2P' },
+    { code: 'TINKOFF', name: 'Tinkoff Bank (Тинькофф)', country: 'RU', swift: 'TICSRUMM' },
+  ]
+
   const popularBanks = [
-    { code: 'KAPITALBANK', name: 'Kapitalbank', country: 'UZ', swift: 'KABORUZ2X' },
-    { code: 'ASAKA', name: 'Asaka Bank', country: 'UZ', swift: 'AABORUZ2X' },
-    { code: 'NBU', name: 'National Bank of Uzbekistan', country: 'UZ', swift: 'NBUZUZ2X' },
-    { code: 'IPAK_YULI', name: 'Ipak Yuli Bank', country: 'UZ', swift: 'IPYOUZ22' },
-    { code: 'SBERBANK', name: 'Sberbank', country: 'RU', swift: 'SABRRUMM' },
-    { code: 'TINKOFF', name: 'Tinkoff Bank', country: 'RU', swift: 'TICSRUMM' },
-    { code: 'OTHER', name: t('otherBank') || 'Boshqa bank', country: '', swift: '' }
+    ...uzbekBanks,
+    ...russiaBanks,
+    { code: 'OTHER', name: t('otherBank') || 'Другой банк', country: '', swift: '' }
   ]
 
   const [selectedBank, setSelectedBank] = useState(null)
@@ -249,7 +267,7 @@ const UnRegBankTransfer = () => {
             }}>
               {t("selectBank") || "Bankni tanlang"} *
             </label>
-            <div className="date-input-container" style={{ padding: 0 }}>
+            <div className="date-input-container" style={{ padding: 0, flexDirection: 'column', alignItems: 'stretch' }}>
               <button
                 onClick={() => setIsBankOpen(!isBankOpen)}
                 className="country-select-btn"
@@ -285,7 +303,7 @@ const UnRegBankTransfer = () => {
                 />
               </button>
               {isBankOpen && (
-                <div className="country-dropdown-menu" style={{ position: 'relative', marginTop: '0.5rem', maxHeight: '250px', overflowY: 'auto' }}>
+                <div className="country-dropdown-menu" style={{ position: 'relative', marginTop: '0', maxHeight: '250px', overflowY: 'auto', width: '100%' }}>
                   {popularBanks.map((bank) => (
                     <button
                       key={bank.code}
@@ -510,12 +528,12 @@ const UnRegBankTransfer = () => {
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', marginBottom: '1.5rem' }}>
             <input
               type="checkbox"
-              id="terms"
+              id="bankTerms"
               checked={termsChecked}
               onChange={(e) => setTermsChecked(e.target.checked)}
-              style={{ width: '1.2rem', height: '1.2rem', marginTop: '2px', flexShrink: 0 }}
+              className="terms-checkbox"
             />
-            <label htmlFor="terms" style={{ fontSize: '0.85rem', opacity: 0.8 }}>
+            <label htmlFor="bankTerms" className="terms-label">
               {t("confirmBankDetails") || "Men bank ma'lumotlari to'g'ri ekanligini tasdiqlayman"}
             </label>
           </div>

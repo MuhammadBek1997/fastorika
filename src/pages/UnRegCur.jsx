@@ -320,6 +320,9 @@ const UnRegCur = () => {
                                     }
                                     setSendAmount(val || '0')
                                 }}
+                                style={{
+                                    color: (!sendAmount || parseFloat(sendAmount) <= 0) ? undefined : undefined
+                                }}
                             />
                         </div>
                         <div className="currDropdown">
@@ -635,9 +638,9 @@ const UnRegCur = () => {
 
                 <button
                     className="currency-continueBtn"
-                    disabled={!curMethod}
+                    disabled={!curMethod || !sendAmount || parseFloat(sendAmount) <= 0}
                     style={{
-                        opacity: !curMethod ? 0.5 : 1
+                        opacity: (!curMethod || !sendAmount || parseFloat(sendAmount) <= 0) ? 0.5 : 1
                     }}
                     onClick={() => {
                         proceedWithTransfer()

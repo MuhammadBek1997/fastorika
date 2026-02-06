@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import './currency.css'
 import { useNavigate, useLocation } from "react-router-dom"
 import { useGlobalContext } from "../Context"
-import { ChevronLeft, CreditCard, User, AlertCircle, Phone, ArrowBigLeft, ArrowLeft, AlertCircleIcon, Share2, CheckCircle, XCircle, ArrowRight, Wallet } from "lucide-react"
+import { CreditCard, User, Phone, ArrowLeft, Share2, CheckCircle, XCircle, Wallet, Lock } from "lucide-react"
 import UnRegCopyModal from "./UnRegCopyModal"
 import { findClientByFastorikaId } from "../api"
 
@@ -73,19 +73,32 @@ const UnRegCardNum = () => {
     // Card expiration date
     const [expiryMonth, setExpiryMonth] = useState('')
     const [expiryYear, setExpiryYear] = useState('')
+    const [cvv, setCvv] = useState('')
 
     // Detect card network from card number
     const detectCardNetwork = (cardNum) => {
         const num = cardNum.replace(/\s/g, '')
-        if (num.startsWith('4')) return 'VISA'
-        if (num.startsWith('5') || num.startsWith('2')) return 'MASTERCARD'
-        if (num.startsWith('8600')) return 'UZCARD'
+        if (!num) return null
+        // Uzcard: 8600 yoki 5614
+        if (num.startsWith('8600') || num.startsWith('5614')) return 'UZCARD'
+        // Humo: 9860
         if (num.startsWith('9860')) return 'HUMO'
-        if (num.startsWith('34') || num.startsWith('37')) return 'AMEX'
+        // Visa: 4 bilan boshlanadi
+        if (num.startsWith('4')) return 'VISA'
+        // Mastercard: 51-55 yoki 2221-2720
+        if (num.length >= 2) {
+            const first2 = parseInt(num.slice(0, 2))
+            if (first2 >= 51 && first2 <= 55) return 'MASTERCARD'
+        }
+        if (num.length >= 4) {
+            const first4 = parseInt(num.slice(0, 4))
+            if (first4 >= 2221 && first4 <= 2720) return 'MASTERCARD'
+        }
         return null
     }
 
     const cardNetwork = detectCardNetwork(cardNumber)
+    const isInternationalCard = cardNetwork === 'VISA' || cardNetwork === 'MASTERCARD'
 
     const extractDialCode = (phone) => {
         const match = String(phone || '').match(/^\+(\d{1,3})/)
@@ -358,21 +371,19 @@ const UnRegCardNum = () => {
                                         onChange={handleCardNumberChange}
                                         placeholder={t('addCardModal.placeholders.cardNumber') || t('placeholders.cardNumber')}
                                         style={{ flex: 1 }}
+                                        autoComplete="off"
                                     />
                                     {cardNetwork && (
-                                        <span style={{
-                                            fontSize: '0.75rem',
-                                            fontWeight: 600,
-                                            padding: '4px 8px',
-                                            borderRadius: '4px',
-                                            background: cardNetwork === 'VISA' ? '#1a1f71' :
-                                                        cardNetwork === 'MASTERCARD' ? '#eb001b' :
-                                                        cardNetwork === 'UZCARD' ? '#00a651' :
-                                                        cardNetwork === 'HUMO' ? '#00bfff' : '#666',
-                                            color: 'white'
-                                        }}>
-                                            {cardNetwork}
-                                        </span>
+                                        <img
+                                            src={
+                                                cardNetwork === 'VISA' ? '/images/visa.png' :
+                                                cardNetwork === 'MASTERCARD' ? '/images/mastercard.png' :
+                                                cardNetwork === 'UZCARD' ? '/images/Uzcard.svg' :
+                                                cardNetwork === 'HUMO' ? '/images/humo.png' : ''
+                                            }
+                                            alt={cardNetwork}
+                                            style={{ height: '24px', objectFit: 'contain' }}
+                                        />
                                     )}
                                 </div>
                             </div>
@@ -382,7 +393,7 @@ const UnRegCardNum = () => {
                             <div className="two-cols mb-1">
                                 <div className="col">
                                     <label className="field-label">
-                                        {t("expiryMonth") || "Oy"}
+                                        {t("expiryMonth") || "Месяц (MM)"}
                                     </label>
                                     <div className="currency-input-container">
                                         <input
@@ -401,7 +412,7 @@ const UnRegCardNum = () => {
                                 </div>
                                 <div className="col">
                                     <label className="field-label">
-                                        {t("expiryYear") || "Yil"}
+                                        {t("expiryYear") || "Год (YYYY)"}
                                     </label>
                                     <div className="currency-input-container">
                                         <input
@@ -418,6 +429,30 @@ const UnRegCardNum = () => {
                                         />
                                     </div>
                                 </div>
+                                {isInternationalCard && (
+                                    <div className="col">
+                                        <label className="field-label">
+                                            <Lock size={12} style={{ display: 'inline', marginRight: '4px', verticalAlign: 'middle' }} />
+                                            CVC/CVV
+                                        </label>
+                                        <div className="currency-input-container">
+                                            <input
+                                                type="password"
+                                                value={cvv}
+                                                onChange={(e) => {
+                                                    const val = e.target.value.replace(/\D/g, '')
+                                                    if (val.length <= 3) {
+                                                        setCvv(val)
+                                                    }
+                                                }}
+                                                placeholder="•••"
+                                                maxLength={3}
+                                                inputMode="numeric"
+                                                autoComplete="cc-csc"
+                                            />
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         )}
 
@@ -655,7 +690,8 @@ const UnRegCardNum = () => {
                                     phoneNumber: fullPhoneNumber,
                                     firstName,
                                     lastName,
-                                    receiverName: `${firstName} ${lastName}`.trim()
+                                    receiverName: `${firstName} ${lastName}`.trim(),
+                                    ...(isInternationalCard && { cvv })
                                 }
                             } else {
                                 // Fastorika ID mode
@@ -693,7 +729,7 @@ const UnRegCardNum = () => {
                         }}
                         disabled={
                             mode === 'card'
-                                ? (!cardNumber || cardNumber.replace(/\s/g, '').length < 16 || !isPhoneValid || !expiryMonth || !expiryYear || expiryYear.length < 2 || !firstName || !lastName)
+                                ? (!cardNumber || cardNumber.replace(/\s/g, '').length < 16 || !isPhoneValid || !expiryMonth || !expiryYear || expiryYear.length < 2 || !firstName || !lastName || (isInternationalCard && cvv.length !== 3))
                                 : (!foundUser || (foundUser.cards?.length > 0 && !selectedCard))
                         }
                     >

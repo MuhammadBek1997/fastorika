@@ -4118,19 +4118,20 @@ nav.scrolled {
     gap: 4px;
     font-size: 14px;
     font-weight: 500;
-    color: var(--text-primary);
+    border: none;
     transition: background-color 0.2s ease;
 }
 
-/* .country-select-btn:hover {
-    background-color: var(--hover-bg);
-} */
+#light .country-select-btn {
+    color: var(--text-light);
+}
 
+#dark .country-select-btn {
+    color: var(--text-dark);
+}
 
 .country-dropdown-menu {
     position: absolute;
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 0.5rem;
     max-height: 200px;
@@ -4138,24 +4139,34 @@ nav.scrolled {
     overflow-y: auto;
     z-index: 50;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    min-width: 120px;
-}
-
-.country-dropdown-menu {
     min-width: 100px;
 }
 
+#light .country-dropdown-menu {
+    background-color: var(--bg-light);
+    border: 1px solid var(--border-light);
+}
+
+#dark .country-dropdown-menu {
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border-dark);
+}
 
 .country-dropdown-menu::-webkit-scrollbar {
     width: 6px;
 }
 
-
 .country-dropdown-menu::-webkit-scrollbar-thumb {
-    background-color: var(--border-color);
     border-radius: 3px;
 }
 
+#light .country-dropdown-menu::-webkit-scrollbar-thumb {
+    background-color: var(--border-light);
+}
+
+#dark .country-dropdown-menu::-webkit-scrollbar-thumb {
+    background-color: var(--border-dark);
+}
 
 .country-option {
     width: 100%;
@@ -4166,13 +4177,25 @@ nav.scrolled {
     cursor: pointer;
     border-radius: 6px;
     font-size: 14px;
-    color: var(--text-primary);
     transition: background-color 0.2s ease;
 }
 
+#light .country-option {
+    color: var(--text-light);
+}
+
+#dark .country-option {
+    color: var(--text-dark);
+}
+
 .month-option:hover,
-.year-option:hover {
-    background-color: var(--hover-bg);
+.year-option:hover,
+.country-option:hover {
+    background-color: rgba(0, 215, 150, 0.1);
+}
+
+.country-option.active {
+    background-color: rgba(0, 215, 150, 0.15);
 }
 
 .month-option.active,
@@ -4526,7 +4549,8 @@ nav.scrolled {
     --hover-bg: #f3f4f6;
 }
 
-[data-theme="dark"] {
+[data-theme="dark"],
+#dark {
     --text-primary: #f9fafb;
     --text-secondary: #9ca3af;
     --text-placeholder: #6b7280;

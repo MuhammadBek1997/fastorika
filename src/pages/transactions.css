@@ -70,10 +70,11 @@
   min-width: 0;
 }
 
-.changeTransBtn {
+
+.transactions-transfer-cont .changeTransBtn {
   position: absolute;
   left: 50%;
-  transform: translateX(-50%) rotateZ(90deg);
+  transform: translateX(-50%) rotateZ(0deg);
   padding: 0.25rem;
   border-radius: 50%;
   border: none;
@@ -137,6 +138,10 @@
     width: 100%;
     flex-direction: column;
     gap:0.5rem;
+  }
+  
+  .transactions-transfer-cont .changeTransBtn{
+    transform: translateX(-50%) rotateZ(90deg);
   }
 
   .transactions-transfer-top,

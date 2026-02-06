@@ -20,7 +20,7 @@ const UnRegNavbar = () => {
         const path = location.pathname || ''
         if (path.startsWith('/currency')) {
             setIsActive(1)
-        } else if (path.startsWith('/cardnumber') || path.startsWith('/crypto')) {
+        } else if (path.startsWith('/cardnumber') || path.startsWith('/crypto') || path.startsWith('/bank-transfer')) {
             setIsActive(2)
         } else if (path.startsWith('/provider')) {
             setIsActive(3)

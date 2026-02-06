@@ -42,6 +42,8 @@ import UnRegBankTransfer from './pages/UnRegBankTransfer';
 import UnRegInstruction from './pages/UnRegInstruction';
 import TransactionInfo from './pages/TransactionInfo';
 import KycVerification from './pages/KycVerification';
+import PaymentSuccess from './pages/PaymentSuccess';
+import PaymentFail from './pages/PaymentFail';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -148,6 +150,8 @@ function App() {
             <Route path="/cardnumber" element={<PendingLayout><UnRegCardNum /></PendingLayout>} />
             <Route path="/provider" element={<PendingLayout><UnRegSelProvide /></PendingLayout>} />
             <Route path="/instruction" element={<PendingLayout><UnRegInstruction /></PendingLayout>} />
+            <Route path="/payment/success" element={<PaymentSuccess />} />
+            <Route path="/payment/fail" element={<PaymentFail />} />
             <Route path="*" element={<Navigate to="/currency" replace />} />
           </>
         )}
@@ -284,6 +288,10 @@ function App() {
                 </ProtectedRoute>
               }
             />
+
+            {/* Payment callback routes (Volet redirects here after payment) */}
+            <Route path="/payment/success" element={<PaymentSuccess />} />
+            <Route path="/payment/fail" element={<PaymentFail />} />
 
             {/* Fallback Routes */}
             <Route path="*" element={<Navigate to="/" replace />} />

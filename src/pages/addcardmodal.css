@@ -39,6 +39,24 @@
   font-size: 1rem;
 }
 
+#light .date-input-container input {
+  color: var(--text-light);
+}
+
+#dark .date-input-container input {
+  color: var(--text-dark);
+}
+
+#light .date-input-container input::placeholder {
+  color: var(--text-secondary-light);
+  opacity: 0.7;
+}
+
+#dark .date-input-container input::placeholder {
+  color: var(--text-secondary-dark);
+  opacity: 0.7;
+}
+
 .actionsRow {
   display: flex;
   gap: 0.75rem;
