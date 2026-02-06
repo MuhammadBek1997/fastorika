@@ -53,6 +53,37 @@ const AddCardModal = () => {
     const [euCardNumber, setEuCardNumber] = useState("")
     const [expirationDate, setExpirationDate] = useState("")
     const [iban, setIban] = useState("")
+    const [cvv, setCvv] = useState("")
+
+    const detectCardNetwork = (cardNum) => {
+        const num = cardNum.replace(/\s/g, '')
+        if (!num) return null
+        if (num.startsWith('8600') || num.startsWith('5614')) return 'UZCARD'
+        if (num.startsWith('9860')) return 'HUMO'
+        if (num.startsWith('4')) return 'VISA'
+        if (num.length >= 2) {
+            const first2 = parseInt(num.slice(0, 2))
+            if (first2 >= 51 && first2 <= 55) return 'MASTERCARD'
+        }
+        if (num.length >= 4) {
+            const first4 = parseInt(num.slice(0, 4))
+            if (first4 >= 2221 && first4 <= 2720) return 'MASTERCARD'
+        }
+        return null
+    }
+
+    const cardNetworkImages = {
+        VISA: '/images/visa.png',
+        MASTERCARD: '/images/mastercard.png',
+        UZCARD: '/images/Uzcard.svg',
+        HUMO: '/images/humo.png'
+    }
+
+    // Detect network for both card inputs
+    const uzCardNetwork = detectCardNetwork(cardNumber)
+    const euCardNetwork = detectCardNetwork(euCardNumber)
+    const isUzInternational = uzCardNetwork === 'VISA' || uzCardNetwork === 'MASTERCARD'
+    const isEuInternational = euCardNetwork === 'VISA' || euCardNetwork === 'MASTERCARD'
 
     const formatCardNumber = (value) => {
         const numbers = value.replace(/\s/g, '')
@@ -119,14 +150,15 @@ const AddCardModal = () => {
             case 'uzbekistan':
                 return {
                     countryId: country.countryId,
-                    cardNetwork: "VISA", // Default, can be detected from card number
+                    cardNetwork: uzCardNetwork || 'VISA',
                     countryCode: country.code,
                     cardData: {
                         cardNumber: cardNumber.replace(/\s/g, ''),
                         expirationMonth: String(expirationMonth).padStart(2, '0'),
                         expirationYear: String(expirationYear),
                         cardHolderName: cardHolderName.trim(),
-                        bankName: bankName.trim()
+                        bankName: bankName.trim(),
+                        ...(isUzInternational && cvv ? { cvv } : {})
                     }
                 }
 
@@ -160,13 +192,14 @@ const AddCardModal = () => {
             default: // EU/CIS/Other
                 return {
                     countryId: country.countryId,
-                    cardNetwork: "VISA", // Default
+                    cardNetwork: euCardNetwork || 'VISA',
                     countryCode: country.code,
                     cardData: {
                         cardNumber: euCardNumber.replace(/\s/g, ''),
                         expirationDate: expirationDate,
                         cardHolderName: cardHolderName.trim(),
-                        ...(iban ? { iban: iban.trim() } : {})
+                        ...(iban ? { iban: iban.trim() } : {}),
+                        ...(isEuInternational && cvv ? { cvv } : {})
                     }
                 }
         }
@@ -183,6 +216,10 @@ const AddCardModal = () => {
                 }
                 if (cardNumber.replace(/\s/g, '').length !== 16) {
                     toast.error(t('addCardModal.errors.invalidCard') || 'Invalid card number')
+                    return false
+                }
+                if (isUzInternational && cvv.length !== 3) {
+                    toast.error(t('addCardModal.errors.invalidCvv') || 'CVC/CVV must be 3 digits')
                     return false
                 }
                 const monthNum = parseInt(expirationMonth, 10)
@@ -219,6 +256,10 @@ const AddCardModal = () => {
                 }
                 if (euCardNumber.replace(/\s/g, '').length !== 16) {
                     toast.error(t('addCardModal.errors.invalidCard') || 'Invalid card number')
+                    return false
+                }
+                if (isEuInternational && cvv.length !== 3) {
+                    toast.error(t('addCardModal.errors.invalidCvv') || 'CVC/CVV must be 3 digits')
                     return false
                 }
                 break
@@ -260,14 +301,19 @@ const AddCardModal = () => {
                     <>
                         <div className="addCardModal-form-group" style={{ marginBottom: '0.75rem' }}>
                             <label htmlFor="cardNumber">{t('addCardModal.cardNumber') || 'Card Number'} *</label>
-                            <div className="date-input-container">
+                            <div className="date-input-container" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                 <input
                                     id="cardNumber"
                                     type="text"
                                     value={cardNumber}
                                     onChange={(e) => handleCardNumberChange(e.target.value, setCardNumber)}
                                     placeholder="1234 5678 9012 3456"
+                                    autoComplete="off"
+                                    style={{ flex: 1 }}
                                 />
+                                {uzCardNetwork && (
+                                    <img src={cardNetworkImages[uzCardNetwork]} alt={uzCardNetwork} style={{ height: '24px', objectFit: 'contain' }} />
+                                )}
                             </div>
                         </div>
 
@@ -318,6 +364,24 @@ const AddCardModal = () => {
                                     />
                                 </div>
                             </div>
+                            {isUzInternational && (
+                                <div className="addCardModal-form-group" style={{ flex: 1, marginBottom: 0 }}>
+                                    <label htmlFor="uzCvv">CVC/CVV *</label>
+                                    <div className="date-input-container">
+                                        <input
+                                            id="uzCvv"
+                                            type="password"
+                                            value={cvv}
+                                            onChange={(e) => {
+                                                const val = e.target.value.replace(/\D/g, '')
+                                                if (val.length <= 3) setCvv(val)
+                                            }}
+                                            placeholder="•••"
+                                            maxLength="3"
+                                        />
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         <div className="addCardModal-form-group" style={{ marginBottom: '0.75rem' }}>
@@ -515,19 +579,25 @@ const AddCardModal = () => {
                     <>
                         <div className="addCardModal-form-group" style={{ marginBottom: '0.75rem' }}>
                             <label htmlFor="euCardNumber">{t('addCardModal.cardNumber') || 'Card Number'} *</label>
-                            <div className="date-input-container">
+                            <div className="date-input-container" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                 <input
                                     id="euCardNumber"
                                     type="text"
                                     value={euCardNumber}
                                     onChange={(e) => handleCardNumberChange(e.target.value, setEuCardNumber)}
                                     placeholder="1234 5678 9012 3456"
+                                    autoComplete="off"
+                                    style={{ flex: 1 }}
                                 />
+                                {euCardNetwork && (
+                                    <img src={cardNetworkImages[euCardNetwork]} alt={euCardNetwork} style={{ height: '24px', objectFit: 'contain' }} />
+                                )}
                             </div>
                         </div>
 
-                        <div className="addCardModal-form-group" style={{ marginBottom: '0.75rem' }}>
-                            <label htmlFor="expirationDate">{t('addCardModal.expirationDate') || 'Expiration Date (MM/YY)'} *</label>
+                        <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem' }}>
+                        <div className="addCardModal-form-group" style={{ flex: 1, marginBottom: 0 }}>
+                            <label htmlFor="expirationDate">{t('addCardModal.expirationDate') || 'Expiration (MM/YY)'} *</label>
                             <div className="date-input-container">
                                 <input
                                     id="expirationDate"
@@ -537,6 +607,25 @@ const AddCardModal = () => {
                                     placeholder="12/25"
                                 />
                             </div>
+                        </div>
+                        {isEuInternational && (
+                            <div className="addCardModal-form-group" style={{ flex: 1, marginBottom: 0 }}>
+                                <label htmlFor="euCvv">CVC/CVV *</label>
+                                <div className="date-input-container">
+                                    <input
+                                        id="euCvv"
+                                        type="password"
+                                        value={cvv}
+                                        onChange={(e) => {
+                                            const val = e.target.value.replace(/\D/g, '')
+                                            if (val.length <= 3) setCvv(val)
+                                        }}
+                                        placeholder="•••"
+                                        maxLength="3"
+                                    />
+                                </div>
+                            </div>
+                        )}
                         </div>
 
                         <div className="addCardModal-form-group" style={{ marginBottom: '0.75rem' }}>

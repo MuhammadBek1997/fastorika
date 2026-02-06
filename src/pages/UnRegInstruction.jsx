@@ -82,11 +82,19 @@ const UnRegInstruction = () => {
               // Helper to detect card network from card number
               const detectCardNetwork = (cardNumber) => {
                 const num = String(cardNumber).replace(/\s/g, '')
-                if (num.startsWith('4')) return 'VISA'
-                if (num.startsWith('5') || num.startsWith('2')) return 'MASTERCARD'
-                if (num.startsWith('8600')) return 'UZCARD'
+                if (!num) return 'VISA'
+                if (num.startsWith('8600') || num.startsWith('5614')) return 'UZCARD'
                 if (num.startsWith('9860')) return 'HUMO'
-                return 'VISA' // default
+                if (num.startsWith('4')) return 'VISA'
+                if (num.length >= 2) {
+                  const first2 = parseInt(num.slice(0, 2))
+                  if (first2 >= 51 && first2 <= 55) return 'MASTERCARD'
+                }
+                if (num.length >= 4) {
+                  const first4 = parseInt(num.slice(0, 4))
+                  if (first4 >= 2221 && first4 <= 2720) return 'MASTERCARD'
+                }
+                return 'VISA'
               }
 
               // Check if receiver currency is a crypto currency

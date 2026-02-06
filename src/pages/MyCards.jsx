@@ -132,7 +132,20 @@ const MyCards = () => {
 
                   <div className='cardFooter'>
                       <span className='cardExpiry'>{expiry}</span>
-                      <span className='cardBrandText'>{brandText}</span>
+                      {(['VISA', 'MASTERCARD', 'UZCARD', 'HUMO'].includes(brandText.toUpperCase())) ? (
+                        <img
+                          src={
+                            brandText.toUpperCase() === 'VISA' ? '/images/visa.png' :
+                            brandText.toUpperCase() === 'MASTERCARD' ? '/images/mastercard.png' :
+                            brandText.toUpperCase() === 'UZCARD' ? '/images/Uzcard.svg' :
+                            brandText.toUpperCase() === 'HUMO' ? '/images/humo.png' : ''
+                          }
+                          alt={brandText}
+                          style={{ height: '24px', objectFit: 'contain' }}
+                        />
+                      ) : (
+                        <span className='cardBrandText'>{brandText}</span>
+                      )}
                   </div>
                 </div>
               )
