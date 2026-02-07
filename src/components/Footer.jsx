@@ -70,15 +70,15 @@ const Footer = () => {
             </div>
             <div className="footer-bottom">
                 <div>
-                    <a href="">
+                    <Link to="/serviceTerm" onClick={() => window.scrollTo(0, 0)}>
                         {t("footerlink1")}
-                    </a>
-                    <a href="">
+                    </Link>
+                    <Link to="/politics" onClick={() => window.scrollTo(0, 0)}>
                         {t("footerlink2")}
-                    </a>
-                    <a href="">
+                    </Link>
+                    <Link to="/politicsAml" onClick={() => window.scrollTo(0, 0)}>
                         {t("footerlink3")}
-                    </a>
+                    </Link>
                 </div>
                 <p>
                     {t("footerabout1")}

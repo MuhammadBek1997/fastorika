@@ -3011,7 +3011,8 @@ nav.scrolled {
     background-color: var(--bg-dark);
 }
 
-#webSection {
+/* padding-left only when inside sidebar layout (webClient) */
+.webClient #webSection {
     padding-left: 21vw;
 }
 
@@ -5580,7 +5581,7 @@ nav.scrolled {
         padding: 1rem;
     }
 
-    #webSection {
+    .webClient #webSection {
         padding-left: 0;
         padding: 1rem;
         padding-top: 5vh;

@@ -162,6 +162,11 @@ function App() {
             <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
             <Route path="/about" element={<PublicLayout><AboutUs /></PublicLayout>} />
 
+            {/* Public document routes (accessible without login) */}
+            <Route path="/politics" element={<PublicLayout><PoliticsAndCon /></PublicLayout>} />
+            <Route path="/politicsAml" element={<PublicLayout><PoliticsAML /></PublicLayout>} />
+            <Route path="/serviceTerm" element={<PublicLayout><ServiceTerm /></PublicLayout>} />
+
             {/* Verify Route - email link (backend /verify-email jo'natadi) */}
             <Route path="/verify" element={<VerifyRoute />} />
             <Route path="/verify-email" element={<VerifyRoute />} />
@@ -245,30 +250,6 @@ function App() {
               element={
                 <ProtectedRoute>
                   <PrivateLayout><AboutRoute /></PrivateLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/politics"
-              element={
-                <ProtectedRoute>
-                  <PrivateLayout><PoliticsAndCon /></PrivateLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/politicsAml"
-              element={
-                <ProtectedRoute>
-                  <PrivateLayout><PoliticsAML /></PrivateLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/serviceTerm"
-              element={
-                <ProtectedRoute>
-                  <PrivateLayout><ServiceTerm /></PrivateLayout>
                 </ProtectedRoute>
               }
             />
