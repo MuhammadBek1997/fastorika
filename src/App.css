@@ -175,6 +175,40 @@ nav.scrolled {
         gap: 13vw;
     }
 
+    .hero {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .hero-left {
+        width: 100%;
+        flex: none;
+    }
+
+    .hero-left h1 {
+        font-size: 3.5rem;
+    }
+
+    .hero-left p {
+        font-size: 1.2rem;
+    }
+
+    .hero-func-list {
+        padding-top: 2rem;
+    }
+
+    .hero-func-list-item {
+        width: 12rem;
+        height: 12rem;
+        padding-right: 2rem;
+    }
+
+    .hero-right {
+        width: 100%;
+        flex: none;
+        max-width: 500px;
+        margin: 0 auto;
+    }
 }
 
 .logo img {
