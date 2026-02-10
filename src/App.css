@@ -2000,9 +2000,7 @@ nav.scrolled {
    RESPONSIVE FIXES
    ============================================ */
 
-@media (max-width: 768px) {
-
-    /* Navbar tuzatish */
+@media(max-width){
     nav {
         padding: 0.5rem;
         position: fixed !important;
@@ -2076,7 +2074,6 @@ nav.scrolled {
         font-size: 12px;
         line-height: 1.2;
     }
-
     /* Dropdowns */
     .dropdowns-cont {
         position: absolute;
@@ -2092,7 +2089,6 @@ nav.scrolled {
         padding: 0.4rem 0.6rem;
         font-size: 12px;
     }
-
 
     /* Hero right section */
     .hero-right {

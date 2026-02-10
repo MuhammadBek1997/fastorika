@@ -83,7 +83,7 @@ const Navbar = () => {
                     <button
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                         type="button"
-                        className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm rounded-lg md:hidden"
+                        className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm rounded-lg nav:hidden"
                         aria-controls="navbar-sticky"
                         aria-expanded={isMobileMenuOpen}
                     >
@@ -102,14 +102,14 @@ const Navbar = () => {
 
                 </div>
 
-                <div className="flex md:order-2 items-center rtl:space-x-reverse">
+                <div className="flex nav:order-2 items-center rtl:space-x-reverse">
 
                     {!isMobileMenuOpen && <button onClick={()=>handleNavigateLogin()} type="button" className="loginBtn">{t("login")}</button>}
 
                 </div>
 
-                <div className={`${isMobileMenuOpen ? 'block' : 'hidden'} items-center justify-end w-full md:flex md:w-auto md:order-1`} style={{ marginTop: isMobileMenuOpen ? "1rem" : null, width: isMobileMenuOpen ? "100%" : null, borderRadius: isMobileMenuOpen ? "1rem" : null }} id="navbar-sticky">
-                    <ul className="flex flex-col p-4 md:p-0 mt-4 gap-3 font-medium rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0">
+                <div className={`${isMobileMenuOpen ? 'block' : 'hidden'} items-center justify-end w-full nav:flex nav:w-auto nav:order-1`} style={{ marginTop: isMobileMenuOpen ? "1rem" : null, width: isMobileMenuOpen ? "100%" : null, borderRadius: isMobileMenuOpen ? "1rem" : null }} id="navbar-sticky">
+                    <ul className="flex flex-col p-4 nav:p-0 mt-4 gap-3 font-medium rounded-lg nav:space-x-8 rtl:space-x-reverse nav:flex-row nav:mt-0">
                         <li>
                             <a href="/#faq" className="block" aria-current="page" onClick={()=>handleFaqClick()}>{t("faq")}</a>
                         </li>
