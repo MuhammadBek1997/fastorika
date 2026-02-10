@@ -169,12 +169,7 @@ nav.scrolled {
     gap: 18vw;
 }
 
-@media (max-width:1200px) {
-    #navbar-sticky {
-        width: 70%;
-        gap: 13vw;
-    }
-
+@media (max-width:1300px) {
     .hero {
         flex-direction: column;
         gap: 1.5rem;
@@ -195,10 +190,12 @@ nav.scrolled {
 
     .hero-func-list {
         padding-top: 2rem;
+        width: 100%;
     }
 
     .hero-func-list-item {
-        width: 12rem;
+        flex: 1;
+        width: auto;
         height: 12rem;
         padding-right: 2rem;
     }
@@ -208,6 +205,13 @@ nav.scrolled {
         flex: none;
         max-width: 500px;
         margin: 0 auto;
+    }
+}
+
+@media (max-width:1200px) {
+    #navbar-sticky {
+        width: 70%;
+        gap: 13vw;
     }
 }
 
