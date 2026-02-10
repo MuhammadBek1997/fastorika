@@ -47,6 +47,7 @@ const Registration = () => {
     ]
     const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false)
     const [selectedCountry, setSelectedCountry] = useState(countryCodes[0])
+    const [phoneCode, setPhoneCode] = useState('+998')
 
     // Google/Apple dan kelgan ma'lumotlarni olish
     useEffect(() => {
@@ -239,14 +240,13 @@ const Registration = () => {
                         {t("phoneNumber") || "Номер телефона"}
                     </label>
                     <div className="phone-input-container">
-                        {/* Country Code Dropdown Button */}
+                        {/* Country Flag Dropdown Button */}
                         <button
                             type="button"
                             onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
                             className={`phone-country-btn ${isCountryDropdownOpen ? 'open' : ''}`}
                         >
                             <img className="flag" src={`https://flagcdn.com/w40/${selectedCountry.country.toLowerCase()}.png`} alt="" />
-                            <span className="code">{selectedCountry.code}</span>
                             <svg width="10" height="6" viewBox="0 0 10 6" fill="none">
                                 <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                             </svg>
@@ -261,6 +261,7 @@ const Registration = () => {
                                         type="button"
                                         onClick={() => {
                                             setSelectedCountry(country)
+                                            setPhoneCode(country.code)
                                             setIsCountryDropdownOpen(false)
                                         }}
                                         className={`phone-dropdown-item ${selectedCountry.code === country.code && selectedCountry.country === country.country ? 'active' : ''}`}
@@ -272,6 +273,20 @@ const Registration = () => {
                                 ))}
                             </div>
                         )}
+
+                        {/* Editable Code Input */}
+                        <input
+                            type="text"
+                            className="phone-code-input"
+                            value={phoneCode}
+                            onChange={(e) => {
+                                const val = e.target.value.replace(/[^0-9+]/g, '')
+                                setPhoneCode(val)
+                                const match = countryCodes.find(c => c.code === val)
+                                if (match) setSelectedCountry(match)
+                            }}
+                            placeholder="+998"
+                        />
 
                         {/* Phone Number Input */}
                         <input
@@ -354,7 +369,7 @@ const Registration = () => {
                                     email: mail,
                                     password: psw,
                                     name: mail.split('@')[0] || 'User',
-                                    phone: `${selectedCountry.code}${phone}`
+                                    phone: `${phoneCode}${phone}`
                                 })
                             })
 

@@ -35,17 +35,35 @@ const Profile = () => {
 
   // Country codes for phone input
   const countryCodes = [
-    { code: '+998', country: 'UZ', flag: '🇺🇿', name: 'Uzbekistan' },
-    { code: '+7', country: 'RU', flag: '🇷🇺', name: 'Russia' },
-    { code: '+7', country: 'KZ', flag: '🇰🇿', name: 'Kazakhstan' },
-    { code: '+1', country: 'US', flag: '🇺🇸', name: 'USA' },
-    { code: '+44', country: 'GB', flag: '🇬🇧', name: 'UK' },
-    { code: '+49', country: 'DE', flag: '🇩🇪', name: 'Germany' },
-    { code: '+90', country: 'TR', flag: '🇹🇷', name: 'Turkey' },
-    { code: '+82', country: 'KR', flag: '🇰🇷', name: 'South Korea' },
-    { code: '+86', country: 'CN', flag: '🇨🇳', name: 'China' },
-    { code: '+971', country: 'AE', flag: '🇦🇪', name: 'UAE' }
+    { code: '+998', country: 'UZ', flag: '🇺🇿', name: 'Uzbekistan', format: [2, 3, 2, 2], maxLen: 9 },
+    { code: '+7', country: 'RU', flag: '🇷🇺', name: 'Russia', format: [3, 3, 2, 2], maxLen: 10 },
+    { code: '+7', country: 'KZ', flag: '🇰🇿', name: 'Kazakhstan', format: [3, 3, 2, 2], maxLen: 10 },
+    { code: '+1', country: 'US', flag: '🇺🇸', name: 'USA', format: [3, 3, 4], maxLen: 10 },
+    { code: '+44', country: 'GB', flag: '🇬🇧', name: 'UK', format: [4, 3, 3], maxLen: 10 },
+    { code: '+49', country: 'DE', flag: '🇩🇪', name: 'Germany', format: [3, 3, 4], maxLen: 10 },
+    { code: '+90', country: 'TR', flag: '🇹🇷', name: 'Turkey', format: [3, 3, 2, 2], maxLen: 10 },
+    { code: '+82', country: 'KR', flag: '🇰🇷', name: 'South Korea', format: [2, 4, 4], maxLen: 10 },
+    { code: '+86', country: 'CN', flag: '🇨🇳', name: 'China', format: [3, 4, 4], maxLen: 11 },
+    { code: '+971', country: 'AE', flag: '🇦🇪', name: 'UAE', format: [2, 3, 4], maxLen: 9 }
   ]
+
+  // Format phone number with spaces based on country format pattern
+  const formatPhoneDisplay = (raw, countryObj) => {
+    if (!raw) return ''
+    const digits = raw.replace(/\D/g, '')
+    if (!countryObj?.format) return digits
+    let result = ''
+    let pos = 0
+    for (let i = 0; i < countryObj.format.length; i++) {
+      const groupLen = countryObj.format[i]
+      const chunk = digits.slice(pos, pos + groupLen)
+      if (!chunk) break
+      if (result) result += ' '
+      result += chunk
+      pos += groupLen
+    }
+    return result
+  }
   const [isPhoneCountryDropdownOpen, setIsPhoneCountryDropdownOpen] = useState(false)
 
   // Extract country code from phone number
@@ -354,12 +372,14 @@ const Profile = () => {
                 <input
                   type="text"
                   className="phone-number-input"
-                  value={getPhoneWithoutCode(profilePhone, selectedPhoneCountry.code)}
+                  value={formatPhoneDisplay(getPhoneWithoutCode(profilePhone, selectedPhoneCountry.code), selectedPhoneCountry)}
                   onChange={(e) => {
                     const val = e.target.value.replace(/\D/g, '')
-                    setProfilePhone(`${selectedPhoneCountry.code}${val}`)
+                    const maxLen = selectedPhoneCountry.maxLen || 15
+                    const trimmed = val.slice(0, maxLen)
+                    setProfilePhone(`${selectedPhoneCountry.code}${trimmed}`)
                   }}
-                  placeholder="901234567"
+                  placeholder={selectedPhoneCountry.format ? selectedPhoneCountry.format.map(n => 'X'.repeat(n)).join(' ') : '901234567'}
                 />
               </div>
 

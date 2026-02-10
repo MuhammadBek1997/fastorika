@@ -2708,14 +2708,38 @@ nav.scrolled {
     border-radius: 1rem;
     width: 100%;
     margin: -0.4rem 0;
+    border: none;
+    outline: none;
+    font-size: inherit;
+    font-family: inherit;
 }
 
 #dark .login-cont-form input {
-    background-color: var(--bg-body-dark);
+    background-color: var(--bg-body-dark) !important;
+    color: var(--text-dark) !important;
+    -webkit-text-fill-color: var(--text-dark);
 }
 
 #light .login-cont-form input {
-    background-color: var(--bg-body-light);
+    background-color: var(--bg-body-light) !important;
+    color: var(--text-light) !important;
+    -webkit-text-fill-color: var(--text-light);
+}
+
+#dark .login-cont-form input:-webkit-autofill,
+#dark .login-cont-form input:-webkit-autofill:hover,
+#dark .login-cont-form input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 30px var(--bg-body-dark) inset !important;
+    -webkit-text-fill-color: var(--text-dark) !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+#light .login-cont-form input:-webkit-autofill,
+#light .login-cont-form input:-webkit-autofill:hover,
+#light .login-cont-form input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 30px var(--bg-body-light) inset !important;
+    -webkit-text-fill-color: var(--text-light) !important;
+    transition: background-color 5000s ease-in-out 0s;
 }
 
 .login-cont-form-psw {
@@ -2875,11 +2899,31 @@ nav.scrolled {
 }
 
 #dark .registration-cont-form input {
-    background-color: var(--bg-body-dark);
+    background-color: var(--bg-body-dark) !important;
+    color: var(--text-dark) !important;
+    -webkit-text-fill-color: var(--text-dark);
 }
 
 #light .registration-cont-form input {
-    background-color: var(--bg-body-light);
+    background-color: var(--bg-body-light) !important;
+    color: var(--text-light) !important;
+    -webkit-text-fill-color: var(--text-light);
+}
+
+#dark .registration-cont-form input:-webkit-autofill,
+#dark .registration-cont-form input:-webkit-autofill:hover,
+#dark .registration-cont-form input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 30px var(--bg-body-dark) inset !important;
+    -webkit-text-fill-color: var(--text-dark) !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+#light .registration-cont-form input:-webkit-autofill,
+#light .registration-cont-form input:-webkit-autofill:hover,
+#light .registration-cont-form input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 30px var(--bg-body-light) inset !important;
+    -webkit-text-fill-color: var(--text-light) !important;
+    transition: background-color 5000s ease-in-out 0s;
 }
 
 .registration-cont-form-psw {

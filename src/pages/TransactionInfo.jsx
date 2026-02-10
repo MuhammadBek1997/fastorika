@@ -227,9 +227,9 @@ const TransactionInfo = () => {
                             <div className='info-item-right'>
                                 <p>
                                     {
-                                    currentTrans.transactionFee > 0 
+                                    currentTrans.transactionFee > 0
                                     ?
-                                    currentTrans.transactionFee 
+                                    `${currentTrans.transactionFee} ${currentTrans.currency || 'USD'}`
                                     :
                                     t('transactionInfo.withoutFee')
                                     }
@@ -245,7 +245,9 @@ const TransactionInfo = () => {
                             </div>
                             <div className='info-item-right'>
                                 <p>
-                                    **** {(currentTrans.receiverCardNumber || '****').slice(-4)}
+                                    {currentTrans.receiverCardNumber && currentTrans.receiverCardNumber !== '****-****-****-****'
+                                        ? currentTrans.receiverCardNumber
+                                        : '—'}
                                 </p>
                             </div>
                         </div>
@@ -257,7 +259,7 @@ const TransactionInfo = () => {
                             </div>
                             <div className='info-item-right'>
                                 <p>
-                                    {currentTrans.receiverName}
+                                    {currentTrans.receiverName || '—'}
                                 </p>
                             </div>
                         </div>
@@ -269,10 +271,11 @@ const TransactionInfo = () => {
                             </div>
                             <div className='info-item-right'>
                                 <p>
-                                    {currentTrans.sanderName}
+                                    {currentTrans.senderName || currentTrans.sanderName || '—'}
                                 </p>
                             </div>
                         </div>
+                        {currentTrans.receiverPhoneNumber && (
                         <div className='transaction-info-datalist-item'>
                             <div className='info-item-left'>
                                 <p>
@@ -285,6 +288,7 @@ const TransactionInfo = () => {
                                 </p>
                             </div>
                         </div>
+                        )}
                         <hr />
                         <div className='transaction-info-datalist-item'>
                             <div className='info-item-left'>
@@ -294,7 +298,11 @@ const TransactionInfo = () => {
                             </div>
                             <div className='info-item-right'>
                                 <p>
-                                    {t('transactionInfo.fromCard')} ··{(currentTrans.senderCardNumber || '****').slice(-4)}
+                                    {currentTrans.senderCardNumber && currentTrans.senderCardNumber !== '****-****-****-****'
+                                        ? `${t('transactionInfo.fromCard')} ··${currentTrans.senderCardNumber.slice(-4)}`
+                                        : currentTrans.paymentInfo?.paymentStatus === 'SUCCESS'
+                                            ? t('transactionInfo.paid') || 'Оплачено'
+                                            : t('transactionInfo.fromCard') || 'С карты'}
                                 </p>
                             </div>
                         </div>

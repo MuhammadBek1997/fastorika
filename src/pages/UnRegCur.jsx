@@ -88,6 +88,7 @@ const UnRegCur = () => {
     const isLoggedIn = !!sessionStorage.getItem('token')
     const [isFeeExpanded, setIsFeeExpanded] = useState(false)
     const isSwapping = useRef(false)
+    const editingField = useRef(null) // 'send' or 'receive' — tracks which input the user is typing in
 
     // Crypto state
     const cryptoCurrencies = [
@@ -267,11 +268,11 @@ const UnRegCur = () => {
 
     // Update receive amount when send amount changes - WITH FEE CALCULATION
     useEffect(() => {
-        if (isSwapping.current) return // Skip recalculation during swap
+        if (isSwapping.current) return
+        if (editingField.current === 'receive') return // Skip when user is editing receive field
         if (exchangeRate && sendAmount) {
             const amount = parseFloat(sendAmount.replace(/\s/g, ''))
             if (!isNaN(amount) && amount > 0) {
-                // Calculate with fees
                 const calculation = calculateTransactionFees(
                     amount,
                     transferFeePercentage,
@@ -283,6 +284,34 @@ const UnRegCur = () => {
             }
         }
     }, [sendAmount, exchangeRate, transferFeePercentage, exchangeRateFeePercentage])
+
+    // Reverse: update send amount when receive amount changes (user editing receive field)
+    useEffect(() => {
+        if (isSwapping.current) return
+        if (editingField.current !== 'receive') return
+        if (exchangeRate && receiveAmount) {
+            const received = parseFloat(receiveAmount.replace(/[,\s]/g, ''))
+            if (!isNaN(received) && received > 0) {
+                // Reverse formula: amountReceived = amountSent * (1 - transferFee/100) * adjustedRate
+                // adjustedRate = baseRate * (1 - exchangeRateFee/100)
+                const adjustedRate = exchangeRate.rate * (1 - (exchangeRateFeePercentage || 0) / 100)
+                const transferMultiplier = 1 - (transferFeePercentage || 0) / 100
+                if (adjustedRate > 0 && transferMultiplier > 0) {
+                    const computedSend = received / (adjustedRate * transferMultiplier)
+                    const rounded = Math.round(computedSend * 100) / 100
+                    setSendAmount(rounded.toString())
+                    // Update fee calculation based on computed send amount
+                    const calculation = calculateTransactionFees(
+                        rounded,
+                        transferFeePercentage,
+                        exchangeRateFeePercentage,
+                        exchangeRate.rate
+                    )
+                    setFeeCalculation(calculation)
+                }
+            }
+        }
+    }, [receiveAmount, exchangeRate, transferFeePercentage, exchangeRateFeePercentage])
 
 
 
@@ -304,24 +333,18 @@ const UnRegCur = () => {
                                 type="text"
                                 value={sendAmount}
                                 onChange={(e) => {
+                                    editingField.current = 'send'
                                     let val = e.target.value
-                                    // Remove non-numeric characters except decimal point
                                     val = val.replace(/[^0-9.]/g, '')
-                                    // Remove leading zeros (but keep "0." for decimals)
                                     val = val.replace(/^0+(?=\d)/, '')
-                                    // Only allow one decimal point
                                     const parts = val.split('.')
                                     if (parts.length > 2) {
                                         val = parts[0] + '.' + parts.slice(1).join('')
                                     }
-                                    // Limit decimal places to 2
                                     if (parts.length === 2 && parts[1].length > 2) {
                                         val = parts[0] + '.' + parts[1].slice(0, 2)
                                     }
                                     setSendAmount(val || '0')
-                                }}
-                                style={{
-                                    color: (!sendAmount || parseFloat(sendAmount) <= 0) ? undefined : undefined
                                 }}
                             />
                         </div>
@@ -373,8 +396,8 @@ const UnRegCur = () => {
                         const tempCur = myCurrency
                         setMyCurrency(otherCurrency)
                         setOtherCurrency(tempCur)
-                        // Reset flag after state updates
-                        setTimeout(() => { isSwapping.current = false }, 100)
+                        // Reset flags after state updates
+                        setTimeout(() => { isSwapping.current = false; editingField.current = null }, 100)
                     }}>
                         <ArrowUpDown/>
                     </button>
@@ -387,6 +410,7 @@ const UnRegCur = () => {
                                 type="text"
                                 value={receiveAmount}
                                 onChange={(e) => {
+                                    editingField.current = 'receive'
                                     let val = e.target.value
                                     val = val.replace(/[^0-9.]/g, '')
                                     val = val.replace(/^0+(?=\d)/, '')

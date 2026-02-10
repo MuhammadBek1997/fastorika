@@ -29,6 +29,7 @@ export const useChatStomp = () => {
   const [error, setError] = useState(null);
   const [messages, setMessages] = useState([]);
   const [chatRoomId, setChatRoomId] = useState(null);
+  const chatRoomIdRef = useRef(null); // Ref to avoid stale closure
   const [userId, setUserId] = useState(null);
 
   // Get JWT token
@@ -89,7 +90,9 @@ export const useChatStomp = () => {
 
       if (chatData && chatData.content && chatData.content.length > 0) {
         // Extract chatRoomId from first message
-        setChatRoomId(chatData.content[0].chatRoomId);
+        const roomId = chatData.content[0].chatRoomId;
+        setChatRoomId(roomId);
+        chatRoomIdRef.current = roomId;
 
         // Transform messages
         const transformedMessages = chatData.content.map(msg => ({
@@ -175,9 +178,10 @@ export const useChatStomp = () => {
             isRead: message.isRead
           };
 
-          // Update chatRoomId if not set
-          if (message.chatRoomId && !chatRoomId) {
+          // Update chatRoomId if not set (use ref to avoid stale closure)
+          if (message.chatRoomId && !chatRoomIdRef.current) {
             setChatRoomId(message.chatRoomId);
+            chatRoomIdRef.current = message.chatRoomId;
           }
 
           // Add message to list (avoid duplicates)
@@ -212,7 +216,7 @@ export const useChatStomp = () => {
     };
 
     client.activate();
-  }, [getToken, getWsUrl, loadInitialData, chatRoomId]);
+  }, [getToken, getWsUrl, loadInitialData]);
 
   // Disconnect from WebSocket
   const disconnect = useCallback(() => {
@@ -241,7 +245,7 @@ export const useChatStomp = () => {
 
     try {
       const payload = {
-        chatRoomId: chatRoomId || null,
+        chatRoomId: chatRoomIdRef.current || null,
         messageText: messageText.trim()
       };
 
@@ -256,7 +260,7 @@ export const useChatStomp = () => {
       setError('Failed to send message');
       return false;
     }
-  }, [chatRoomId]);
+  }, []);
 
   // Mark messages as read
   const markAsRead = useCallback(async () => {

@@ -64,6 +64,16 @@ const Transactions = () => {
     { code: 'BNB', name: 'Binance Coin', icon: '🔶' }
   ]
 
+  // Helper: get flag URL or emoji for a currency code
+  const getCurrencyFlag = (code) => {
+    if (!code) return null
+    const fiat = currency.find(c => c.currencyName === code.toUpperCase())
+    if (fiat) return { type: 'img', src: fiat.flag }
+    const crypto = cryptoCurrencies.find(c => c.code === code.toUpperCase())
+    if (crypto) return { type: 'emoji', icon: crypto.icon }
+    return null
+  }
+
   const [isMyTransCurOpen, setIsMyTransCurOpen] = useState(false)
   const [isOtheTransCurOpen, setIsOtheTransCurOpen] = useState(false)
 
@@ -86,6 +96,7 @@ const Transactions = () => {
   const [exchangeRate, setExchangeRate] = useState(null)
   const [isLoadingRate, setIsLoadingRate] = useState(false)
   const isSwapping = useRef(false)
+  const editingField = useRef(null)
 
   // Fee configuration
   const DEFAULT_TRANSFER_FEE = 10
@@ -160,6 +171,7 @@ const Transactions = () => {
   // Update receive amount when send amount changes - WITH FEE CALCULATION
   useEffect(() => {
     if (isSwapping.current) return
+    if (editingField.current === 'receive') return
     if (exchangeRate && sendAmount) {
       const amount = parseFloat(sendAmount.replace(/\s/g, ''))
       if (!isNaN(amount) && amount > 0) {
@@ -173,6 +185,24 @@ const Transactions = () => {
       }
     }
   }, [sendAmount, exchangeRate])
+
+  // Reverse: update send amount when receive amount changes
+  useEffect(() => {
+    if (isSwapping.current) return
+    if (editingField.current !== 'receive') return
+    if (exchangeRate && receiveAmount) {
+      const received = parseFloat(receiveAmount.replace(/[,\s]/g, ''))
+      if (!isNaN(received) && received > 0) {
+        const adjustedRate = exchangeRate.rate * (1 - (DEFAULT_EXCHANGE_RATE_FEE || 0) / 100)
+        const transferMultiplier = 1 - (DEFAULT_TRANSFER_FEE || 0) / 100
+        if (adjustedRate > 0 && transferMultiplier > 0) {
+          const computedSend = received / (adjustedRate * transferMultiplier)
+          const rounded = Math.round(computedSend * 100) / 100
+          setSendAmount(rounded.toString())
+        }
+      }
+    }
+  }, [receiveAmount, exchangeRate])
 
   const handleRegoffer = () => {
     localStorage.setItem("regoffer", "hide");
@@ -199,6 +229,7 @@ const Transactions = () => {
                 type="text"
                 value={sendAmount}
                 onChange={(e) => {
+                  editingField.current = 'send'
                   let val = e.target.value
                   val = val.replace(/[^0-9.]/g, '')
                   val = val.replace(/^0+(?=\d)/, '')
@@ -263,8 +294,8 @@ const Transactions = () => {
               setOtherTransCur(tempCur)
               // Clear crypto selection when swapping
               setSelectedCrypto(null)
-              // Reset flag after state updates
-              setTimeout(() => { isSwapping.current = false }, 100)
+              // Reset flags after state updates
+              setTimeout(() => { isSwapping.current = false; editingField.current = null }, 100)
             }}>
               <ArrowLeftRight/>
             </button>
@@ -276,7 +307,20 @@ const Transactions = () => {
               <input
                 type="text"
                 value={receiveAmount}
-                readOnly
+                onChange={(e) => {
+                  editingField.current = 'receive'
+                  let val = e.target.value
+                  val = val.replace(/[^0-9.]/g, '')
+                  val = val.replace(/^0+(?=\d)/, '')
+                  const parts = val.split('.')
+                  if (parts.length > 2) {
+                    val = parts[0] + '.' + parts.slice(1).join('')
+                  }
+                  if (parts.length === 2 && parts[1].length > 2) {
+                    val = parts[0] + '.' + parts[1].slice(0, 2)
+                  }
+                  setReceiveAmount(val || '0')
+                }}
               />
             </div>
             <div className="currTransDropdown">
@@ -432,17 +476,33 @@ const Transactions = () => {
       <>
                     <tr key={index} className='transaction-list-rowD' onClick={() => navigate(`transaction/${transaction.id}`)}>
                       <td className='transaction-list-name'>
-                        <div>
-                          <img src={`/images/transicon${theme}.png`} alt="icon" />
+                        <div className="transaction-currency-icons">
+                          {(() => {
+                            const fromFlag = getCurrencyFlag(transaction.currency)
+                            const toFlag = getCurrencyFlag(transaction.currencyInOther)
+                            return <>
+                              {fromFlag?.type === 'img'
+                                ? <img src={fromFlag.src} alt={transaction.currency} className="transaction-flag-main" />
+                                : <span className="transaction-flag-main transaction-flag-emoji">{fromFlag?.icon || '?'}</span>
+                              }
+                              {toFlag?.type === 'img'
+                                ? <img src={toFlag.src} alt={transaction.currencyInOther} className="transaction-flag-sub" />
+                                : <span className="transaction-flag-sub transaction-flag-emoji">{toFlag?.icon || '?'}</span>
+                              }
+                            </>
+                          })()}
                         </div>
                         <div>
                           <h4>
-                            {transaction.type === "send" ? transaction.receiverName : transaction.sanderName}
+                            {(transaction.type === "send" ? transaction.receiverName : transaction.sanderName)
+                              || transaction.receiverName
+                              || transaction.sanderName
+                              || t('transferBtn') || 'Перевод'}
                           </h4>
                           <p>
                             {transaction.receiverCardNumber
                               ? `${toCardResolved} ${transaction.receiverCardNumber.slice(-4)}`
-                              : transaction.currencyInOther
+                              : `${transaction.currency} → ${transaction.currencyInOther}`
                             }
                           </p>
                         </div>
@@ -474,17 +534,33 @@ const Transactions = () => {
                     </tr>
                     <tr key={`M${index}`} className='transaction-list-rowM' onClick={() => navigate(`transaction/${transaction.id}`)}>
                       <td className='transaction-list-name'>
-                        <div>
-                          <img src={`/images/transicon${theme}.png`} alt="icon" />
+                        <div className="transaction-currency-icons">
+                          {(() => {
+                            const fromFlag = getCurrencyFlag(transaction.currency)
+                            const toFlag = getCurrencyFlag(transaction.currencyInOther)
+                            return <>
+                              {fromFlag?.type === 'img'
+                                ? <img src={fromFlag.src} alt={transaction.currency} className="transaction-flag-main" />
+                                : <span className="transaction-flag-main transaction-flag-emoji">{fromFlag?.icon || '?'}</span>
+                              }
+                              {toFlag?.type === 'img'
+                                ? <img src={toFlag.src} alt={transaction.currencyInOther} className="transaction-flag-sub" />
+                                : <span className="transaction-flag-sub transaction-flag-emoji">{toFlag?.icon || '?'}</span>
+                              }
+                            </>
+                          })()}
                         </div>
                         <div>
                           <h4>
-                            {transaction.type === "send" ? transaction.receiverName : transaction.sanderName}
+                            {(transaction.type === "send" ? transaction.receiverName : transaction.sanderName)
+                              || transaction.receiverName
+                              || transaction.sanderName
+                              || t('transferBtn') || 'Перевод'}
                           </h4>
                           <p>
                             {transaction.receiverCardNumber
                               ? `${toCardResolved} ${transaction.receiverCardNumber.slice(-4)}`
-                              : transaction.currencyInOther
+                              : `${transaction.currency} → ${transaction.currencyInOther}`
                             }
                           </p>
                         </div>

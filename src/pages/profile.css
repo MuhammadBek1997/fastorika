@@ -95,6 +95,25 @@
 .profile-info-left { flex: 1; }
 .profile-info-right { flex: 1; }
 
+/* Consistent spacing between label-input field groups */
+.profile-info-left .date-input-label,
+.profile-info-right .date-input-label {
+  margin-top: 16px;
+  margin-bottom: 6px;
+}
+.profile-info-left .date-input-label:first-child,
+.profile-info-right .date-input-label:first-child {
+  margin-top: 0;
+}
+.profile-info-right .date-input-wrapper {
+  margin-top: 16px;
+  margin-bottom: 0;
+}
+.profile-info-right .date-input-wrapper .date-input-label {
+  margin-top: 0;
+  margin-bottom: 6px;
+}
+
 .country-dropdown { position: relative; }
 .country-select-btn {
   width: 100%;
@@ -160,6 +179,7 @@
   align-items: center;
   padding: 0 !important;
   gap: 0;
+  margin: 6px 0;
 }
 
 .phone-country-wrapper {
@@ -174,8 +194,9 @@
   border: none;
   background: transparent;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
   font-family: inherit;
+  font-weight: 400;
   color: var(--text-primary);
   border-right: 1px solid var(--border-light, #e5e7eb);
 }
@@ -258,8 +279,9 @@
   border: none;
   outline: none;
   padding: 1rem;
-  font-size: 14px;
+  font-size: 16px;
   font-family: inherit;
+  font-weight: 400;
   background: transparent;
   color: var(--text-primary);
 }

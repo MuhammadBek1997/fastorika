@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import './currency.css'
 import { useNavigate, useLocation } from "react-router-dom"
 import { useGlobalContext } from "../Context"
-import { CreditCard, User, Phone, ArrowLeft, Share2, CheckCircle, XCircle, Wallet, Lock } from "lucide-react"
+import { CreditCard, User, Phone, ArrowLeft, Share2, CheckCircle, XCircle, Wallet, Lock, ChevronDown } from "lucide-react"
 import UnRegCopyModal from "./UnRegCopyModal"
 import { findClientByFastorikaId } from "../api"
 
@@ -499,61 +499,34 @@ const UnRegCardNum = () => {
                                         {foundUser.cards && foundUser.cards.length > 0 && (
                                             <div className="user-cards" style={{ marginTop: '0.75rem' }}>
                                                 <label className="field-label" style={{ marginBottom: '0.5rem', display: 'block' }}>
-                                                    {t('selectRecipientCard') || 'Select recipient card'}
+                                                    {t('selectRecipientCard') || 'Выберите карту получателя'}
                                                 </label>
                                                 <div style={{ position: 'relative' }}>
                                                     <div
+                                                        className="recipient-card-select"
                                                         onClick={() => setIsCardDropdownOpen(!isCardDropdownOpen)}
-                                                        style={{
-                                                            padding: '0.75rem',
-                                                            border: '2px solid #00D26A',
-                                                            borderRadius: '8px',
-                                                            cursor: 'pointer',
-                                                            background: 'rgba(0, 210, 106, 0.1)',
-                                                            display: 'flex',
-                                                            justifyContent: 'space-between',
-                                                            alignItems: 'center'
-                                                        }}
                                                     >
-                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                                        <div className="recipient-card-select-info">
                                                             <CreditCard size={18} />
                                                             <span>•••• {selectedCard?.cardNumber?.slice(-4) || '----'}</span>
                                                         </div>
-                                                        <div/>
+                                                        <ChevronDown size={16} className={`chevron-icon ${isCardDropdownOpen ? 'open' : ''}`} />
                                                     </div>
                                                     {isCardDropdownOpen && (
-                                                        <div style={{
-                                                            position: 'absolute',
-                                                            top: '100%',
-                                                            left: 0,
-                                                            right: 0,
-                                                            background: 'var(--bg-light, #fff)',
-                                                            border: '1px solid var(--border-light, #e5e7eb)',
-                                                            borderRadius: '8px',
-                                                            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                                                            zIndex: 100,
-                                                            marginTop: '4px',
-                                                            maxHeight: '200px',
-                                                            overflowY: 'auto'
-                                                        }}>
+                                                        <div className="recipient-card-dropdown">
                                                             {foundUser.cards.map((card) => (
                                                                 <div
                                                                     key={card.cardId}
+                                                                    className={`recipient-card-option ${selectedCard?.cardId === card.cardId ? 'active' : ''}`}
                                                                     onClick={() => {
                                                                         setSelectedCard(card)
                                                                         setIsCardDropdownOpen(false)
                                                                     }}
-                                                                    style={{
-                                                                        padding: '0.75rem',
-                                                                        cursor: 'pointer',
-                                                                        borderBottom: '1px solid var(--border-light, #e5e7eb)',
-                                                                        background: selectedCard?.cardId === card.cardId ? 'rgba(0, 210, 106, 0.1)' : 'transparent'
-                                                                    }}
                                                                 >
-                                                                    <div style={{ fontWeight: 500 }}>
+                                                                    <div className="recipient-card-option-number">
                                                                         •••• {card.cardNumber?.slice(-4)}
                                                                     </div>
-                                                                    <div style={{ fontSize: '0.85rem', opacity: 0.7 }}>
+                                                                    <div className="recipient-card-option-bank">
                                                                         {card.bankName}
                                                                     </div>
                                                                 </div>

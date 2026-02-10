@@ -48,8 +48,24 @@
   font-family: inherit;
 }
 
-#dark .registration-cont-form input { background-color: var(--bg-body-dark); }
-#light .registration-cont-form input { background-color: var(--bg-body-light); }
+#dark .registration-cont-form input { background-color: var(--bg-body-dark) !important; color: var(--text-dark) !important; -webkit-text-fill-color: var(--text-dark); }
+#light .registration-cont-form input { background-color: var(--bg-body-light) !important; color: var(--text-light) !important; -webkit-text-fill-color: var(--text-light); }
+
+#dark .registration-cont-form input:-webkit-autofill,
+#dark .registration-cont-form input:-webkit-autofill:hover,
+#dark .registration-cont-form input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 30px var(--bg-body-dark) inset !important;
+    -webkit-text-fill-color: var(--text-dark) !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+#light .registration-cont-form input:-webkit-autofill,
+#light .registration-cont-form input:-webkit-autofill:hover,
+#light .registration-cont-form input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 30px var(--bg-body-light) inset !important;
+    -webkit-text-fill-color: var(--text-light) !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
 
 .registration-cont-form-psw {
   width: 100%;
@@ -133,6 +149,22 @@
   font-family: inherit;
   color: var(--text-primary);
 }
+
+.phone-code-input {
+  width: 55px !important;
+  flex: none !important;
+  border: none !important;
+  border-right: 1px solid rgba(128, 128, 128, 0.2) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  padding: 0.8rem 0.25rem 0.8rem 0.5rem !important;
+  margin: 0 !important;
+  font-size: 0.8rem;
+  font-family: inherit;
+  outline: none;
+}
+#dark .phone-code-input { color: #fff !important; -webkit-text-fill-color: #fff; }
+#light .phone-code-input { color: #000 !important; -webkit-text-fill-color: #000; }
 
 #dark .phone-input-container input { color: #fff; }
 #dark .phone-dropdown-item { color: #fff; }

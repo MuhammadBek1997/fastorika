@@ -642,7 +642,7 @@ let mockUsers = [
       const transformedTransactions = (Array.isArray(dataArray) ? dataArray : []).map(tx => {
         // Parse createdAt into date and time
         const createdDate = tx.createdAt ? new Date(tx.createdAt) : new Date()
-        const dateStr = createdDate.toISOString().split('T')[0]
+        const dateStr = `${String(createdDate.getDate()).padStart(2, '0')}.${String(createdDate.getMonth() + 1).padStart(2, '0')}.${createdDate.getFullYear()}`
         const timeStr = createdDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
 
         // Keep backend status as-is (TO_PAY, PROCESSING, DELIVERED, REJECTED, SUPPORT)
@@ -709,7 +709,7 @@ let mockUsers = [
 
       // Parse createdAt into date and time
       const createdDate = tx.createdAt ? new Date(tx.createdAt) : new Date()
-      const dateStr = createdDate.toISOString().split('T')[0]
+      const dateStr = `${String(createdDate.getDate()).padStart(2, '0')}.${String(createdDate.getMonth() + 1).padStart(2, '0')}.${createdDate.getFullYear()}`
       const timeStr = createdDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
 
       // Map backend status to UI status

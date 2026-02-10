@@ -745,3 +745,121 @@
 #dark .cur-phone-input {
   color: var(--text-dark);
 }
+
+/* Recipient Card Select Dropdown */
+.recipient-card-select {
+  padding: 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#light .recipient-card-select {
+  background: var(--bg-light);
+  color: var(--text-light);
+  border: 1px solid var(--border-light, #e5e7eb);
+}
+
+#dark .recipient-card-select {
+  background: var(--bg-dark);
+  color: var(--text-dark);
+  border: 1px solid var(--border-dark, #374151);
+}
+
+.recipient-card-select-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.recipient-card-select svg.chevron-icon {
+  opacity: 0.6;
+  transition: transform 0.2s;
+}
+
+.recipient-card-select svg.chevron-icon.open {
+  transform: rotate(180deg);
+}
+
+.recipient-card-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  margin-top: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+#light .recipient-card-dropdown {
+  background: var(--bg-light);
+  border: 1px solid var(--border-light, #e5e7eb);
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+#dark .recipient-card-dropdown {
+  background: var(--bg-dark);
+  border: 1px solid var(--border-dark, #374151);
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.recipient-card-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.recipient-card-dropdown::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#light .recipient-card-dropdown::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+}
+
+#dark .recipient-card-dropdown::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+
+.recipient-card-option {
+  padding: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+#light .recipient-card-option {
+  color: var(--text-light);
+  border-bottom: 1px solid var(--border-light, #e5e7eb);
+}
+
+#dark .recipient-card-option {
+  color: var(--text-dark);
+  border-bottom: 1px solid var(--border-dark, #374151);
+}
+
+.recipient-card-option:hover {
+  background: rgba(0, 210, 106, 0.1);
+}
+
+.recipient-card-option.active {
+  background: rgba(0, 210, 106, 0.12);
+}
+
+.recipient-card-option:last-child {
+  border-bottom: none;
+}
+
+.recipient-card-option-number {
+  font-weight: 500;
+}
+
+.recipient-card-option-bank {
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
