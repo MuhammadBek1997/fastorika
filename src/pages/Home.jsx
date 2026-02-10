@@ -57,6 +57,7 @@ const Home = () => {
   const [feeCalculation, setFeeCalculation] = useState(null)
   const [isFeeExpanded, setIsFeeExpanded] = useState(false)
   const isSwapping = useRef(false)
+  const lastEdited = useRef('send') // 'send' yoki 'receive' — qaysi input oxirgi o'zgartirilgan
 
   // Crypto state
   const cryptoCurrencies = [
@@ -93,12 +94,22 @@ const Home = () => {
         const rateData = await getExchangeRate(myCur.currencyName, otherCur.currencyName)
         setExchangeRate(rateData)
 
-        // Auto-calculate receive amount when rate is fetched (skip during swap)
-        if (sendAmount && !isSwapping.current) {
-          const amount = parseFloat(sendAmount.replace(/\s/g, ''))
-          if (!isNaN(amount)) {
-            const converted = amount * rateData.rate
-            setReceiveAmount(converted.toLocaleString('en-US', { maximumFractionDigits: 2 }))
+        // Auto-calculate when rate is fetched (skip during swap)
+        if (!isSwapping.current) {
+          if (lastEdited.current === 'receive' && receiveAmount) {
+            const received = parseFloat(receiveAmount.replace(/\s/g, ''))
+            if (!isNaN(received) && received > 0) {
+              const adjustedRate = rateData.rate * (1 - DEFAULT_EXCHANGE_RATE_FEE / 100)
+              const transferMultiplier = 1 - DEFAULT_TRANSFER_FEE / 100
+              const computedSend = received / (adjustedRate * transferMultiplier)
+              setSendAmount(Math.round(computedSend * 100) / 100 + '')
+            }
+          } else if (sendAmount) {
+            const amount = parseFloat(sendAmount.replace(/\s/g, ''))
+            if (!isNaN(amount) && amount > 0) {
+              const calculation = calculateTransactionFees(amount, DEFAULT_TRANSFER_FEE, DEFAULT_EXCHANGE_RATE_FEE, rateData.rate)
+              setReceiveAmount(calculation.amountReceived.toLocaleString('en-US', { maximumFractionDigits: 2 }))
+            }
           }
         }
       } catch (error) {
@@ -114,11 +125,11 @@ const Home = () => {
 
   // Update receive amount when send amount changes - WITH FEE CALCULATION
   useEffect(() => {
-    if (isSwapping.current) return // Skip recalculation during swap
+    if (isSwapping.current) return
+    if (lastEdited.current !== 'send') return
     if (exchangeRate && sendAmount) {
       const amount = parseFloat(sendAmount.replace(/\s/g, ''))
       if (!isNaN(amount) && amount > 0) {
-        // Calculate with fees
         const calculation = calculateTransactionFees(
           amount,
           DEFAULT_TRANSFER_FEE,
@@ -130,6 +141,31 @@ const Home = () => {
       }
     }
   }, [sendAmount, exchangeRate])
+
+  // Teskari hisoblash: receive → send
+  useEffect(() => {
+    if (isSwapping.current) return
+    if (lastEdited.current !== 'receive') return
+    if (exchangeRate && receiveAmount) {
+      const received = parseFloat(receiveAmount.replace(/\s/g, ''))
+      if (!isNaN(received) && received > 0) {
+        // amountReceived = amountSent * (1 - transferFee/100) * rate * (1 - exchangeFee/100)
+        const adjustedRate = exchangeRate.rate * (1 - DEFAULT_EXCHANGE_RATE_FEE / 100)
+        const transferMultiplier = 1 - DEFAULT_TRANSFER_FEE / 100
+        const computedSend = received / (adjustedRate * transferMultiplier)
+        const rounded = Math.round(computedSend * 100) / 100
+        setSendAmount(rounded.toLocaleString('en-US', { maximumFractionDigits: 2 }))
+        // Fee hisoblash (send summasidan)
+        const calculation = calculateTransactionFees(
+          rounded,
+          DEFAULT_TRANSFER_FEE,
+          DEFAULT_EXCHANGE_RATE_FEE,
+          exchangeRate.rate
+        )
+        setFeeCalculation(calculation)
+      }
+    }
+  }, [receiveAmount, exchangeRate])
 
 
 
@@ -181,6 +217,7 @@ const Home = () => {
                   type="text"
                   value={sendAmount}
                   onChange={(e) => {
+                    lastEdited.current = 'send'
                     let val = e.target.value
                     val = val.replace(/[^0-9.]/g, '')
                     val = val.replace(/^0+(?=\d)/, '')
@@ -257,6 +294,7 @@ const Home = () => {
                   type="text"
                   value={receiveAmount}
                   onChange={(e) => {
+                    lastEdited.current = 'receive'
                     let val = e.target.value
                     val = val.replace(/[^0-9.]/g, '')
                     val = val.replace(/^0+(?=\d)/, '')
