@@ -84,30 +84,35 @@ export const useChatStomp = () => {
       const userData = userResponse?.data || userResponse;
       setUserId(userData.id);
 
-      // Load chat history
-      const chatResponse = await apiCall('chat/my?page=0&size=100');
-      const chatData = chatResponse?.data;
+      // Load chat history (chatroom yo'q bo'lsa xato emas — bo'sh qoladi)
+      try {
+        const chatResponse = await apiCall('chat/my?page=0&size=100');
+        const chatData = chatResponse?.data;
 
-      if (chatData && chatData.content && chatData.content.length > 0) {
-        // Extract chatRoomId from first message
-        const roomId = chatData.content[0].chatRoomId;
-        setChatRoomId(roomId);
-        chatRoomIdRef.current = roomId;
+        if (chatData && chatData.content && chatData.content.length > 0) {
+          // Extract chatRoomId from first message
+          const roomId = chatData.content[0].chatRoomId;
+          setChatRoomId(roomId);
+          chatRoomIdRef.current = roomId;
 
-        // Transform messages
-        const transformedMessages = chatData.content.map(msg => ({
-          id: msg.id,
-          chatRoomId: msg.chatRoomId,
-          senderId: msg.senderId,
-          senderFullName: msg.senderFullName,
-          senderType: msg.senderId === userData.id ? 'user' : 'admin',
-          content: msg.messageText,
-          messageText: msg.messageText,
-          createdAt: msg.createdAt,
-          isRead: msg.isRead
-        }));
+          // Transform messages
+          const transformedMessages = chatData.content.map(msg => ({
+            id: msg.id,
+            chatRoomId: msg.chatRoomId,
+            senderId: msg.senderId,
+            senderFullName: msg.senderFullName,
+            senderType: msg.senderId === userData.id ? 'user' : 'admin',
+            content: msg.messageText,
+            messageText: msg.messageText,
+            createdAt: msg.createdAt,
+            isRead: msg.isRead
+          }));
 
-        setMessages(transformedMessages);
+          setMessages(transformedMessages);
+        }
+      } catch (chatErr) {
+        // Chatroom hali yo'q — birinchi xabar yuborilganda yaratiladi
+        console.log('No chat room yet, will be created on first message');
       }
 
       return userData;

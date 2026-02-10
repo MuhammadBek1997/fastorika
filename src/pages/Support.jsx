@@ -69,10 +69,10 @@ const Support = () => {
 
   // Status message
   const getStatusMessage = () => {
-    if (isLoading) return t('connecting') || 'Подключение...'
-    if (error) return error
-    if (!isConnected) return t('disconnected') || 'Отключено'
-    if (displayMessages.length === 0) return t('startChat') || 'Начните общение'
+    if (isLoading) return { text: t('connecting') || 'Подключение...', type: 'info' }
+    if (error) return { text: error, type: 'error' }
+    if (!isConnected) return { text: t('disconnected') || 'Отключено', type: 'info' }
+    if (displayMessages.length === 0) return { text: t('startChat') || 'Напишите ваше первое сообщение...', type: 'placeholder' }
     return null
   }
 
@@ -90,10 +90,12 @@ const Support = () => {
           {statusMessage && (
             <div style={{
               textAlign: 'center',
-              padding: '20px',
-              color: error ? '#ef4444' : '#888'
+              padding: '40px 20px',
+              color: statusMessage.type === 'error' ? '#ef4444' : 'rgba(136, 136, 136, 0.5)',
+              fontSize: statusMessage.type === 'placeholder' ? '0.95rem' : '0.85rem',
+              fontWeight: statusMessage.type === 'placeholder' ? '400' : '500'
             }}>
-              {statusMessage}
+              {statusMessage.text}
             </div>
           )}
 
