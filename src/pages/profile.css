@@ -198,10 +198,6 @@
   font-family: inherit;
   font-weight: 400;
   color: var(--text-primary);
-  border-right: 1px solid var(--border-light, #e5e7eb);
-}
-[data-theme="dark"] .phone-country-btn {
-  border-right-color: var(--border-dark, #374151);
 }
 
 .phone-country-btn svg {

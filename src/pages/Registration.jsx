@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './registration.css'
 import { Link, useLocation } from 'react-router-dom'
 import { useGlobalContext } from '../Context'
@@ -34,20 +34,31 @@ const Registration = () => {
 
     // Country codes for phone input
     const countryCodes = [
-        { code: '+998', country: 'UZ', flag: '🇺🇿', name: 'Uzbekistan' },
-        { code: '+7', country: 'RU', flag: '🇷🇺', name: 'Russia' },
-        { code: '+7', country: 'KZ', flag: '🇰🇿', name: 'Kazakhstan' },
-        { code: '+1', country: 'US', flag: '🇺🇸', name: 'USA' },
-        { code: '+44', country: 'GB', flag: '🇬🇧', name: 'UK' },
-        { code: '+49', country: 'DE', flag: '🇩🇪', name: 'Germany' },
-        { code: '+90', country: 'TR', flag: '🇹🇷', name: 'Turkey' },
-        { code: '+82', country: 'KR', flag: '🇰🇷', name: 'South Korea' },
-        { code: '+86', country: 'CN', flag: '🇨🇳', name: 'China' },
-        { code: '+971', country: 'AE', flag: '🇦🇪', name: 'UAE' }
+        { code: '+998', country: 'UZ', name: 'Uzbekistan' },
+        { code: '+7', country: 'RU', name: 'Russia' },
+        { code: '+7', country: 'KZ', name: 'Kazakhstan' },
+        { code: '+992', country: 'TJ', name: 'Tajikistan' },
+        { code: '+993', country: 'TM', name: 'Turkmenistan' },
+        { code: '+996', country: 'KG', name: 'Kyrgyzstan' },
+        { code: '+1', country: 'US', name: 'USA' },
+        { code: '+44', country: 'GB', name: 'UK' },
+        { code: '+49', country: 'DE', name: 'Germany' },
+        { code: '+90', country: 'TR', name: 'Turkey' },
+        { code: '+82', country: 'KR', name: 'South Korea' },
+        { code: '+86', country: 'CN', name: 'China' },
+        { code: '+971', country: 'AE', name: 'UAE' }
     ]
     const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false)
     const [selectedCountry, setSelectedCountry] = useState(countryCodes[0])
     const [phoneCode, setPhoneCode] = useState('+998')
+    const phoneCodeRef = useRef(null)
+    const phoneNumberRef = useRef(null)
+
+    // +7: Kazakhstan raqamlari 6 yoki 7 bilan boshlanadi, qolganlari Russia
+    const detectCountryFor7 = (firstDigit) => {
+        if (firstDigit === '6' || firstDigit === '7') return countryCodes.find(c => c.country === 'KZ')
+        return countryCodes.find(c => c.country === 'RU')
+    }
 
     // Google/Apple dan kelgan ma'lumotlarni olish
     useEffect(() => {
@@ -276,23 +287,51 @@ const Registration = () => {
 
                         {/* Editable Code Input */}
                         <input
+                            ref={phoneCodeRef}
                             type="text"
                             className="phone-code-input"
                             value={phoneCode}
                             onChange={(e) => {
-                                const val = e.target.value.replace(/[^0-9+]/g, '')
-                                setPhoneCode(val)
-                                const match = countryCodes.find(c => c.code === val)
-                                if (match) setSelectedCountry(match)
+                                const raw = e.target.value.replace(/[^0-9+]/g, '')
+                                const match = countryCodes.find(c => raw.startsWith(c.code) && raw.length > c.code.length)
+                                if (match) {
+                                    const extra = raw.slice(match.code.length)
+                                    setPhoneCode(match.code)
+                                    if (match.code === '+7') {
+                                        setSelectedCountry(detectCountryFor7(extra[0]))
+                                    } else {
+                                        setSelectedCountry(match)
+                                    }
+                                    setPhone(prev => extra + prev)
+                                    phoneNumberRef.current?.focus()
+                                } else {
+                                    setPhoneCode(raw)
+                                    const exactMatch = countryCodes.find(c => c.code === raw)
+                                    if (exactMatch) setSelectedCountry(exactMatch)
+                                }
                             }}
                             placeholder="+998"
                         />
 
                         {/* Phone Number Input */}
                         <input
+                            ref={phoneNumberRef}
                             type="tel"
                             value={phone}
-                            onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
+                            onChange={(e) => {
+                                const val = e.target.value.replace(/\D/g, '')
+                                setPhone(val)
+                                if (phoneCode === '+7' && val.length > 0) {
+                                    setSelectedCountry(detectCountryFor7(val[0]))
+                                }
+                            }}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Backspace' && phone === '') {
+                                    e.preventDefault()
+                                    phoneCodeRef.current?.focus()
+                                    setPhoneCode(prev => prev.slice(0, -1))
+                                }
+                            }}
                             placeholder="90 123 45 67"
                         />
                     </div>
