@@ -2000,7 +2000,7 @@ nav.scrolled {
    RESPONSIVE FIXES
    ============================================ */
 
-@media(max-width){
+@media(max-width:855px){
     nav {
         padding: 0.5rem;
         position: fixed !important;
@@ -2482,6 +2482,7 @@ nav.scrolled {
     .about-hero {
         flex-direction: column;
         padding-top: 1rem;
+        margin-top: 4rem;
         gap: 1rem;
     }
 
