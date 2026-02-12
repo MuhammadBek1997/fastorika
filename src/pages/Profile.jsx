@@ -3,7 +3,7 @@ import './profile.css'
 import { useGlobalContext } from "../Context"
 import { apiFetch } from "../api"
 import { Calendar, ChevronLeft, ChevronRight, CheckCircle, Clock, XCircle, Loader2 } from "lucide-react"
-import { toast } from 'react-toastify'
+import { useNotification } from '../components/Notification'
 
 const Profile = () => {
   const {
@@ -32,6 +32,7 @@ const Profile = () => {
     kycStatus,
     kycLoading
   } = useGlobalContext()
+  const notify = useNotification()
 
   // Country codes for phone input
   const countryCodes = [
@@ -509,7 +510,7 @@ const Profile = () => {
             disabled={!hasChanges}
             onClick={async () => {
               const token = sessionStorage.getItem('token')
-              if (!token) { setProfileStatus({ type: 'error', message: t('toast.authRequired') }); toast.error(t('toast.authRequired')); return; }
+              if (!token) { setProfileStatus({ type: 'error', message: t('notify.authRequired') }); notify.error(t('notify.authRequired')); return; }
               if (!hasChanges) { return; }
               try {
                 // Resolve country id/name for backend
@@ -545,12 +546,12 @@ const Profile = () => {
                 })
                 const responseData = await res.json()
                 if (!res.ok) {
-                  setProfileStatus({ type: 'error', message: responseData.message || t('toast.profile.saveError') })
-                  toast.error(responseData.message || t('toast.profile.saveError'))
+                  setProfileStatus({ type: 'error', message: responseData.message || t('notify.profile.saveError') })
+                  notify.error(responseData.message || t('notify.profile.saveError'))
                   return
                 }
-                setProfileStatus({ type: 'success', message: t('toast.profile.saveSuccess') })
-                toast.success(t('toast.profile.saveSuccess'))
+                setProfileStatus({ type: 'success', message: t('notify.profile.saveSuccess') })
+                notify.success(t('notify.profile.saveSuccess'))
                 // update baseline after successful save
                 setProfileInitial({
                   email: profileEmail,
@@ -562,8 +563,8 @@ const Profile = () => {
                   countryId: resolvedCountryId ?? null
                 })
               } catch (e) {
-                setProfileStatus({ type: 'error', message: t('toast.networkError') })
-                toast.error(t('toast.networkError'))
+                setProfileStatus({ type: 'error', message: t('notify.networkError') })
+                notify.error(t('notify.networkError'))
               }
             }}
           >

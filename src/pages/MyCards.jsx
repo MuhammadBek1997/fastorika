@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react'
 import { useGlobalContext } from '../Context'
 import AddCardModal from './AddCardModal'
 import { deleteCard } from '../api'
-import { toast } from 'react-toastify'
+import { useNotification } from '../components/Notification'
 import { CreditCard } from 'lucide-react'
 import './mycards.css'
 
 const MyCards = () => {
   let { t, theme, addCardModal, setAddCardModal, user, cardsRefreshKey, cards, cardsLoading, loadUserCards, refreshCards } = useGlobalContext()
+  const notify = useNotification()
   const [openMenuId, setOpenMenuId] = useState(null)
   const [deleting, setDeleting] = useState(null)
 
@@ -28,11 +29,11 @@ const MyCards = () => {
       setDeleting(cardId)
       setOpenMenuId(null)
       await deleteCard(cardId)
-      toast.success(t('myCards.cardDeleted') || 'Card deleted successfully')
+      notify.success(t('myCards.cardDeleted') || 'Card deleted successfully')
       refreshCards()
     } catch (err) {
       console.error('Delete card error:', err)
-      toast.error(err?.message || t('toast.networkError'))
+      notify.error(err?.message || t('notify.networkError'))
     } finally {
       setDeleting(null)
     }

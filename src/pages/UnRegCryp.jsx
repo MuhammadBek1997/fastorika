@@ -2,10 +2,11 @@ import { useState, useEffect } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import { useGlobalContext } from "../Context"
 import { ChevronLeft, Wallet, AlertCircle, ChevronRight, ArrowRight } from "lucide-react"
-import { toast } from "react-toastify"
+import { useNotification } from '../components/Notification'
 
 const UnRegCryp = () => {
   const { t, theme } = useGlobalContext()
+  const notify = useNotification()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -90,12 +91,12 @@ const UnRegCryp = () => {
 
   const handleContinue = () => {
     if (!walletAddress || !termsChecked) {
-      toast.error(t("fillAllFields") || "Please fill all required fields")
+      notify.error(t("fillAllFields") || "Please fill all required fields")
       return
     }
 
     if (!validateWalletAddress(walletAddress)) {
-      toast.error(t("invalidWalletAddress") || "Invalid wallet address for selected network")
+      notify.error(t("invalidWalletAddress") || "Invalid wallet address for selected network")
       return
     }
 

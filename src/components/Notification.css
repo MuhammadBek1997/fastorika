@@ -1,0 +1,138 @@
+.notification-container {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  pointer-events: none;
+  max-width: 380px;
+  width: calc(100% - 2rem);
+}
+
+.notification {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-radius: 0.75rem;
+  pointer-events: auto;
+  animation: notification-slide-in 0.3s ease forwards;
+  backdrop-filter: blur(8px);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.notification-exit {
+  animation: notification-slide-out 0.3s ease forwards;
+}
+
+/* Success */
+.notification-success {
+  background-color: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+}
+
+.notification-success .notification-icon {
+  color: #00D796;
+}
+
+/* Error */
+.notification-error {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+}
+
+.notification-error .notification-icon {
+  color: #ef4444;
+}
+
+/* Info */
+.notification-info {
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1e40af;
+}
+
+.notification-info .notification-icon {
+  color: #3b82f6;
+}
+
+/* Dark mode */
+#dark .notification-success {
+  background-color: #0d2818;
+  border-color: #065f46;
+  color: #a7f3d0;
+}
+
+#dark .notification-error {
+  background-color: #2d1111;
+  border-color: #991b1b;
+  color: #fecaca;
+}
+
+#dark .notification-info {
+  background-color: #0f1a2e;
+  border-color: #1e40af;
+  color: #bfdbfe;
+}
+
+/* Icon */
+.notification-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* Message */
+.notification-message {
+  flex: 1;
+  word-break: break-word;
+}
+
+/* Close button */
+.notification-close {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 0.375rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.notification-close:hover {
+  opacity: 1;
+}
+
+/* Animations */
+@keyframes notification-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes notification-slide-out {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}

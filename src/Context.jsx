@@ -5,12 +5,14 @@ import { useNavigate } from 'react-router-dom';
 import { signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider, appleProvider } from './firebaseConfig';
 import { authenticateWithGoogle, authenticateWithApple } from './services/authService';
+import { useNotification } from './components/Notification';
 
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const notify = useNotification();
 
   // Auth State
   const [user, setUser] = useState(null);
@@ -120,10 +122,7 @@ export const AppProvider = ({ children }) => {
       setCards(Array.isArray(data) ? data : [])
     } catch (err) {
       console.warn('Load cards error:', err?.message || err)
-      try {
-        const { toast } = await import('react-toastify')
-        toast.error(t('toast.networkError'))
-      } catch {}
+      notify.error(t('toast.networkError'))
     } finally {
       setCardsLoading(false)
     }
@@ -340,10 +339,7 @@ export const AppProvider = ({ children }) => {
     try {
       // Simple validation
       if (!email || !password) {
-        try {
-          const { toast } = await import('react-toastify');
-          toast.error(t('fillAllFields') || 'Email va parol kiriting');
-        } catch { }
+        notify.error(t('fillAllFields') || 'Email va parol kiriting');
         return false;
       }
 
@@ -378,10 +374,7 @@ export const AppProvider = ({ children }) => {
           return false;
         }
 
-        try {
-          const { toast } = await import('react-toastify');
-          toast.error(errorMessage);
-        } catch { }
+        notify.error(errorMessage);
         return false;
       }
 
@@ -390,10 +383,7 @@ export const AppProvider = ({ children }) => {
       const { accessToken, refreshToken, tokenType, user: userData } = data;
 
       if (!accessToken) {
-        try {
-          const { toast } = await import('react-toastify');
-          toast.error('Token not received from server');
-        } catch { }
+        notify.error('Token not received from server');
         return false;
       }
 
@@ -412,19 +402,13 @@ export const AppProvider = ({ children }) => {
       setUser(userData);
       setIsAuthenticated(true);
 
-      try {
-        const { toast } = await import('react-toastify');
-        toast.success(t('loginSuccess') || 'Muvaffaqiyatli kirdingiz');
-      } catch { }
+      notify.success(t('loginSuccess') || 'Muvaffaqiyatli kirdingiz');
 
       navigate('/transactions');
       return true;
     } catch (err) {
       console.error('Login error:', err);
-      try {
-        const { toast } = await import('react-toastify');
-        toast.error(t('loginError') || 'Kirishda xatolik');
-      } catch { }
+      notify.error(t('loginError') || 'Kirishda xatolik');
       return false;
     }
   };
@@ -433,11 +417,9 @@ export const AppProvider = ({ children }) => {
 // Google Login Handler - OAuth via intermediate backend
 const handleGoogleLogin = async (googleResponse) => {
   try {
-    const { toast } = await import('react-toastify');
-
     // If no response provided, show info message
     if (!googleResponse || !googleResponse.credential) {
-      toast.info('Google login funksiyasi ishlamoqda');
+      notify.info('Google login funksiyasi ishlamoqda');
       return false;
     }
 
@@ -445,7 +427,7 @@ const handleGoogleLogin = async (googleResponse) => {
     const result = await authenticateWithGoogle(googleResponse);
 
     if (!result.success) {
-      toast.error(result.error || 'Google login xatolik');
+      notify.error(result.error || 'Google login xatolik');
       return false;
     }
 
@@ -461,15 +443,12 @@ const handleGoogleLogin = async (googleResponse) => {
     localStorage.setItem('logged', 'true');
     localStorage.setItem('user', JSON.stringify(result.user));
 
-    toast.success(t('loginSuccess') || 'Google orqali muvaffaqiyatli kirdingiz');
+    notify.success(t('loginSuccess') || 'Google orqali muvaffaqiyatli kirdingiz');
     navigate('/transactions');
     return true;
   } catch (error) {
     console.error('Google login error:', error);
-    try {
-      const { toast } = await import('react-toastify');
-      toast.error(t('loginError') || 'Google login xatolik');
-    } catch { }
+    notify.error(t('loginError') || 'Google login xatolik');
     return false;
   }
 };
@@ -477,11 +456,9 @@ const handleGoogleLogin = async (googleResponse) => {
 // Apple Login Handler - OAuth via intermediate backend
 const handleAppleLogin = async (appleResponse) => {
   try {
-    const { toast } = await import('react-toastify');
-
     // If no response provided, show info message
     if (!appleResponse || (!appleResponse.authorization && !appleResponse.id_token)) {
-      toast.info('Apple login funksiyasi ishlamoqda');
+      notify.info('Apple login funksiyasi ishlamoqda');
       return false;
     }
 
@@ -489,7 +466,7 @@ const handleAppleLogin = async (appleResponse) => {
     const result = await authenticateWithApple(appleResponse);
 
     if (!result.success) {
-      toast.error(result.error || 'Apple login xatolik');
+      notify.error(result.error || 'Apple login xatolik');
       return false;
     }
 
@@ -505,15 +482,12 @@ const handleAppleLogin = async (appleResponse) => {
     localStorage.setItem('logged', 'true');
     localStorage.setItem('user', JSON.stringify(result.user));
 
-    toast.success(t('loginSuccess') || 'Apple orqali muvaffaqiyatli kirdingiz');
+    notify.success(t('loginSuccess') || 'Apple orqali muvaffaqiyatli kirdingiz');
     navigate('/transactions');
     return true;
   } catch (error) {
     console.error('Apple login error:', error);
-    try {
-      const { toast } = await import('react-toastify');
-      toast.error(t('loginError') || 'Apple login xatolik');
-    } catch { }
+    notify.error(t('loginError') || 'Apple login xatolik');
     return false;
   }
 };
@@ -529,10 +503,7 @@ const handleAppleLogin = async (appleResponse) => {
     setIsAuthenticated(false);
     navigate('/');
 
-    try {
-      const { toast } = import('react-toastify');
-      toast.then(module => module.toast.info(t('toast.logout.success')));
-    } catch { }
+    notify.info(t('toast.logout.success'))
   };
 
   // FAQ Data - using i18n translations

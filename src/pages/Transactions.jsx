@@ -117,24 +117,29 @@ const Transactions = () => {
       if (!lastAdShown || now - parseInt(lastAdShown) >= 3600000) { // 1 hour = 3600000ms
         setShowAdBanner(true)
         setCountdown(5)
+        setCanCloseAd(false)
         localStorage.setItem("lastAdShown", now.toString())
-
-        // Countdown timer
-        const interval = setInterval(() => {
-          setCountdown(prev => {
-            if (prev <= 1) {
-              clearInterval(interval)
-              setCanCloseAd(true)
-              return 0
-            }
-            return prev - 1
-          })
-        }, 1000)
-
-        return () => clearInterval(interval)
       }
     }
   }, [regoffer])
+
+  // Countdown timer - separate effect to avoid StrictMode cleanup issues
+  useEffect(() => {
+    if (!showAdBanner || canCloseAd) return
+
+    const interval = setInterval(() => {
+      setCountdown(prev => {
+        if (prev <= 1) {
+          clearInterval(interval)
+          setCanCloseAd(true)
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [showAdBanner, canCloseAd])
 
   // Fetch exchange rate when currencies change
   useEffect(() => {

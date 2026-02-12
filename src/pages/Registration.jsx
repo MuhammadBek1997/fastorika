@@ -3,7 +3,7 @@ import './registration.css'
 import { Link, useLocation } from 'react-router-dom'
 import { useGlobalContext } from '../Context'
 import { apiFetch } from '../api'
-import { toast } from 'react-toastify'
+import { useNotification } from '../components/Notification'
 import VerifyModal from './VerifyModal'
 
 const Registration = () => {
@@ -20,7 +20,8 @@ const Registration = () => {
         handleGoogleLogin,
         handleAppleLogin
     } = useGlobalContext()
-    
+    const notify = useNotification()
+
     const location = useLocation()
     const [themeRegOpen, setThemeRegOpen] = useState(false)
     const [langRegOpen, setLangRegOpen] = useState(false)
@@ -384,17 +385,17 @@ const Registration = () => {
                         try {
                             // Validate password
                             if (!checkPsw("length") || !checkPsw("case") || !checkPsw("match")) {
-                                toast.error(t('passwordRequirements') || 'Parol talablariga javob bermaydi')
+                                notify.error(t('passwordRequirements') || 'Parol talablariga javob bermaydi')
                                 return
                             }
 
                             if (!mail) {
-                                toast.error(t('enterEmail') || 'Email kiriting')
+                                notify.error(t('enterEmail') || 'Email kiriting')
                                 return
                             }
 
                             if (!phone) {
-                                toast.error(t('enterPhone') || 'Telefon raqamini kiriting')
+                                notify.error(t('enterPhone') || 'Telefon raqamini kiriting')
                                 return
                             }
 
@@ -416,24 +417,24 @@ const Registration = () => {
 
                             if (!response.ok) {
                                 const errorMessage = responseData?.message || responseData?.error || 'Registration failed'
-                                toast.error(errorMessage)
+                                notify.error(errorMessage)
                                 return
                             }
 
                             // Backend returns: { success: true, data: {}, timestamp: ... }
                             // Data might be empty object, that's okay - user is created and verification email sent
                             if (responseData.success) {
-                                toast.success(t('registrationSuccess') || 'Ro\'yxatdan o\'tdingiz! Email tasdiqlash kerak.')
+                                notify.success(t('registrationSuccess') || 'Ro\'yxatdan o\'tdingiz! Email tasdiqlash kerak.')
 
                                 // Show verification modal
                                 setShowVerifyModal(true)
                             } else {
                                 console.error('Registration failed: success is false')
-                                toast.error(responseData?.message || 'Registration failed')
+                                notify.error(responseData?.message || 'Registration failed')
                             }
                         } catch (err) {
                             console.error('Registration error:', err)
-                            toast.error(t('registrationError') || 'Ro\'yxatdan o\'tishda xatolik')
+                            notify.error(t('registrationError') || 'Ro\'yxatdan o\'tishda xatolik')
                         }
                     }}>
                         {t("reg-clientStep1")}

@@ -3,11 +3,12 @@ import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useGlobalContext } from '../Context'
 import { createTransaction, initVoletPayment } from '../api'
-import { toast } from 'react-toastify'
+import { useNotification } from '../components/Notification'
 import '../styles/unreginstruction.css'
 
 const UnRegInstruction = () => {
   const { t, transferData: contextTransferData } = useGlobalContext()
+  const notify = useNotification()
   const navigate = useNavigate()
   const location = useLocation()
   const [isChecked, setIsChecked] = useState(false)
@@ -256,20 +257,20 @@ const UnRegInstruction = () => {
                   hasCurrency,
                   hasOrderId
                 })
-                toast.error(t('paymentConfigError') || 'Payment configuration error. Please contact support.')
+                notify.error(t('paymentConfigError') || 'Payment configuration error. Please contact support.')
                 // Still clear pending and go to transactions since transaction was created
                 localStorage.removeItem('pending')
                 navigate('/transactions')
               } else {
                 // No payment URL - just complete without redirect
                 localStorage.removeItem('pending')
-                toast.success(t('transactionCreated') || 'Transaction created successfully!')
+                notify.success(t('transactionCreated') || 'Transaction created successfully!')
                 navigate('/transactions')
               }
 
             } catch (error) {
               console.error('Transaction error:', error)
-              toast.error(error.message || t('transactionError') || 'Failed to create transaction')
+              notify.error(error.message || t('transactionError') || 'Failed to create transaction')
             } finally {
               setIsLoading(false)
             }

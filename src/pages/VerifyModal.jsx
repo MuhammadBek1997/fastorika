@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react"
 import { useGlobalContext } from "../Context"
 import { apiFetch } from "../api"
-import { toast } from "react-toastify"
+import { useNotification } from '../components/Notification'
 import { X, Clock, Mail } from "lucide-react"
 
 const VerifyModal = ({ email, onClose, initialCode }) => {
   const { t, theme } = useGlobalContext()
+  const notify = useNotification()
   const [digits, setDigits] = useState(['', '', '', '', '', ''])
   const inputsRef = useRef([])
   const [submitting, setSubmitting] = useState(false)
@@ -94,17 +95,17 @@ const VerifyModal = ({ email, onClose, initialCode }) => {
       })
       if (!res.ok) throw new Error('Verify error')
       const data = await res.json().catch(() => ({}))
-      toast.success(t('toast.verification.success'))
+      notify.success(t('notify.verification.success'))
       onClose?.(data)
     } catch (err) {
-      setError(t('toast.verification.error'))
+      setError(t('notify.verification.error'))
       setSubmitting(false)
     }
   }
 
   const handleVerify = async () => {
     if (code.length !== 6) {
-      setError(t('toast.verification.error'))
+      setError(t('notify.verification.error'))
       return
     }
     await doVerify(code)
@@ -149,13 +150,13 @@ const VerifyModal = ({ email, onClose, initialCode }) => {
         body: JSON.stringify({ email })
       })
       if (!res.ok) throw new Error('Resend error')
-      toast.success(t('toast.verification.resent') || 'Code resent')
+      notify.success(t('notify.verification.resent') || 'Code resent')
       setCountdown(600) // 10 daqiqa
       setCanResend(false)
       setDigits(['','','','','',''])
       inputsRef.current[0]?.focus()
     } catch (err) {
-      toast.error(t('toast.verification.error') || 'Resend failed')
+      notify.error(t('notify.verification.error') || 'Resend failed')
     } finally {
       setResending(false)
     }

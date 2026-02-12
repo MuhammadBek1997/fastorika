@@ -2,10 +2,11 @@ import { useState, useEffect } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import { useGlobalContext } from "../Context"
 import { ChevronLeft, Building2, AlertCircle, ChevronRight, ArrowRight } from "lucide-react"
-import { toast } from "react-toastify"
+import { useNotification } from '../components/Notification'
 
 const UnRegBankTransfer = () => {
   const { t, theme } = useGlobalContext()
+  const notify = useNotification()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -85,17 +86,17 @@ const UnRegBankTransfer = () => {
 
   const handleContinue = () => {
     if (!accountNumber || !swiftCode || !accountHolderName || !termsChecked) {
-      toast.error(t("fillAllFields") || "Please fill all required fields")
+      notify.error(t("fillAllFields") || "Please fill all required fields")
       return
     }
 
     if (!validateSwiftCode(swiftCode)) {
-      toast.error(t("invalidSwiftCode") || "Invalid SWIFT/BIC code format")
+      notify.error(t("invalidSwiftCode") || "Invalid SWIFT/BIC code format")
       return
     }
 
     if (!validateAccountNumber(accountNumber)) {
-      toast.error(t("invalidAccountNumber") || "Invalid account number format")
+      notify.error(t("invalidAccountNumber") || "Invalid account number format")
       return
     }
 

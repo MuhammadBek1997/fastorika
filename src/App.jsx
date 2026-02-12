@@ -2,8 +2,6 @@ import { Route, Routes, Navigate, useSearchParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import './App.css';
 import { useGlobalContext } from './Context';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import VerifyModal from './pages/VerifyModal';
 
 // Layouts
@@ -133,11 +131,6 @@ function App() {
 
   return (
     <div id={theme}>
-      <ToastContainer 
-        position="top-right" 
-        autoClose={3000} 
-        theme={theme === 'dark' ? 'dark' : 'light'} 
-      />
       <Routes>
         {/* Pending Transfer Flow - Highest Priority */}
         {hasPendingTransfer && (

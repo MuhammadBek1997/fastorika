@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react"
 import { useGlobalContext } from "../Context"
 import { apiFetch, addCard } from "../api"
-import { toast } from 'react-toastify'
+import { useNotification } from '../components/Notification'
 import './addcardmodal.css'
 
 
 const AddCardModal = () => {
     const { t, theme, setAddCardModal, user, refreshCards } = useGlobalContext()
+    const notify = useNotification()
 
     const [countryOpen, setCountryOpen] = useState(false)
     const [countriesList, setCountriesList] = useState([])
@@ -211,55 +212,55 @@ const AddCardModal = () => {
         switch (countryType) {
             case 'uzbekistan':
                 if (!cardNumber || !expirationMonth || !expirationYear || !cardHolderName || !bankName) {
-                    toast.error(t('addCardModal.errors.fillRequired') || 'Please fill all required fields')
+                    notify.error(t('addCardModal.errors.fillRequired') || 'Please fill all required fields')
                     return false
                 }
                 if (cardNumber.replace(/\s/g, '').length !== 16) {
-                    toast.error(t('addCardModal.errors.invalidCard') || 'Invalid card number')
+                    notify.error(t('addCardModal.errors.invalidCard') || 'Invalid card number')
                     return false
                 }
                 if (isUzInternational && cvv.length !== 3) {
-                    toast.error(t('addCardModal.errors.invalidCvv') || 'CVC/CVV must be 3 digits')
+                    notify.error(t('addCardModal.errors.invalidCvv') || 'CVC/CVV must be 3 digits')
                     return false
                 }
                 const monthNum = parseInt(expirationMonth, 10)
                 if (monthNum < 1 || monthNum > 12) {
-                    toast.error(t('addCardModal.errors.invalidMonth') || 'Invalid month (1-12)')
+                    notify.error(t('addCardModal.errors.invalidMonth') || 'Invalid month (1-12)')
                     return false
                 }
                 const yearNum = parseInt(expirationYear, 10)
                 const currentYear = new Date().getFullYear()
                 if (yearNum < currentYear || yearNum > currentYear + 20) {
-                    toast.error(t('addCardModal.errors.invalidYear') || 'Invalid year')
+                    notify.error(t('addCardModal.errors.invalidYear') || 'Invalid year')
                     return false
                 }
                 break
 
             case 'india':
                 if (!upiId || !ifscCode || !accountNumber || !cardHolderName) {
-                    toast.error(t('addCardModal.errors.fillRequired') || 'Please fill all required fields')
+                    notify.error(t('addCardModal.errors.fillRequired') || 'Please fill all required fields')
                     return false
                 }
                 break
 
             case 'china':
                 if (!fullName || !phoneNumber || !postalCode || !bankName || !cnAccountNumber) {
-                    toast.error(t('addCardModal.errors.fillRequired') || 'Please fill all required fields')
+                    notify.error(t('addCardModal.errors.fillRequired') || 'Please fill all required fields')
                     return false
                 }
                 break
 
             default: // EU/CIS/Other
                 if (!euCardNumber || !expirationDate || !cardHolderName) {
-                    toast.error(t('addCardModal.errors.fillRequired') || 'Please fill all required fields')
+                    notify.error(t('addCardModal.errors.fillRequired') || 'Please fill all required fields')
                     return false
                 }
                 if (euCardNumber.replace(/\s/g, '').length !== 16) {
-                    toast.error(t('addCardModal.errors.invalidCard') || 'Invalid card number')
+                    notify.error(t('addCardModal.errors.invalidCard') || 'Invalid card number')
                     return false
                 }
                 if (isEuInternational && cvv.length !== 3) {
-                    toast.error(t('addCardModal.errors.invalidCvv') || 'CVC/CVV must be 3 digits')
+                    notify.error(t('addCardModal.errors.invalidCvv') || 'CVC/CVV must be 3 digits')
                     return false
                 }
                 break
@@ -270,7 +271,7 @@ const AddCardModal = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         if (!country) {
-            toast.error(t('addCardModal.errors.selectCountry') || 'Please select a country')
+            notify.error(t('addCardModal.errors.selectCountry') || 'Please select a country')
             return
         }
 
@@ -281,12 +282,12 @@ const AddCardModal = () => {
         try {
             setSubmitting(true)
             await addCard(payload)
-            toast.success(t('myCards.cardAdded') || 'Card added successfully')
+            notify.success(t('myCards.cardAdded') || 'Card added successfully')
             setAddCardModal(false)
             refreshCards()
         } catch (err) {
             console.warn('Add card error:', err?.message || err)
-            toast.error(err?.message || t('toast.networkError'))
+            notify.error(err?.message || t('notify.networkError'))
         } finally {
             setSubmitting(false)
         }
