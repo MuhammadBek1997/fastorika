@@ -17,6 +17,7 @@ import AboutUs from './pages/AboutUs';
 // Auth Pages
 import Login from './pages/Login';
 import Registration from './pages/Registration';
+import ForgotPassword from './pages/ForgotPassword';
 
 // Private Pages
 import Transactions from './pages/Transactions';
@@ -178,6 +179,14 @@ function App() {
               element={
                 <PublicRoute>
                   <AuthLayout><Registration /></AuthLayout>
+                </PublicRoute>
+              }
+            />
+            <Route
+              path="/forgot-password"
+              element={
+                <PublicRoute>
+                  <AuthLayout><ForgotPassword /></AuthLayout>
                 </PublicRoute>
               }
             />

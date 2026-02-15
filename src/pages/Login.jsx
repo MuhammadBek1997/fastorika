@@ -147,7 +147,7 @@ const Login = () => {
                 <button className='login-clientBtn' onClick={()=>handleLogin(email, password)}>
                     {t("login")}
                 </button>
-                <Link to={'/registration'} style={{ color: "#348BDC"}}>
+                <Link to={'/forgot-password'} style={{ color: "#348BDC"}}>
                     {t("login-clientForgot")}
                 </Link>
                 {/* <div className='login-or'>

@@ -374,7 +374,15 @@ export const AppProvider = ({ children }) => {
           return false;
         }
 
-        notify.error(errorMessage);
+        // Map backend error messages to translated versions
+        const errorMap = {
+          'Invalid email or password': t('loginErrors.invalidCredentials'),
+          'Bad credentials': t('loginErrors.invalidCredentials'),
+          'User not found': t('loginErrors.userNotFound'),
+          'Account is locked': t('loginErrors.accountLocked'),
+          'Account is disabled': t('loginErrors.accountDisabled'),
+        };
+        notify.error(errorMap[errorMessage] || errorMessage);
         return false;
       }
 

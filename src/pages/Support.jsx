@@ -1,17 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react'
 import './settings.css'
 import { useGlobalContext } from '../Context'
-import { ArrowUp, Paperclip } from 'lucide-react'
+import { ArrowUp, Paperclip, X, Image } from 'lucide-react'
 import useChatStomp from '../hooks/useChatStomp'
 
 const Support = () => {
   const { t, user } = useGlobalContext()
   const [message, setMessage] = useState('')
+  const [imagePreview, setImagePreview] = useState(null)
+  const [imageFile, setImageFile] = useState(null)
+  const [sending, setSending] = useState(false)
   const messagesEndRef = useRef(null)
+  const fileInputRef = useRef(null)
 
   const {
     messages,
     sendMessage,
+    sendImage,
     isConnected,
     isLoading,
     error,
@@ -33,12 +38,44 @@ const Support = () => {
   }, [isConnected, messages.length, markAsRead])
 
   const handleSendMessage = async () => {
+    if (sending) return
+
+    if (imageFile) {
+      setSending(true)
+      const success = await sendImage(imageFile)
+      if (success) {
+        setImageFile(null)
+        setImagePreview(null)
+      }
+      setSending(false)
+      return
+    }
+
     if (message.trim()) {
       const success = await sendMessage(message)
       if (success) {
         setMessage('')
       }
     }
+  }
+
+  const handleFileSelect = (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    if (!file.type.startsWith('image/')) return
+    if (file.size > 5 * 1024 * 1024) return // 5MB limit
+
+    setImageFile(file)
+    const reader = new FileReader()
+    reader.onload = (ev) => setImagePreview(ev.target.result)
+    reader.readAsDataURL(file)
+    e.target.value = ''
+  }
+
+  const clearImagePreview = () => {
+    setImageFile(null)
+    setImagePreview(null)
   }
 
   // Group messages by date
@@ -59,6 +96,8 @@ const Support = () => {
         sender: msg.senderType,
         text: msg.content || msg.messageText,
         time: new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        imageData: msg.imageData || null,
+        contentType: msg.contentType || 'TEXT',
         fileName: msg.fileUrl ? msg.fileUrl.split('/').pop() : null
       })
     })
@@ -108,6 +147,12 @@ const Support = () => {
               ) : (
                 <div className={`support-message ${msg.sender === 'user' ? 'support-message-user' : 'support-message-admin'}`}>
                   <div className="support-message-content">
+                    {msg.contentType === 'IMAGE' && msg.imageData && (
+                      <div className="support-message-image">
+                        <img src={msg.imageData} alt="" onClick={() => window.open(msg.imageData, '_blank')} />
+                      </div>
+                    )}
+
                     {msg.text && <div className="support-message-text">{msg.text}</div>}
 
                     {msg.fileName && (
@@ -133,24 +178,40 @@ const Support = () => {
           <div ref={messagesEndRef} />
         </div>
 
+        {imagePreview && (
+          <div className="support-image-preview">
+            <img src={imagePreview} alt="Preview" />
+            <button className="support-image-preview-close" onClick={clearImagePreview}>
+              <X size={16} />
+            </button>
+          </div>
+        )}
+
         <div className='support-input-cont'>
-          <button className="support-attach-btn" disabled={!isConnected}>
+          <button className="support-attach-btn" disabled={!isConnected} onClick={() => fileInputRef.current?.click()}>
             <Paperclip size={20} />
           </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            style={{ display: 'none' }}
+            onChange={handleFileSelect}
+          />
           <input
             type="text"
             placeholder={t('supportPage.inputPlaceholder') || 'Введите сообщение...'}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-            disabled={!isConnected}
+            disabled={!isConnected || !!imageFile}
           />
           <button
             onClick={handleSendMessage}
             className="support-send-btn"
-            disabled={!isConnected || !message.trim()}
+            disabled={!isConnected || (!message.trim() && !imageFile) || sending}
           >
-            <ArrowUp size={20} />
+            {imageFile ? <Image size={20} /> : <ArrowUp size={20} />}
           </button>
         </div>
       </div>

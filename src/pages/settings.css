@@ -247,7 +247,7 @@
   flex: 1;
   background-color: #F3F4F6;
   border: none;
-  padding: 0.75rem 1rem;
+  padding: 0.65rem;
   border-radius: 1.5rem;
   font-size: 0.9rem;
   outline: none;
@@ -283,6 +283,51 @@
 
 .support-send-btn:hover {
   background-color: #059669;
+}
+
+/* Chat image styles */
+.support-message-image {
+  max-width: 240px;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  cursor: pointer;
+  margin-bottom: 0.25rem;
+}
+
+.support-message-image img {
+  width: 100%;
+  display: block;
+  border-radius: 0.5rem;
+}
+
+.support-image-preview {
+  position: relative;
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: flex-end;
+}
+
+.support-image-preview img {
+  max-height: 120px;
+  max-width: 160px;
+  border-radius: 0.5rem;
+  object-fit: cover;
+}
+
+.support-image-preview-close {
+  position: absolute;
+  top: 0.25rem;
+  left: 145px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 
 @media (max-width: 768px) {

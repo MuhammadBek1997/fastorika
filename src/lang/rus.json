@@ -97,6 +97,30 @@
   "login-clientForm1": "Введите ваш Email",
   "login-clientForm2": "Введите пароль",
   "login-clientForgot": "Забыли пароль?",
+  "forgot": {
+    "title": "Восстановление пароля",
+    "desc": "Введите email, привязанный к вашему аккаунту",
+    "sendCode": "Отправить код",
+    "sending": "Отправка...",
+    "codeSent": "Код отправлен на вашу почту",
+    "sendError": "Ошибка отправки кода",
+    "backToLogin": "Вернуться к входу",
+    "resetTitle": "Сброс пароля",
+    "codeDesc": "Код отправлен на",
+    "enterCode": "Введите код",
+    "enterEmail": "Введите Email",
+    "resendIn": "Повторная отправка через",
+    "resendCode": "Отправить код повторно",
+    "newPassword": "Новый пароль",
+    "confirmPassword": "Подтвердите пароль",
+    "invalidCode": "Введите 6-значный код",
+    "passwordsMismatch": "Пароли не совпадают",
+    "resetBtn": "Сбросить пароль",
+    "resetError": "Ошибка сброса пароля",
+    "resetSuccess": "Пароль успешно изменён",
+    "successTitle": "Пароль изменён!",
+    "successDesc": "Ваш пароль успешно изменён. Теперь вы можете войти с новым паролем."
+  },
   "login-clientwithG": "Войти через Google",
   "login-clientwithA": "Войти через Apple",
   "or": "или",
@@ -372,6 +396,9 @@
     "profile": {
       "saveSuccess": "Профиль сохранён",
       "saveError": "Ошибка сохранения"
+    },
+    "logout": {
+      "success": "Вы вышли из аккаунта"
     }
   },
   "methods": {
@@ -446,6 +473,12 @@
   "processing": "В обработке",
   "loginSuccess": "Вход выполнен успешно",
   "loginError": "Ошибка входа",
+  "loginErrors": {
+    "invalidCredentials": "Неверный email или пароль",
+    "userNotFound": "Пользователь не найден",
+    "accountLocked": "Аккаунт заблокирован",
+    "accountDisabled": "Аккаунт отключён"
+  },
   "passwordRequirements": "Пароль не соответствует требованиям",
   "enterEmail": "Введите email",
   "enterPhone": "Введите номер телефона",

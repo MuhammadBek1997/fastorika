@@ -27,7 +27,8 @@ export const apiFetch = async (path, options = {}) => {
   const response = await fetch(`${API_BASE}${path}`, mergedOptions);
 
   // Check if token expired (401 Unauthorized)
-  if (response.status === 401) {
+  // Skip redirect for auth endpoints (login, register, forgot-password, reset-password)
+  if (response.status === 401 && !path.startsWith('auth/')) {
     // Clear authentication data
     if (typeof window !== 'undefined') {
       sessionStorage.removeItem('token');

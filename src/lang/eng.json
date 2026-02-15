@@ -97,6 +97,30 @@
   "login-clientForm1": "Enter your Email",
   "login-clientForm2": "Enter password",
   "login-clientForgot": "Forgot password?",
+  "forgot": {
+    "title": "Password Recovery",
+    "desc": "Enter the email linked to your account",
+    "sendCode": "Send Code",
+    "sending": "Sending...",
+    "codeSent": "Code sent to your email",
+    "sendError": "Failed to send code",
+    "backToLogin": "Back to login",
+    "resetTitle": "Reset Password",
+    "codeDesc": "Code sent to",
+    "enterCode": "Enter code",
+    "enterEmail": "Enter your Email",
+    "resendIn": "Resend available in",
+    "resendCode": "Resend code",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm password",
+    "invalidCode": "Enter 6-digit code",
+    "passwordsMismatch": "Passwords do not match",
+    "resetBtn": "Reset Password",
+    "resetError": "Password reset failed",
+    "resetSuccess": "Password changed successfully",
+    "successTitle": "Password Changed!",
+    "successDesc": "Your password has been changed successfully. You can now log in with your new password."
+  },
   "login-clientwithG": "Log in with Google",
   "login-clientwithA": "Log in with Apple",
   "or": "or",
@@ -372,6 +396,9 @@
     "profile": {
       "saveSuccess": "Profile saved",
       "saveError": "Save error"
+    },
+    "logout": {
+      "success": "You have been logged out"
     }
   },
   "methods": {
@@ -446,6 +473,12 @@
   "processing": "Processing",
   "loginSuccess": "Logged in successfully",
   "loginError": "Login failed",
+  "loginErrors": {
+    "invalidCredentials": "Invalid email or password",
+    "userNotFound": "User not found",
+    "accountLocked": "Account is locked",
+    "accountDisabled": "Account is disabled"
+  },
   "passwordRequirements": "Password does not meet requirements",
   "enterEmail": "Enter email",
   "enterPhone": "Enter phone number",

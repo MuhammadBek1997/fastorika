@@ -2078,7 +2078,7 @@ nav.scrolled {
     .dropdowns-cont {
         position: absolute;
         top: 0.5rem;
-        right: 1rem;
+        right: 2rem;
         left: auto !important;
         gap: 0.5rem;
         flex-wrap: nowrap;
@@ -5533,6 +5533,7 @@ nav.scrolled {
 
     .webClient {
         flex-direction: column;
+        padding-top: 2rem;
     }
 
     #dark .sidebar {
