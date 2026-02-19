@@ -391,7 +391,7 @@ export const AppProvider = ({ children }) => {
       const { accessToken, refreshToken, tokenType, user: userData } = data;
 
       if (!accessToken) {
-        notify.error('Token not received from server');
+        notify.error(t('toast.tokenError') || 'Token not received from server');
         return false;
       }
 
@@ -427,7 +427,7 @@ const handleGoogleLogin = async (googleResponse) => {
   try {
     // If no response provided, show info message
     if (!googleResponse || !googleResponse.credential) {
-      notify.info('Google login funksiyasi ishlamoqda');
+      notify.info(t('toast.googleLogin.info') || 'Google login in progress');
       return false;
     }
 
@@ -435,7 +435,7 @@ const handleGoogleLogin = async (googleResponse) => {
     const result = await authenticateWithGoogle(googleResponse);
 
     if (!result.success) {
-      notify.error(result.error || 'Google login xatolik');
+      notify.error(result.error || t('toast.googleLogin.error') || 'Google login error');
       return false;
     }
 
@@ -466,7 +466,7 @@ const handleAppleLogin = async (appleResponse) => {
   try {
     // If no response provided, show info message
     if (!appleResponse || (!appleResponse.authorization && !appleResponse.id_token)) {
-      notify.info('Apple login funksiyasi ishlamoqda');
+      notify.info(t('toast.appleLogin.info') || 'Apple login in progress');
       return false;
     }
 
@@ -474,7 +474,7 @@ const handleAppleLogin = async (appleResponse) => {
     const result = await authenticateWithApple(appleResponse);
 
     if (!result.success) {
-      notify.error(result.error || 'Apple login xatolik');
+      notify.error(result.error || t('toast.appleLogin.error') || 'Apple login error');
       return false;
     }
 

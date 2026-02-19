@@ -244,6 +244,7 @@
     "errors": {
       "fillRequired": "Please fill all required fields",
       "invalidCard": "Invalid card number",
+      "invalidCvv": "CVC/CVV must be 3 digits",
       "invalidMonth": "Invalid month (1-12)",
       "invalidYear": "Invalid year",
       "selectCountry": "Please select a country"
@@ -400,6 +401,28 @@
     },
     "logout": {
       "success": "You have been logged out"
+    },
+    "tokenError": "Authentication token not received",
+    "resendError": "Resend failed",
+    "googleLogin": {
+      "info": "Google login in progress",
+      "error": "Google login error"
+    },
+    "appleLogin": {
+      "info": "Apple login in progress",
+      "error": "Apple login error"
+    }
+  },
+  "notify": {
+    "networkError": "Network error",
+    "authRequired": "Please log in first",
+    "verification": {
+      "resent": "Code resent",
+      "error": "Resend failed"
+    },
+    "profile": {
+      "saveSuccess": "Profile saved",
+      "saveError": "Save error"
     }
   },
   "methods": {
@@ -535,6 +558,11 @@
   "invalidAccountNumber": "Invalid account number format",
   "invalidAccountFormat": "Invalid account number format",
   "invalidSwiftFormat": "SWIFT code must be 8 or 11 characters",
+
+  "invalidWalletAddress": "Invalid wallet address for selected network",
+  "paymentConfigError": "Payment configuration error. Please contact support.",
+  "transactionCreated": "Transaction created successfully!",
+  "transactionError": "Failed to create transaction",
 
   "paymentSuccess": "Payment Successful!",
   "paymentSuccessDesc": "Your payment has been accepted. The transaction will be processed shortly.",

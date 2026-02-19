@@ -244,6 +244,7 @@
     "errors": {
       "fillRequired": "Заполните все обязательные поля",
       "invalidCard": "Неверный номер карты",
+      "invalidCvv": "CVC/CVV должен содержать 3 цифры",
       "invalidMonth": "Неверный месяц (1-12)",
       "invalidYear": "Неверный год",
       "selectCountry": "Выберите страну"
@@ -400,6 +401,28 @@
     },
     "logout": {
       "success": "Вы вышли из аккаунта"
+    },
+    "tokenError": "Токен аутентификации не получен",
+    "resendError": "Ошибка повторной отправки",
+    "googleLogin": {
+      "info": "Вход через Google выполняется",
+      "error": "Ошибка входа через Google"
+    },
+    "appleLogin": {
+      "info": "Вход через Apple выполняется",
+      "error": "Ошибка входа через Apple"
+    }
+  },
+  "notify": {
+    "networkError": "Ошибка сети",
+    "authRequired": "Пожалуйста, выполните вход",
+    "verification": {
+      "resent": "Код отправлен повторно",
+      "error": "Ошибка повторной отправки"
+    },
+    "profile": {
+      "saveSuccess": "Профиль сохранён",
+      "saveError": "Ошибка сохранения"
     }
   },
   "methods": {
@@ -535,6 +558,11 @@
   "invalidAccountNumber": "Неверный формат номера счёта",
   "invalidAccountFormat": "Неверный формат номера счёта",
   "invalidSwiftFormat": "SWIFT код должен содержать 8 или 11 символов",
+
+  "invalidWalletAddress": "Неверный адрес кошелька для выбранной сети",
+  "paymentConfigError": "Ошибка конфигурации платежа. Пожалуйста, обратитесь в поддержку.",
+  "transactionCreated": "Транзакция успешно создана!",
+  "transactionError": "Не удалось создать транзакцию",
 
   "paymentSuccess": "Оплата прошла успешно!",
   "paymentSuccessDesc": "Ваш платёж принят. Транзакция будет обработана в ближайшее время.",
