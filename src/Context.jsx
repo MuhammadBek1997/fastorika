@@ -212,7 +212,7 @@ export const AppProvider = ({ children }) => {
 
   const loadCountries = async () => {
     try {
-      const res = await apiFetch('countries', { method: 'GET' })
+      const res = await apiFetch('countries?size=1000', { method: 'GET' })
       const responseData = await res.json()
       if (!res.ok) {
         console.warn('Countries load failed:', responseData?.message)
@@ -220,11 +220,13 @@ export const AppProvider = ({ children }) => {
         return
       }
       // Backend returns: { success: true, data: [...] }
-      const dataArray = responseData?.data || responseData
-      const normalized = Array.isArray(dataArray) ? dataArray.map(c => ({
+      // or paginated: { success: true, data: { content: [...], totalElements: N } }
+      const raw = responseData?.data ?? responseData
+      const dataArray = Array.isArray(raw) ? raw : (Array.isArray(raw?.content) ? raw.content : [])
+      const normalized = dataArray.map(c => ({
         countryId: c.countryId ?? c.id ?? null,
         name: c.name ?? ''
-      })).filter(c => c.name) : []
+      })).filter(c => c.name)
       setProfileCountriesList(normalized)
     } catch (e) {
       console.warn('Countries load network error', e)
