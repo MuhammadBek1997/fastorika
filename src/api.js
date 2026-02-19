@@ -984,7 +984,7 @@ export const startKycVerification = async (userId) => {
 export const refreshKycAccessToken = async () => {
   try {
 
-    const res = await apiFetch('kyc/refresh-token', {
+    const res = await apiFetch('kyc/token', {
       method: 'GET'
     });
 
