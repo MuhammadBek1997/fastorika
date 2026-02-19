@@ -506,6 +506,8 @@
   "baseRate": "Рыночный курс",
   "yourRate": "Ваш курс",
   "feeDetails": "Детали комиссии",
+  "commissionsTitle": "Комиссии",
+  "recipientReceives": "Получатель получит",
   "receiverFullName": "Полное имя получателя",
   "recipientWallet": "Кошелёк получателя",
   "walletNameWarning": "Имя и фамилия получателя должны быть введены латинскими буквами",

@@ -506,6 +506,8 @@
   "baseRate": "Market rate",
   "yourRate": "Your rate",
   "feeDetails": "Fee details",
+  "commissionsTitle": "Commissions",
+  "recipientReceives": "Recipient will receive",
   "receiverFullName": "Recipient full name",
   "recipientWallet": "Recipient wallet",
   "walletNameWarning": "Recipient’s first and last name must be in Latin letters",

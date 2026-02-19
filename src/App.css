@@ -4952,22 +4952,10 @@ nav.scrolled {
     animation: slideUp 0.25s ease;
 }
 
-.fee-modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-}
-
-.fee-modal-header h3 {
-    margin: 0;
-    font-size: 1.15rem;
-    font-weight: 700;
-}
-
 .fee-modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
     background: none;
     border: none;
     cursor: pointer;
@@ -4984,6 +4972,19 @@ nav.scrolled {
 .fee-modal-close:hover {
     opacity: 1;
     background-color: rgba(0, 0, 0, 0.05);
+}
+
+.fee-modal-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    padding-right: 2rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.fee-modal-header h3 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
 }
 
 .fee-modal-body {
@@ -5012,6 +5013,20 @@ nav.scrolled {
 
 .fee-modal-row .fee-value.negative {
     color: #ef4444;
+}
+
+.fee-modal-section-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 0.4;
+    margin-top: 0.25rem;
+}
+
+.fee-modal-row-indent {
+    padding-left: 0.75rem;
+    border-left: 2px solid rgba(239, 68, 68, 0.3);
 }
 
 .fee-modal-divider {
@@ -5072,6 +5087,38 @@ nav.scrolled {
 
 #dark .fee-modal-result {
     background-color: rgba(0, 215, 150, 0.1);
+}
+
+.fee-modal-received {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    background-color: rgba(0, 215, 150, 0.12);
+    gap: 1rem;
+    border: 1.5px solid rgba(0, 215, 150, 0.3);
+}
+
+.fee-modal-received-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.fee-modal-received-amount {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #00D796;
+    text-align: right;
+}
+
+#dark .fee-modal-received {
+    background-color: rgba(0, 215, 150, 0.1);
+    border-color: rgba(0, 215, 150, 0.25);
+}
+
+#dark .fee-modal-section-title {
+    opacity: 0.35;
 }
 .currency-bottom {
     padding: 1rem;

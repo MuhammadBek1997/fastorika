@@ -544,68 +544,6 @@ const Home = () => {
             </div>
           </div>
           <div className='hero-right-transferBtn'>
-            {/* Adjusted exchange rate with info icon */}
-            
-
-            {/* Fee Details Modal */}
-            {isFeeModalOpen && (
-              <div className="fee-modal-overlay" onClick={() => setIsFeeModalOpen(false)}>
-                <div className="fee-modal" onClick={(e) => e.stopPropagation()}>
-                  <div className="fee-modal-header">
-                    <h3>{t("exchangeRate") || "Exchange Rate"}</h3>
-                    <button className="fee-modal-close" onClick={() => setIsFeeModalOpen(false)}>
-                      <X size={20} />
-                    </button>
-                  </div>
-
-                  <div className="fee-modal-body">
-                    {/* Base rate */}
-                    <div className="fee-modal-row">
-                      <span className="fee-label">{t("baseRate") || "Market rate"}</span>
-                      <span className="fee-value">
-                        1 {myCur.currencyName} = {exchangeRate?.rate?.toLocaleString('en-US', { maximumFractionDigits: 4 })} {otherCur.currencyName}
-                      </span>
-                    </div>
-
-                    {/* Transfer fee */}
-                    {transferFee > 0 && (
-                      <div className="fee-modal-row">
-                        <span className="fee-label">{t("fee")} ({t("transferFee") || "Transfer"})</span>
-                        <span className="fee-value negative">-{transferFee}%</span>
-                      </div>
-                    )}
-
-                    {/* Transfer fee amount */}
-                    {feeCalculation && transferFee > 0 && (
-                      <div className="fee-modal-row">
-                        <span className="fee-label">{t("feeCount") || "Fee amount"}</span>
-                        <span className="fee-value negative">
-                          -{feeCalculation.transferFeeAmount.toLocaleString('en-US', { maximumFractionDigits: 2 })} {myCur.currencyName}
-                        </span>
-                      </div>
-                    )}
-
-                    {/* Exchange rate fee */}
-                    {exchangeRateFee > 0 && (
-                      <div className="fee-modal-row">
-                        <span className="fee-label">{t("exchangeRateFee") || "Exchange rate fee"}</span>
-                        <span className="fee-value negative">-{exchangeRateFee}%</span>
-                      </div>
-                    )}
-
-                    <hr className="fee-modal-divider" />
-
-                    {/* Final adjusted rate */}
-                    <div className="fee-modal-result">
-                      <span className="fee-label">{t("yourRate") || "Your rate"}</span>
-                      <span className="fee-value">
-                        1 {myCur.currencyName} = {(feeCalculation?.adjustedExchangeRate || (exchangeRate?.rate * (1 - exchangeRateFee / 100))).toLocaleString('en-US', { maximumFractionDigits: 4 })} {otherCur.currencyName}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
 
             <button onClick={()=>{
               // Start transfer flow without wiping storage
@@ -850,6 +788,90 @@ const Home = () => {
         </div>
       </div>
     </section>
+
+    {/* Fee Details Modal — rendered at root level so position:fixed works correctly */}
+    {isFeeModalOpen && (
+      <div className="fee-modal-overlay" onClick={() => setIsFeeModalOpen(false)}>
+        <div className="fee-modal" onClick={(e) => e.stopPropagation()}>
+
+          {/* X button — absolute top-right */}
+          <button className="fee-modal-close" onClick={() => setIsFeeModalOpen(false)}>
+            <X size={20} />
+          </button>
+
+          <div className="fee-modal-header">
+            <h3>{t("exchangeRate") || "Курс обмена"}</h3>
+          </div>
+
+          <div className="fee-modal-body">
+            {/* Base rate */}
+            <div className="fee-modal-row">
+              <span className="fee-label">{t("baseRate") || "Рыночный курс"}</span>
+              <span className="fee-value">
+                1 {myCur.currencyName} = {exchangeRate?.rate?.toLocaleString('en-US', { maximumFractionDigits: 4 })} {otherCur.currencyName}
+              </span>
+            </div>
+
+            {/* Commissions section */}
+            {(transferFee > 0 || exchangeRateFee > 0) && (
+              <>
+                <div className="fee-modal-section-title">
+                  <span>{t("commissionsTitle") || "Комиссии"}</span>
+                </div>
+
+                {/* Transfer fee % */}
+                {transferFee > 0 && (
+                  <div className="fee-modal-row">
+                    <span className="fee-label">{t("fee")} ({t("transferFee") || "Перевод"})</span>
+                    <span className="fee-value negative">-{transferFee}%</span>
+                  </div>
+                )}
+
+                {/* Transfer fee amount */}
+                {feeCalculation && transferFee > 0 && (
+                  <div className="fee-modal-row fee-modal-row-indent">
+                    <span className="fee-label">{t("feeCount") || "Сумма комиссии"}</span>
+                    <span className="fee-value negative">
+                      -{feeCalculation.transferFeeAmount.toLocaleString('en-US', { maximumFractionDigits: 2 })} {myCur.currencyName}
+                    </span>
+                  </div>
+                )}
+
+                {/* Exchange rate fee */}
+                {exchangeRateFee > 0 && (
+                  <div className="fee-modal-row">
+                    <span className="fee-label">{t("exchangeRateFee") || "Комиссия по курсу"}</span>
+                    <span className="fee-value negative">-{exchangeRateFee}%</span>
+                  </div>
+                )}
+              </>
+            )}
+
+            <hr className="fee-modal-divider" />
+
+            {/* Your rate after fees */}
+            <div className="fee-modal-result">
+              <span className="fee-label">{t("yourRate") || "Ваш курс"}</span>
+              <span className="fee-value">
+                1 {myCur.currencyName} = {(feeCalculation?.adjustedExchangeRate || (exchangeRate?.rate * (1 - exchangeRateFee / 100))).toLocaleString('en-US', { maximumFractionDigits: 4 })} {otherCur.currencyName}
+              </span>
+            </div>
+
+            {/* Recipient receives */}
+            {feeCalculation && (
+              <div className="fee-modal-received">
+                <span className="fee-modal-received-label">
+                  {t("recipientReceives") || "Получатель получит"}
+                </span>
+                <span className="fee-modal-received-amount">
+                  {feeCalculation.amountReceived.toLocaleString('en-US', { maximumFractionDigits: 2 })} {otherCur.currencyName}
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    )}
     </>
   )
 }
