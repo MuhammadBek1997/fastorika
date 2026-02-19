@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react"
 import './currency.css'
 import { useNavigate, useLocation } from "react-router-dom"
 import { useGlobalContext } from "../Context"
-import { ArrowUpDown, ChevronRight, ChevronDown, CreditCard, Bitcoin, BanknoteArrowUp } from "lucide-react"
+import { ArrowUpDown, ChevronRight, ChevronDown, CreditCard, Bitcoin, BanknoteArrowUp, Info, X } from "lucide-react"
 import { getExchangeRate, calculateTransactionFees } from "../api"
 import VerificationModal from "../components/VerificationModal"
 import CancelTransactionModal from "../components/CancelTransactionModal"
@@ -87,6 +87,7 @@ const UnRegCur = () => {
     // Auth state
     const isLoggedIn = !!sessionStorage.getItem('token')
     const [isFeeExpanded, setIsFeeExpanded] = useState(false)
+    const [isFeeModalOpen, setIsFeeModalOpen] = useState(false)
     const isSwapping = useRef(false)
     const editingField = useRef(null) // 'send' or 'receive' — tracks which input the user is typing in
 
@@ -316,6 +317,7 @@ const UnRegCur = () => {
 
 
     return (
+        <>
         <div className="currency">
             <div className="currency-body">
                 <div className="currency-head">
@@ -505,6 +507,29 @@ const UnRegCur = () => {
                         </div>
                     </div>
                 </div>
+                {/* Exchange rate row with Info button */}
+                {exchangeRate && myCurrency.currencyName !== otherCurrency.currencyName && (
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: '0.5rem',
+                        padding: '0.75rem 1rem',
+                        marginTop: '0',
+                        borderRadius: '0.75rem',
+                        }}>
+                        <span style={{ fontSize: '0.9rem', opacity: 0.8 }}>
+                            1 {myCurrency.currencyName} = {(feeCalculation?.adjustedExchangeRate || (exchangeRate.rate * (1 - exchangeRateFeePercentage / 100))).toLocaleString('en-US', { maximumFractionDigits: 4 })} {otherCurrency.currencyName}
+                        </span>
+                        <span
+                            style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', opacity: 0.7 }}
+                            title={t("feeDetails") || "Fee details"}
+                            onClick={() => setIsFeeModalOpen(true)}
+                        >
+                            <Info size={16} />
+                        </span>
+                    </div>
+                )}
                 <div className="currency-payMethod">
                     <h3>
                         {t('payMethod')}
@@ -599,65 +624,7 @@ const UnRegCur = () => {
                     </div>
                 </div>
 
-                {/* Fee Accordion */}
-                <div className="fee-accordion" style={{ marginTop: '1rem' }}>
-                    <button
-                        onClick={() => setIsFeeExpanded(!isFeeExpanded)}
-                        style={{
-                            width: '100%',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            padding: '0.75rem 1rem',
-                            background: 'none',
-                            border: 'none',
-                            cursor: 'pointer',
-                            borderRadius: '0.5rem',
-                            backgroundColor: theme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)'
-                        }}
-                    >
-                        
-                        <ChevronDown
-                            size={20}
-                            style={{
-                                transform: isFeeExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
-                                transition: 'transform 0.2s',
-                                opacity: 0.6
-                            }}
-                        />
-                    </button>
-
-                    {isFeeExpanded && (
-                        <div style={{ padding: '0.5rem 0' }}>
-                            <div className='currency-fee'>
-                                <p>
-                                    {t("fee")} ({t("transferFee") || "Transfer"})
-                                </p>
-                                <h4>
-                                    {feeCalculation ? `${feeCalculation.transferFeePercentage}%` : `${transferFeePercentage}%`}
-                                </h4>
-                            </div>
-                            <div className='currency-feeCount'>
-                                <p>
-                                    {t("feeCount")}
-                                </p>
-                                <h4>
-                                    {feeCalculation ? `${feeCalculation.transferFeeAmount.toLocaleString('en-US', { maximumFractionDigits: 2 })} ${myCurrency.currencyName}` : `0 ${myCurrency.currencyName}`}
-                                </h4>
-                            </div>
-                            {feeCalculation && feeCalculation.exchangeRateFeePercentage > 0 && (
-                                <div className='currency-fee' style={{ marginTop: '0.25rem' }}>
-                                    <p>
-                                        {t("exchangeRateFee") || "Exchange Rate Fee"}
-                                    </p>
-                                    <h4>
-                                        {feeCalculation.exchangeRateFeePercentage}%
-                                    </h4>
-                                </div>
-                            )}
-                        </div>
-                    )}
-                </div>
+                
 
 
                 <button
@@ -703,6 +670,87 @@ const UnRegCur = () => {
                 />
             </div>
         </div>
+
+        {/* Fee Details Modal — at root level so position:fixed works correctly */}
+        {isFeeModalOpen && (
+            <div className="fee-modal-overlay" onClick={() => setIsFeeModalOpen(false)}>
+                <div className="fee-modal" onClick={(e) => e.stopPropagation()}>
+
+                    <button className="fee-modal-close" onClick={() => setIsFeeModalOpen(false)}>
+                        <X size={20} />
+                    </button>
+
+                    <div className="fee-modal-header">
+                        <h3>{t("exchangeRate") || "Курс обмена"}</h3>
+                    </div>
+
+                    <div className="fee-modal-body">
+                        {/* Base rate */}
+                        <div className="fee-modal-row">
+                            <span className="fee-label">{t("baseRate") || "Рыночный курс"}</span>
+                            <span className="fee-value">
+                                1 {myCurrency.currencyName} = {exchangeRate?.rate?.toLocaleString('en-US', { maximumFractionDigits: 4 })} {otherCurrency.currencyName}
+                            </span>
+                        </div>
+
+                        {/* Commissions section */}
+                        {(transferFeePercentage > 0 || exchangeRateFeePercentage > 0) && (
+                            <>
+                                <div className="fee-modal-section-title">
+                                    <span>{t("commissionsTitle") || "Комиссии"}</span>
+                                </div>
+
+                                {transferFeePercentage > 0 && (
+                                    <div className="fee-modal-row">
+                                        <span className="fee-label">{t("fee")} ({t("transferFee") || "Перевод"})</span>
+                                        <span className="fee-value negative">-{transferFeePercentage}%</span>
+                                    </div>
+                                )}
+
+                                {feeCalculation && transferFeePercentage > 0 && (
+                                    <div className="fee-modal-row fee-modal-row-indent">
+                                        <span className="fee-label">{t("feeCount") || "Сумма комиссии"}</span>
+                                        <span className="fee-value negative">
+                                            -{feeCalculation.transferFeeAmount.toLocaleString('en-US', { maximumFractionDigits: 2 })} {myCurrency.currencyName}
+                                        </span>
+                                    </div>
+                                )}
+
+                                {exchangeRateFeePercentage > 0 && (
+                                    <div className="fee-modal-row">
+                                        <span className="fee-label">{t("exchangeRateFee") || "Комиссия по курсу"}</span>
+                                        <span className="fee-value negative">-{exchangeRateFeePercentage}%</span>
+                                    </div>
+                                )}
+                            </>
+                        )}
+
+                        <hr className="fee-modal-divider" />
+
+                        {/* Your rate after fees */}
+                        <div className="fee-modal-result">
+                            <span className="fee-label">{t("yourRate") || "Ваш курс"}</span>
+                            <span className="fee-value">
+                                1 {myCurrency.currencyName} = {(feeCalculation?.adjustedExchangeRate || (exchangeRate?.rate * (1 - exchangeRateFeePercentage / 100))).toLocaleString('en-US', { maximumFractionDigits: 4 })} {otherCurrency.currencyName}
+                            </span>
+                        </div>
+
+                        {/* Recipient receives */}
+                        {feeCalculation && (
+                            <div className="fee-modal-received">
+                                <span className="fee-modal-received-label">
+                                    {t("recipientReceives") || "Получатель получит"}
+                                </span>
+                                <span className="fee-modal-received-amount">
+                                    {feeCalculation.amountReceived.toLocaleString('en-US', { maximumFractionDigits: 2 })} {otherCurrency.currencyName}
+                                </span>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+        )}
+        </>
     )
 }
 
