@@ -1,5 +1,6 @@
 import { useGlobalContext } from '../Context'
 import SEO from '../components/SEO'
+import { Link } from 'react-router-dom'
 
 const AboutUs = () => {
 
@@ -137,9 +138,11 @@ const AboutUs = () => {
         <p>
           {t("transfersecond")}
         </p>
-        <button>
-          {t("transfersend")}
-        </button>
+        <Link to="/unregcur">
+          <button>
+            {t("transfersend")}
+          </button>
+        </Link>
       </div>
     </section>
     </>

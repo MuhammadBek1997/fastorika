@@ -319,6 +319,20 @@
   color: #666;
 }
 
+/* Locked field styles */
+.date-input-field.field-locked {
+  opacity: 0.65;
+  cursor: not-allowed;
+  background: transparent;
+}
+
+.field-locked-note {
+  font-size: 0.75rem;
+  margin-top: 4px;
+  margin-bottom: 0;
+  color: #f0a500;
+}
+
 @media (max-width: 768px) {
   .profile-info-cont { flex-direction: column; }
   .profile { padding: 15px; }

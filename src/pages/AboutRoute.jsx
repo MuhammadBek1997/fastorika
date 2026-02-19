@@ -153,9 +153,11 @@ const AboutRoute = () => {
         <p>
           {t("transfersecond")}
         </p>
-        <button>
-          {t("transfersend")}
-        </button>
+        <Link to="/unregcur">
+          <button>
+            {t("transfersend")}
+          </button>
+        </Link>
       </div>
     </section>
   )

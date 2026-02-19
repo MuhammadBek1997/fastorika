@@ -1,8 +1,53 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import './settings.css'
 import { useGlobalContext } from '../Context'
 import { ArrowUp, Paperclip, X, Image } from 'lucide-react'
 import useChatStomp from '../hooks/useChatStomp'
+
+const API_BASE = (import.meta.env.VITE_API_URL || 'https://api.fastorika.com/api/').replace(/\/?$/, '/');
+
+// Component to load and display chat images with auth
+const ChatImage = ({ imageUrl }) => {
+  const imgRef = useRef(null);
+  const [blobUrl, setBlobUrl] = useState(null);
+
+  useEffect(() => {
+    if (!imageUrl) return;
+    const token = sessionStorage.getItem('token') || localStorage.getItem('token') || '';
+    const fullUrl = imageUrl.startsWith('http') ? imageUrl : API_BASE.replace(/\/api\/?$/, '') + imageUrl;
+
+    fetch(fullUrl, {
+      headers: {
+        'Accept': 'image/*',
+        'Authorization': `Bearer ${token}`
+      }
+    })
+      .then(r => r.ok ? r.blob() : null)
+      .then(blob => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          setBlobUrl(url);
+        }
+      })
+      .catch(() => {});
+
+    return () => {
+      if (blobUrl) URL.revokeObjectURL(blobUrl);
+    };
+  }, [imageUrl]);
+
+  if (!blobUrl) return <div style={{ padding: '10px', color: '#888' }}>Loading image...</div>;
+
+  return (
+    <img
+      ref={imgRef}
+      src={blobUrl}
+      alt=""
+      onClick={() => window.open(blobUrl, '_blank')}
+      style={{ maxWidth: '250px', borderRadius: '8px', cursor: 'pointer' }}
+    />
+  );
+};
 
 const Support = () => {
   const { t, user } = useGlobalContext()
@@ -96,6 +141,7 @@ const Support = () => {
         sender: msg.senderType,
         text: msg.content || msg.messageText,
         time: new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        imageUrl: msg.imageUrl || null,
         imageData: msg.imageData || null,
         contentType: msg.contentType || 'TEXT',
         fileName: msg.fileUrl ? msg.fileUrl.split('/').pop() : null
@@ -147,9 +193,13 @@ const Support = () => {
               ) : (
                 <div className={`support-message ${msg.sender === 'user' ? 'support-message-user' : 'support-message-admin'}`}>
                   <div className="support-message-content">
-                    {msg.contentType === 'IMAGE' && msg.imageData && (
+                    {msg.contentType === 'IMAGE' && (msg.imageUrl || msg.imageData) && (
                       <div className="support-message-image">
-                        <img src={msg.imageData} alt="" onClick={() => window.open(msg.imageData, '_blank')} />
+                        {msg.imageUrl ? (
+                          <ChatImage imageUrl={msg.imageUrl} />
+                        ) : (
+                          <img src={msg.imageData} alt="" onClick={() => window.open(msg.imageData, '_blank')} />
+                        )}
                       </div>
                     )}
 

@@ -106,6 +106,7 @@ export const useChatStomp = () => {
             senderType: msg.senderId === userData.id ? 'user' : 'admin',
             content: msg.messageText,
             messageText: msg.messageText,
+            imageUrl: msg.imageUrl || null,
             imageData: msg.imageData || null,
             contentType: msg.contentType || 'TEXT',
             createdAt: msg.createdAt,
@@ -210,6 +211,7 @@ export const useChatStomp = () => {
             senderType: message.senderId === userData.id ? 'user' : 'admin',
             content: message.messageText,
             messageText: message.messageText,
+            imageUrl: message.imageUrl || null,
             imageData: message.imageData || null,
             contentType: message.contentType || 'TEXT',
             createdAt: message.createdAt,
@@ -222,13 +224,14 @@ export const useChatStomp = () => {
             chatRoomIdRef.current = message.chatRoomId;
           }
 
-          // For IMAGE messages without imageData (STOMP strips it)
-          if (message.contentType === 'IMAGE' && !message.imageData) {
-            // If sent by user, local message already added — skip
-            // If sent by admin, reload from REST to get imageData
-            if (message.senderId !== userData.id) {
-              reloadMessages();
-            }
+          // For IMAGE messages: if self-sent, skip (already added by sendImage)
+          if (message.contentType === 'IMAGE' && message.senderId === userData.id) {
+            // Update local message with real ID if needed
+            setMessages(prev => {
+              const exists = prev.some(m => m.id === message.id);
+              if (exists) return prev;
+              return prev;
+            });
           } else {
             // Add message to list (avoid duplicates)
             setMessages(prev => {
@@ -309,82 +312,59 @@ export const useChatStomp = () => {
     }
   }, []);
 
-  // Compress image via canvas (fit within STOMP WebSocket frame limit)
-  const compressImage = useCallback((file) => {
-    return new Promise((resolve, reject) => {
-      const img = new window.Image();
-      img.onload = () => {
-        const MAX_CHARS = 6000; // ~4.5KB, safe under 8KB WS frame (Tomcat default)
-        let maxW = 300;
-        let q = 0.5;
-
-        const tryCompress = () => {
-          let { width, height } = img;
-          if (width > maxW) {
-            height = Math.round((height * maxW) / width);
-            width = maxW;
-          }
-          const canvas = document.createElement('canvas');
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
-          const result = canvas.toDataURL('image/jpeg', q);
-          if (result.length > MAX_CHARS && q > 0.1) {
-            q -= 0.1;
-            maxW = Math.round(maxW * 0.75);
-            return tryCompress();
-          }
-          return result;
-        };
-
-        resolve(tryCompress());
-      };
-      img.onerror = reject;
-      img.src = URL.createObjectURL(file);
-    });
-  }, []);
-
-  // Send image via STOMP WebSocket
+  // Send image via REST API (POST /api/chat/upload-image with FormData)
   const sendImage = useCallback(async (file) => {
     if (!file) return false;
 
-    const client = stompClientRef.current;
-    if (!client || !client.connected) {
-      setError('WebSocket not connected');
-      return false;
-    }
-
     try {
-      const base64 = await compressImage(file);
+      const token = getToken();
+      if (!token) { setError('No authentication token'); return false; }
 
-      const payload = {
-        chatRoomId: chatRoomIdRef.current || null,
-        messageText: null,
-        imageData: base64,
-        contentType: 'IMAGE'
-      };
+      const fd = new FormData();
+      fd.append('file', file);
+      if (chatRoomIdRef.current) fd.append('chatRoomId', chatRoomIdRef.current);
 
-      client.publish({
-        destination: '/app/chat.send',
-        body: JSON.stringify(payload)
+      const response = await fetch(`${API_BASE}chat/upload-image`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: fd
       });
 
-      // Add image locally (server STOMP broadcast strips imageData)
-      const localMsg = {
-        id: `local-${Date.now()}`,
-        chatRoomId: chatRoomIdRef.current,
-        senderId: userIdRef.current,
-        senderFullName: 'User',
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        setError(result.message || 'Failed to send image');
+        return false;
+      }
+
+      // Server returns the saved message in result.data
+      const msg = result.data;
+      const transformedMsg = {
+        id: msg.id,
+        chatRoomId: msg.chatRoomId,
+        senderId: msg.senderId,
+        senderFullName: msg.senderFullName,
         senderType: 'user',
-        content: null,
-        messageText: null,
-        imageData: base64,
+        content: msg.messageText,
+        messageText: msg.messageText,
+        imageUrl: msg.imageUrl || null,
+        imageData: null,
         contentType: 'IMAGE',
-        createdAt: new Date().toISOString(),
+        createdAt: msg.createdAt,
         isRead: true
       };
-      setMessages(prev => [...prev, localMsg]);
+
+      // Update chatRoomId if not set
+      if (msg.chatRoomId && !chatRoomIdRef.current) {
+        setChatRoomId(msg.chatRoomId);
+        chatRoomIdRef.current = msg.chatRoomId;
+      }
+
+      setMessages(prev => {
+        const exists = prev.some(m => m.id === transformedMsg.id);
+        if (exists) return prev;
+        return [...prev, transformedMsg];
+      });
 
       return true;
     } catch (err) {
@@ -392,7 +372,7 @@ export const useChatStomp = () => {
       setError('Failed to send image');
       return false;
     }
-  }, [compressImage]);
+  }, [getToken]);
 
   // Mark messages as read
   const markAsRead = useCallback(async () => {

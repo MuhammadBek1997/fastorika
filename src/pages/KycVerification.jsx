@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useGlobalContext } from '../Context'
 import { ArrowLeft, Shield, CheckCircle, XCircle, Clock, Loader2 } from 'lucide-react'
+import { apiFetch } from '../api'
 import './kyc.css'
 
 const KycVerification = () => {
@@ -14,13 +15,38 @@ const KycVerification = () => {
     initiateKyc,
     refreshKycToken,
     loadKycStatus,
-    profileUserId
+    profileUserId,
+    profileFirstName,
+    profileLastName,
+    setProfileFirstName,
+    setProfileLastName,
+    profilePhone,
+    profileIsSelDate,
+    profileCountryId,
+    profileCurState,
+    profileCountriesList
   } = useGlobalContext()
+
+  const [step, setStep] = useState(() => {
+    if (!kycLoading && !kycStatus && !kycAccessToken) return 'name-entry'
+    return null
+  })
+  const [inputName, setInputName] = useState(profileFirstName || '')
+  const [inputSurname, setInputSurname] = useState(profileLastName || '')
+  const [nameError, setNameError] = useState('')
+  const [saving, setSaving] = useState(false)
 
   const [error, setError] = useState(null)
   const [sdkLoading, setSdkLoading] = useState(false)
   const sdkContainerRef = useRef(null)
   const sdkInstanceRef = useRef(null)
+
+  // When KYC loading finishes and there's no status, show name entry
+  useEffect(() => {
+    if (!kycLoading && !kycStatus && !kycAccessToken && step === null) {
+      setStep('name-entry')
+    }
+  }, [kycLoading, kycStatus, kycAccessToken])
 
   // Initialize Sumsub WebSDK when we have an access token
   useEffect(() => {
@@ -34,9 +60,7 @@ const KycVerification = () => {
     try {
       setSdkLoading(true)
 
-      // Check if script already loaded
       if (!window.snsWebSdk) {
-        // Load the Sumsub WebSDK script
         await new Promise((resolve, reject) => {
           const script = document.createElement('script')
           script.src = 'https://static.sumsub.com/idensic/static/sns-websdk-builder.js'
@@ -47,7 +71,6 @@ const KycVerification = () => {
         })
       }
 
-      // Wait for snsWebSdk to be available
       await new Promise(resolve => setTimeout(resolve, 500))
 
       if (window.snsWebSdk) {
@@ -68,7 +91,6 @@ const KycVerification = () => {
     try {
       const snsWebSdkInstance = window.snsWebSdk
         .init(kycAccessToken, async () => {
-          // Token expiration handler - refresh token
           try {
             const newToken = await refreshKycToken()
             return newToken
@@ -92,7 +114,6 @@ const KycVerification = () => {
           setError(error?.message || t('kyc.verificationError'))
         })
         .on('idCheck.onApplicantStatusChanged', (payload) => {
-          // Reload KYC status when verification completes
           if (payload?.reviewStatus === 'completed') {
             loadKycStatus()
           }
@@ -115,6 +136,71 @@ const KycVerification = () => {
     } catch (err) {
       console.error('Failed to start KYC:', err)
       setError(err?.message || t('kyc.startError') || 'Failed to start verification')
+    }
+  }
+
+  // Helpers
+  const norm = (v) => (typeof v === 'string' ? v.trim() : (v ?? ''))
+  const displayToIso = (display) => {
+    if (!display) return ''
+    const [d, m, y] = (display || '').split('.')
+    if (!y || !m || !d) return ''
+    return `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`
+  }
+
+  // Handle name form next button
+  const handleNameNext = () => {
+    if (!inputName.trim() || !inputSurname.trim()) {
+      setNameError(t('kyc.nameRequired') || 'Please enter first and last name')
+      return
+    }
+    setNameError('')
+    setStep('confirm')
+  }
+
+  // Handle confirm: save name to backend then start KYC
+  const handleConfirmAndStart = async () => {
+    setSaving(true)
+    setError(null)
+    try {
+      const token = sessionStorage.getItem('token')
+
+      let resolvedCountryId = profileCountryId
+      if (!resolvedCountryId && profileCountriesList?.length) {
+        const match = profileCountriesList.find(c =>
+          c.name.toLowerCase() === (profileCurState || '').toLowerCase()
+        )
+        if (match) resolvedCountryId = match.countryId
+      }
+
+      const payload = {
+        name: inputName.trim(),
+        surname: inputSurname.trim(),
+        phone: norm(profilePhone),
+        countryId: resolvedCountryId || 0,
+        dateOfBirth: displayToIso(profileIsSelDate)
+      }
+
+      const res = await apiFetch('users/me', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+        body: JSON.stringify(payload)
+      })
+
+      if (!res.ok) {
+        const data = await res.json()
+        setError(data.message || t('kyc.startError'))
+        setSaving(false)
+        return
+      }
+
+      setProfileFirstName(inputName.trim())
+      setProfileLastName(inputSurname.trim())
+      setSaving(false)
+      await handleStartVerification()
+    } catch (e) {
+      setError(t('kyc.startError'))
+      setSaving(false)
     }
   }
 
@@ -235,7 +321,126 @@ const KycVerification = () => {
     )
   }
 
-  // Initial state - start verification
+  // Step 1: Name entry
+  if (step === 'name-entry') {
+    return (
+      <div className="kyc-page" id="webSection" data-theme={theme}>
+        <div className="kyc-header">
+          <button className="back-btn" onClick={() => navigate('/profile')}>
+            <ArrowLeft size={20} />
+          </button>
+          <h2>{t('kyc.title') || 'Identity Verification'}</h2>
+        </div>
+        <div className="kyc-content">
+          <div className="kyc-intro-card">
+            <Shield size={48} className="intro-icon" />
+            <h3>{t('kyc.nameEntryTitle') || 'Enter Your Passport Details'}</h3>
+            <p className="kyc-passport-note">
+              {t('kyc.nameEntryNote') || 'Enter data exactly as written in your passport'}
+            </p>
+
+            <div className="kyc-name-form">
+              <div className="kyc-name-field">
+                <label className="kyc-name-label">{t('kyc.nameLabel') || 'First Name'}</label>
+                <input
+                  type="text"
+                  value={inputName}
+                  onChange={e => { setInputName(e.target.value); setNameError('') }}
+                  placeholder={t('kyc.nameLabel') || 'First Name'}
+                  className="kyc-name-input"
+                />
+              </div>
+              <div className="kyc-name-field">
+                <label className="kyc-name-label">{t('kyc.surnameLabel') || 'Last Name'}</label>
+                <input
+                  type="text"
+                  value={inputSurname}
+                  onChange={e => { setInputSurname(e.target.value); setNameError('') }}
+                  placeholder={t('kyc.surnameLabel') || 'Last Name'}
+                  className="kyc-name-input"
+                />
+              </div>
+            </div>
+
+            {nameError && (
+              <div className="kyc-error-inline">
+                <p>{nameError}</p>
+              </div>
+            )}
+
+            <button
+              className="kyc-btn primary"
+              onClick={handleNameNext}
+            >
+              {t('kyc.nextBtn') || 'Next'}
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Step 2: Confirm entered data
+  if (step === 'confirm') {
+    return (
+      <div className="kyc-page" id="webSection" data-theme={theme}>
+        <div className="kyc-header">
+          <button className="back-btn" onClick={() => setStep('name-entry')}>
+            <ArrowLeft size={20} />
+          </button>
+          <h2>{t('kyc.title') || 'Identity Verification'}</h2>
+        </div>
+        <div className="kyc-content">
+          <div className="kyc-intro-card">
+            <CheckCircle size={48} className="intro-icon" />
+            <h3>{t('kyc.confirmTitle') || 'Confirm Your Details'}</h3>
+            <p>{t('kyc.confirmNote') || 'Make sure the details match your passport exactly'}</p>
+
+            <div className="kyc-confirm-data">
+              <div className="kyc-confirm-row">
+                <span className="kyc-confirm-label">{t('kyc.nameLabel') || 'First Name'}</span>
+                <span className="kyc-confirm-value">{inputName}</span>
+              </div>
+              <div className="kyc-confirm-row">
+                <span className="kyc-confirm-label">{t('kyc.surnameLabel') || 'Last Name'}</span>
+                <span className="kyc-confirm-value">{inputSurname}</span>
+              </div>
+            </div>
+
+            {error && (
+              <div className="kyc-error-inline">
+                <p>{error}</p>
+              </div>
+            )}
+
+            <button
+              className="kyc-btn primary"
+              onClick={handleConfirmAndStart}
+              disabled={saving || kycLoading}
+            >
+              {(saving || kycLoading) ? (
+                <>
+                  <Loader2 className="animate-spin" size={20} />
+                  {t('kyc.saving') || 'Saving...'}
+                </>
+              ) : (
+                t('kyc.confirmAndStart') || 'Confirm and Start Verification'
+              )}
+            </button>
+            <button
+              className="kyc-btn secondary"
+              onClick={() => setStep('name-entry')}
+              disabled={saving}
+            >
+              {t('kyc.editBtn') || 'Edit'}
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Loading state or PENDING fallback
   return (
     <div className="kyc-page" id="webSection" data-theme={theme}>
       <div className="kyc-header">
@@ -243,42 +448,12 @@ const KycVerification = () => {
           <ArrowLeft size={20} />
         </button>
         <h2>{t('kyc.title') || 'Identity Verification'}</h2>
+        {renderStatusBadge()}
       </div>
       <div className="kyc-content">
-        <div className="kyc-intro-card">
-          <Shield size={64} className="intro-icon" />
-          <h3>{t('kyc.introTitle') || 'Verify Your Identity'}</h3>
-          <p>{t('kyc.introDesc') || 'To ensure security and comply with regulations, we need to verify your identity. This process takes just a few minutes.'}</p>
-
-          <div className="kyc-requirements">
-            <h4>{t('kyc.requirementsTitle') || 'You will need:'}</h4>
-            <ul>
-              <li>{t('kyc.requirement1') || 'A valid government-issued ID (passport, driving license, or national ID)'}</li>
-              <li>{t('kyc.requirement2') || 'A device with a camera for taking photos'}</li>
-              <li>{t('kyc.requirement3') || 'Good lighting for clear photos'}</li>
-            </ul>
-          </div>
-
-          {error && (
-            <div className="kyc-error-inline">
-              <p>{error}</p>
-            </div>
-          )}
-
-          <button
-            className="kyc-btn primary"
-            onClick={handleStartVerification}
-            disabled={kycLoading}
-          >
-            {kycLoading ? (
-              <>
-                <Loader2 className="animate-spin" size={20} />
-                {t('kyc.starting') || 'Starting...'}
-              </>
-            ) : (
-              t('kyc.startBtn') || 'Start Verification'
-            )}
-          </button>
+        <div className="kyc-loading">
+          <Loader2 className="animate-spin" size={32} />
+          <p>{t('kyc.loadingSDK') || 'Loading...'}</p>
         </div>
       </div>
     </div>

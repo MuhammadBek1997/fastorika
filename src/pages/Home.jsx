@@ -1,16 +1,18 @@
 import { useState, useEffect, useRef } from 'react'
 import { useGlobalContext } from '../Context'
-import { ArrowUpDown, Banknote, Bitcoin, ChevronDown, ChevronRight, CreditCard, LucideBanknoteArrowUp } from 'lucide-react'
-import { getExchangeRate, calculateTransactionFees } from '../api'
+import { ArrowUpDown, Banknote, Bitcoin, ChevronDown, ChevronRight, CreditCard, Info, LucideBanknoteArrowUp, X } from 'lucide-react'
+import { getExchangeRate, calculateTransactionFees, getAllCountries, getCountryFees } from '../api'
 import SEO from '../components/SEO'
 
 const Home = () => {
 
   let { t, theme, faqData,toggleAccordion,openIndex,navigate } = useGlobalContext()
 
-  // Fee configuration - default values (should be fetched from backend per country)
-  const DEFAULT_TRANSFER_FEE = 10 // 10% transfer fee
-  const DEFAULT_EXCHANGE_RATE_FEE = 2 // 2% exchange rate fee
+  // Dynamic fee state (loaded from backend per country)
+  const [transferFee, setTransferFee] = useState(0)
+  const [exchangeRateFee, setExchangeRateFee] = useState(0)
+  const [countryMap, setCountryMap] = useState({}) // currency → country
+  const [isFeeModalOpen, setIsFeeModalOpen] = useState(false)
 
   let currency = [
     {
@@ -55,7 +57,6 @@ const Home = () => {
   const [exchangeRate, setExchangeRate] = useState(null)
   const [isLoadingRate, setIsLoadingRate] = useState(false)
   const [feeCalculation, setFeeCalculation] = useState(null)
-  const [isFeeExpanded, setIsFeeExpanded] = useState(false)
   const isSwapping = useRef(false)
   const lastEdited = useRef('send') // 'send' yoki 'receive' — qaysi input oxirgi o'zgartirilgan
 
@@ -81,6 +82,43 @@ const Home = () => {
     setIsMethodOpen(false)
   }
 
+  // Load countries on mount → build currency→country map
+  useEffect(() => {
+    const loadCountries = async () => {
+      try {
+        const countries = await getAllCountries()
+        if (Array.isArray(countries)) {
+          const map = {}
+          countries.forEach(c => {
+            if (c.currency) map[c.currency.toUpperCase()] = c
+          })
+          setCountryMap(map)
+        }
+      } catch (err) {
+        console.error('Failed to load countries:', err)
+      }
+    }
+    loadCountries()
+  }, [])
+
+  // Fetch fees when receiver currency changes
+  useEffect(() => {
+    const fetchFees = async () => {
+      const country = countryMap[otherCur.currencyName]
+      if (country?.id) {
+        const fees = await getCountryFees(country.id)
+        setTransferFee(fees.transferFeePercentage || 0)
+        setExchangeRateFee(fees.exchangeRateFeePercentage || 0)
+      } else {
+        setTransferFee(0)
+        setExchangeRateFee(0)
+      }
+    }
+    if (Object.keys(countryMap).length > 0) {
+      fetchFees()
+    }
+  }, [otherCur.currencyName, countryMap])
+
   // Fetch exchange rate when currencies change
   useEffect(() => {
     const fetchExchangeRate = async () => {
@@ -99,15 +137,15 @@ const Home = () => {
           if (lastEdited.current === 'receive' && receiveAmount) {
             const received = parseFloat(receiveAmount.replace(/\s/g, ''))
             if (!isNaN(received) && received > 0) {
-              const adjustedRate = rateData.rate * (1 - DEFAULT_EXCHANGE_RATE_FEE / 100)
-              const transferMultiplier = 1 - DEFAULT_TRANSFER_FEE / 100
+              const adjustedRate = rateData.rate * (1 - exchangeRateFee / 100)
+              const transferMultiplier = 1 - transferFee / 100
               const computedSend = received / (adjustedRate * transferMultiplier)
               setSendAmount(Math.round(computedSend * 100) / 100 + '')
             }
           } else if (sendAmount) {
             const amount = parseFloat(sendAmount.replace(/\s/g, ''))
             if (!isNaN(amount) && amount > 0) {
-              const calculation = calculateTransactionFees(amount, DEFAULT_TRANSFER_FEE, DEFAULT_EXCHANGE_RATE_FEE, rateData.rate)
+              const calculation = calculateTransactionFees(amount, transferFee, exchangeRateFee, rateData.rate)
               setReceiveAmount(calculation.amountReceived.toLocaleString('en-US', { maximumFractionDigits: 2 }))
             }
           }
@@ -123,6 +161,17 @@ const Home = () => {
     fetchExchangeRate()
   }, [myCur.currencyName, otherCur.currencyName])
 
+  // Re-calculate when fees change (backend loaded new fees for selected country)
+  useEffect(() => {
+    if (isSwapping.current || !exchangeRate) return
+    const amount = parseFloat((sendAmount || '0').replace(/\s/g, ''))
+    if (!isNaN(amount) && amount > 0) {
+      const calculation = calculateTransactionFees(amount, transferFee, exchangeRateFee, exchangeRate.rate)
+      setFeeCalculation(calculation)
+      setReceiveAmount(calculation.amountReceived.toLocaleString('en-US', { maximumFractionDigits: 2 }))
+    }
+  }, [transferFee, exchangeRateFee])
+
   // Update receive amount when send amount changes - WITH FEE CALCULATION
   useEffect(() => {
     if (isSwapping.current) return
@@ -132,8 +181,8 @@ const Home = () => {
       if (!isNaN(amount) && amount > 0) {
         const calculation = calculateTransactionFees(
           amount,
-          DEFAULT_TRANSFER_FEE,
-          DEFAULT_EXCHANGE_RATE_FEE,
+          transferFee,
+          exchangeRateFee,
           exchangeRate.rate
         )
         setFeeCalculation(calculation)
@@ -150,16 +199,16 @@ const Home = () => {
       const received = parseFloat(receiveAmount.replace(/\s/g, ''))
       if (!isNaN(received) && received > 0) {
         // amountReceived = amountSent * (1 - transferFee/100) * rate * (1 - exchangeFee/100)
-        const adjustedRate = exchangeRate.rate * (1 - DEFAULT_EXCHANGE_RATE_FEE / 100)
-        const transferMultiplier = 1 - DEFAULT_TRANSFER_FEE / 100
+        const adjustedRate = exchangeRate.rate * (1 - exchangeRateFee / 100)
+        const transferMultiplier = 1 - transferFee / 100
         const computedSend = received / (adjustedRate * transferMultiplier)
         const rounded = Math.round(computedSend * 100) / 100
         setSendAmount(rounded.toLocaleString('en-US', { maximumFractionDigits: 2 }))
         // Fee hisoblash (send summasidan)
         const calculation = calculateTransactionFees(
           rounded,
-          DEFAULT_TRANSFER_FEE,
-          DEFAULT_EXCHANGE_RATE_FEE,
+          transferFee,
+          exchangeRateFee,
           exchangeRate.rate
         )
         setFeeCalculation(calculation)
@@ -388,6 +437,35 @@ const Home = () => {
               </div>
             </div>
           </div>
+          {exchangeRate && myCur.currencyName !== otherCur.currencyName && (
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '0.5rem',
+                padding: '0.75rem 1rem',
+                borderRadius: '0.75rem',
+              }}>
+                <span style={{ fontSize: '0.9rem', opacity: 0.8 }}>
+                  1 {myCur.currencyName} = {(feeCalculation?.adjustedExchangeRate || (exchangeRate.rate * (1 - exchangeRateFee / 100))).toLocaleString('en-US', { maximumFractionDigits: 4 })} {otherCur.currencyName}
+                </span>
+                <span
+                  
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    padding: '2px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent:"space-between",
+                    opacity: 0.8
+                  }}
+                  title={t("feeDetails") || "Fee details"}
+                >
+                  <Info size={16} onClick={() => setIsFeeModalOpen(true)}/>
+                </span>
+              </div>
+            )}
           <div className="hero-right-cardInfo">
             <h3>
               {t("payMethod")}
@@ -466,64 +544,69 @@ const Home = () => {
             </div>
           </div>
           <div className='hero-right-transferBtn'>
-            {/* Fee Accordion */}
-            <div className="fee-accordion">
-              <button
-                onClick={() => setIsFeeExpanded(!isFeeExpanded)}
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  padding: '0.75rem 1rem',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  borderRadius: '0.5rem',
-                  backgroundColor: theme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)'
-                }}
-              >
-                <ChevronDown
-                  size={20}
-                  style={{
-                    transform: isFeeExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
-                    transition: 'transform 0.2s',
-                    opacity: 0.6
-                  }}
-                />
-              </button>
+            {/* Adjusted exchange rate with info icon */}
+            
 
-              {isFeeExpanded && (
-                <div style={{ padding: '0.5rem 0' }}>
-                  <div className='hero-fee'>
-                    <p>
-                      {t("fee")} ({t("transferFee") || "Transfer"})
-                    </p>
-                    <h4>
-                      {feeCalculation ? `${feeCalculation.transferFeePercentage}%` : `${DEFAULT_TRANSFER_FEE}%`}
-                    </h4>
+            {/* Fee Details Modal */}
+            {isFeeModalOpen && (
+              <div className="fee-modal-overlay" onClick={() => setIsFeeModalOpen(false)}>
+                <div className="fee-modal" onClick={(e) => e.stopPropagation()}>
+                  <div className="fee-modal-header">
+                    <h3>{t("exchangeRate") || "Exchange Rate"}</h3>
+                    <button className="fee-modal-close" onClick={() => setIsFeeModalOpen(false)}>
+                      <X size={20} />
+                    </button>
                   </div>
-                  <div className='hero-feeCount'>
-                    <p>
-                      {t("feeCount")}
-                    </p>
-                    <h4>
-                      {feeCalculation ? `${feeCalculation.transferFeeAmount.toLocaleString('en-US', { maximumFractionDigits: 2 })} ${myCur.currencyName}` : `0 ${myCur.currencyName}`}
-                    </h4>
-                  </div>
-                  {feeCalculation && feeCalculation.exchangeRateFeePercentage > 0 && (
-                    <div className='hero-fee' style={{ marginTop: '0.25rem' }}>
-                      <p>
-                        {t("exchangeRateFee") || "Exchange Rate Fee"}
-                      </p>
-                      <h4>
-                        {feeCalculation.exchangeRateFeePercentage}%
-                      </h4>
+
+                  <div className="fee-modal-body">
+                    {/* Base rate */}
+                    <div className="fee-modal-row">
+                      <span className="fee-label">{t("baseRate") || "Market rate"}</span>
+                      <span className="fee-value">
+                        1 {myCur.currencyName} = {exchangeRate?.rate?.toLocaleString('en-US', { maximumFractionDigits: 4 })} {otherCur.currencyName}
+                      </span>
                     </div>
-                  )}
+
+                    {/* Transfer fee */}
+                    {transferFee > 0 && (
+                      <div className="fee-modal-row">
+                        <span className="fee-label">{t("fee")} ({t("transferFee") || "Transfer"})</span>
+                        <span className="fee-value negative">-{transferFee}%</span>
+                      </div>
+                    )}
+
+                    {/* Transfer fee amount */}
+                    {feeCalculation && transferFee > 0 && (
+                      <div className="fee-modal-row">
+                        <span className="fee-label">{t("feeCount") || "Fee amount"}</span>
+                        <span className="fee-value negative">
+                          -{feeCalculation.transferFeeAmount.toLocaleString('en-US', { maximumFractionDigits: 2 })} {myCur.currencyName}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Exchange rate fee */}
+                    {exchangeRateFee > 0 && (
+                      <div className="fee-modal-row">
+                        <span className="fee-label">{t("exchangeRateFee") || "Exchange rate fee"}</span>
+                        <span className="fee-value negative">-{exchangeRateFee}%</span>
+                      </div>
+                    )}
+
+                    <hr className="fee-modal-divider" />
+
+                    {/* Final adjusted rate */}
+                    <div className="fee-modal-result">
+                      <span className="fee-label">{t("yourRate") || "Your rate"}</span>
+                      <span className="fee-value">
+                        1 {myCur.currencyName} = {(feeCalculation?.adjustedExchangeRate || (exchangeRate?.rate * (1 - exchangeRateFee / 100))).toLocaleString('en-US', { maximumFractionDigits: 4 })} {otherCur.currencyName}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
+
             <button onClick={()=>{
               // Start transfer flow without wiping storage
               localStorage.setItem("pending", true)
@@ -540,8 +623,8 @@ const Home = () => {
                 exchangeRateTimestamp: exchangeRate?.timestamp || null,
                 // Fee calculation data
                 feeCalculation: feeCalculation || null,
-                transferFeePercentage: DEFAULT_TRANSFER_FEE,
-                exchangeRateFeePercentage: DEFAULT_EXCHANGE_RATE_FEE
+                transferFeePercentage: transferFee,
+                exchangeRateFeePercentage: exchangeRateFee
               }
               navigate('/currency', { state: transferData })
             }}>

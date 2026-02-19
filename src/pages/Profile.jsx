@@ -207,6 +207,9 @@ const Profile = () => {
 
   // Profile and countries are now loaded in global context on auth
 
+  // Lock name/surname once KYC has been initiated
+  const isNameLocked = kycStatus === 'PENDING' || kycStatus === 'VERIFIED' || kycStatus === 'NOT_VERIFIED'
+
   const norm = (v) => (typeof v === 'string' ? v.trim() : (v ?? ''))
   const hasChanges = profileInitial ? (
     norm(profileFirstName) !== norm(profileInitial.firstName) ||
@@ -288,8 +291,17 @@ const Profile = () => {
                 {t('profilePage.labels.firstName')}
               </label>
               <div className="date-input-container">
-                <input type="text" className="date-input-field" value={profileFirstName} onChange={(e)=>setProfileFirstName(e.target.value)} />
+                <input
+                  type="text"
+                  className={`date-input-field${isNameLocked ? ' field-locked' : ''}`}
+                  value={profileFirstName}
+                  onChange={(e) => !isNameLocked && setProfileFirstName(e.target.value)}
+                  readOnly={isNameLocked}
+                />
               </div>
+              {isNameLocked && (
+                <p className="field-locked-note">{t('profilePage.nameLocked') || 'Name is locked after verification starts'}</p>
+              )}
               <label className="date-input-label">
                 {t('profilePage.labels.email')}
               </label>
@@ -328,7 +340,13 @@ const Profile = () => {
                 {t('profilePage.labels.lastName')}
               </label>
               <div className="date-input-container">
-                <input type="text" className="date-input-field" value={profileLastName} onChange={(e)=>setProfileLastName(e.target.value)} />
+                <input
+                  type="text"
+                  className={`date-input-field${isNameLocked ? ' field-locked' : ''}`}
+                  value={profileLastName}
+                  onChange={(e) => !isNameLocked && setProfileLastName(e.target.value)}
+                  readOnly={isNameLocked}
+                />
               </div>
               <label className="date-input-label">
                 {t('profilePage.labels.phone')}

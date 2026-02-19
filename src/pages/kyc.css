@@ -311,6 +311,143 @@
   margin: 0;
 }
 
+/* Name Entry Form */
+.kyc-passport-note {
+  font-size: 0.9rem;
+  font-style: italic;
+  margin-bottom: 1.5rem !important;
+}
+
+#light .kyc-passport-note {
+  color: #888;
+}
+
+#dark .kyc-passport-note {
+  color: #999;
+}
+
+.kyc-name-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.kyc-name-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.kyc-name-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+#light .kyc-name-label {
+  color: #555;
+}
+
+#dark .kyc-name-label {
+  color: #bbb;
+}
+
+.kyc-name-input {
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#light .kyc-name-input {
+  border: 1.5px solid #e0e0e0;
+  background: #f8f8f8;
+  color: #333;
+}
+
+#light .kyc-name-input:focus {
+  border-color: #00D796;
+  background: #fff;
+}
+
+#dark .kyc-name-input {
+  border: 1.5px solid #444;
+  background: #363636;
+  color: #fff;
+}
+
+#dark .kyc-name-input:focus {
+  border-color: #00D796;
+}
+
+/* Confirmation Data */
+.kyc-confirm-data {
+  width: 100%;
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+#light .kyc-confirm-data {
+  background: #f8f8f8;
+}
+
+#dark .kyc-confirm-data {
+  background: #363636;
+}
+
+.kyc-confirm-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid;
+}
+
+#light .kyc-confirm-row {
+  border-color: #eee;
+}
+
+#dark .kyc-confirm-row {
+  border-color: #444;
+}
+
+.kyc-confirm-row:last-child {
+  border-bottom: none;
+}
+
+.kyc-confirm-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+#light .kyc-confirm-label {
+  color: #888;
+}
+
+#dark .kyc-confirm-label {
+  color: #aaa;
+}
+
+.kyc-confirm-value {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+#light .kyc-confirm-value {
+  color: #222;
+}
+
+#dark .kyc-confirm-value {
+  color: #fff;
+}
+
 /* Sumsub Container */
 .sumsub-container {
   width: 100%;

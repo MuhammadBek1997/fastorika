@@ -4925,8 +4925,153 @@ nav.scrolled {
     padding: 0 1rem;
 }
 
-.fee-accordion{
+/* Fee Info Modal */
+.fee-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.2s ease;
+}
+
+.fee-modal {
+    background-color: var(--bg-light);
+    border-radius: 1.25rem;
+    padding: 1.75rem;
+    max-width: 440px;
+    width: 92%;
+    position: relative;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.25);
+    animation: slideUp 0.25s ease;
+}
+
+.fee-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.fee-modal-header h3 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+.fee-modal-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: inherit;
+    opacity: 0.5;
+    transition: all 0.2s;
+}
+
+.fee-modal-close:hover {
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.fee-modal-body {
+    display: flex;
     flex-direction: column;
+    gap: 1rem;
+}
+
+.fee-modal-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.fee-modal-row .fee-label {
+    font-size: 0.9rem;
+    opacity: 0.6;
+}
+
+.fee-modal-row .fee-value {
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: right;
+}
+
+.fee-modal-row .fee-value.negative {
+    color: #ef4444;
+}
+
+.fee-modal-divider {
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    margin: 0.25rem 0;
+}
+
+.fee-modal-result {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.875rem 1rem;
+    border-radius: 0.75rem;
+    background-color: rgba(0, 215, 150, 0.08);
+    gap: 1rem;
+}
+
+.fee-modal-result .fee-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.fee-modal-result .fee-value {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #00D796;
+    text-align: right;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Dark theme overrides */
+#dark .fee-modal {
+    background-color: var(--bg-dark);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+}
+
+#dark .fee-modal-header {
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+#dark .fee-modal-close:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+#dark .fee-modal-divider {
+    border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+#dark .fee-modal-result {
+    background-color: rgba(0, 215, 150, 0.1);
 }
 .currency-bottom {
     padding: 1rem;

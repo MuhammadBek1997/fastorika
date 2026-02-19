@@ -363,7 +363,8 @@
     "notVerified": "Not Verified",
     "notVerifiedTitle": "Verification Failed",
     "notVerifiedDesc": "Your verification was not successful. Please try again.",
-    "tryAgain": "Try Again"
+    "tryAgain": "Try Again",
+    "nameLocked": "Name is locked after verification starts"
   },
   "verifyModal": {
     "title": "Enter code",
@@ -453,6 +454,17 @@
     "failedDesc": "Unfortunately, your identity verification was not successful. Please try again or contact support.",
     "tryAgain": "Try Again",
     "contactSupport": "Contact Support",
+    "nameEntryTitle": "Enter Your Passport Details",
+    "nameEntryNote": "Enter data exactly as written in your passport",
+    "nameLabel": "First Name",
+    "surnameLabel": "Last Name",
+    "nextBtn": "Next",
+    "confirmTitle": "Confirm Your Details",
+    "confirmNote": "Make sure the details match your passport exactly",
+    "confirmAndStart": "Confirm and Start Verification",
+    "editBtn": "Edit",
+    "saving": "Saving...",
+    "nameRequired": "Please enter first and last name",
     "status": {
       "verified": "Verified",
       "notVerified": "Not Verified",
@@ -491,6 +503,9 @@
   "noCardsWarning": "You have no saved cards. Add a card in your profile.",
   "transferFee": "Transfer",
   "exchangeRateFee": "Exchange Rate Fee",
+  "baseRate": "Market rate",
+  "yourRate": "Your rate",
+  "feeDetails": "Fee details",
   "receiverFullName": "Recipient full name",
   "recipientWallet": "Recipient wallet",
   "walletNameWarning": "Recipient’s first and last name must be in Latin letters",
