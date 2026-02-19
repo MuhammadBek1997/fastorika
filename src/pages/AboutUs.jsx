@@ -137,7 +137,10 @@ const AboutUs = () => {
         <p>
           {t("transfersecond")}
         </p>
-        <button onClick={() => navigate('/unregcur')}>
+        <button onClick={() => {
+          localStorage.setItem("pending", true)
+          navigate('/currency')
+        }}>
           {t("transfersend")}
         </button>
       </div>
