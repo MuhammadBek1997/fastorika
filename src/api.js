@@ -434,6 +434,62 @@ export const getCountryById = async (countryId) => {
 // ============== EXCHANGE RATE API ==============
 
 /**
+ * Get exchange rate pair with fee percentages and optional calculation
+ * Uses backend /api/rates/pair endpoint
+ *
+ * @param {string} from - Source currency code (e.g., "USD", "EUR")
+ * @param {string} to - Target currency code (e.g., "UZS", "KZT")
+ * @param {string} [countryCurrency] - Country currency for fee lookup (e.g., "UZS")
+ * @param {number} [amount] - Optional amount for calculation breakdown
+ * @returns {Promise<Object>} Exchange rate data with fees and optional calculation
+ *
+ * Response structure:
+ * {
+ *   "fromCurrency": "USD",
+ *   "toCurrency": "UZS",
+ *   "rate": 12180.002266949,
+ *   "lastUpdatedAt": "2026-02-19T23:59:59Z",
+ *   "feePercentages": {
+ *     "countryId": 1,
+ *     "countryName": "Uzbekistan",
+ *     "transferFeePercentage": 50,
+ *     "exchangeRateFeePercentage": 0
+ *   },
+ *   "calculation": { // only when amount is provided
+ *     "originalAmount": 100,
+ *     "sourceCurrency": "USD",
+ *     "targetCurrency": "UZS",
+ *     "originalRate": 12180.002266949,
+ *     "transferFeePercentage": 50,
+ *     "transferFeeAmount": 50,
+ *     "amountAfterTransferFee": 50,
+ *     "exchangeRateFeePercentage": 0,
+ *     "adjustedExchangeRate": 12180.002266949,
+ *     "amountReceived": 609000.11
+ *   }
+ * }
+ */
+export const getRatePair = async (from, to, countryCurrency, amount) => {
+  try {
+    let path = `rates/pair?from=${from}&to=${to}`;
+    if (countryCurrency) path += `&countryCurrency=${countryCurrency}`;
+    if (amount !== undefined && amount !== null) path += `&amount=${amount}`;
+
+    const res = await apiFetch(path, { method: 'GET' });
+    const response = await res.json();
+
+    if (!res.ok) {
+      throw new Error(response?.message || 'Failed to fetch exchange rate');
+    }
+
+    return response?.data || response;
+  } catch (error) {
+    console.error('getRatePair error:', error);
+    throw error;
+  }
+};
+
+/**
  * Get latest exchange rate between two currencies
  * Uses Hexarate API for real-time currency conversion rates
  *
@@ -452,18 +508,6 @@ export const getCountryById = async (countryId) => {
  *     "timestamp": "2024-08-31T05:16:50.272Z"
  *   }
  * }
- *
- * Supported currencies:
- * AED, AFN, ALL, AMD, ARS, AUD, AZN, BAM, BDT, BGN, BHD, BIF, BND, BOB, BRL,
- * BSD, BTN, BWP, BYN, BZD, CAD, CDF, CHF, CLP, CNY, COP, CRC, CUP, CVE, CZK,
- * DJF, DKK, DOP, DZD, EGP, ERN, ETB, EUR, FJD, FKP, GBP, GEL, GHS, GIP, GMD,
- * GNF, GTQ, GYD, HKD, HNL, HTG, HUF, IDR, ILS, INR, IQD, IRR, ISK, JMD, JOD,
- * JPY, KES, KGS, KHR, KMF, KPW, KRW, KWD, KYD, KZT, LAK, LBP, LKR, LRD, LSL,
- * LYD, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRU, MUR, MVR, MWK, MXN, MYR, MZN,
- * NAD, NGN, NIO, NOK, NPR, NZD, OMR, PAB, PEN, PGK, PHP, PKR, PLN, PYG, QAR,
- * RON, RSD, RUB, RWF, SAR, SBD, SCR, SDG, SEK, SGD, SHP, SLE, SOS, SRD, SSP,
- * STN, SVC, SYP, SZL, THB, TJS, TMT, TND, TOP, TRY, TTD, TWD, TZS, UAH, UGX,
- * USD, UYU, UZS, VED, VES, VND, VUV, WST, XAF, XCD, XOF, XPF, YER, ZAR, ZMW, ZWG
  */
 export const getExchangeRate = async (baseCurrency, targetCurrency) => {
   try {

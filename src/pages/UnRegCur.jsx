@@ -3,7 +3,7 @@ import './currency.css'
 import { useNavigate, useLocation } from "react-router-dom"
 import { useGlobalContext } from "../Context"
 import { ArrowUpDown, ChevronRight, ChevronDown, CreditCard, Bitcoin, BanknoteArrowUp, Info, X } from "lucide-react"
-import { getExchangeRate, calculateTransactionFees } from "../api"
+import { getRatePair, calculateTransactionFees } from "../api"
 import VerificationModal from "../components/VerificationModal"
 import CancelTransactionModal from "../components/CancelTransactionModal"
 
@@ -245,15 +245,28 @@ const UnRegCur = () => {
 
             try {
                 setIsLoadingRate(true)
-                const rateData = await getExchangeRate(myCurrency.currencyName, otherCurrency.currencyName)
-                setExchangeRate(rateData)
+                const rateData = await getRatePair(
+                    myCurrency.currencyName,
+                    otherCurrency.currencyName,
+                    otherCurrency.currencyName
+                )
+                setExchangeRate({ rate: rateData.rate, lastUpdatedAt: rateData.lastUpdatedAt })
+
+                // Update fee percentages from backend
+                if (rateData.feePercentages) {
+                    setTransferFeePercentage(rateData.feePercentages.transferFeePercentage ?? 0)
+                    setExchangeRateFeePercentage(rateData.feePercentages.exchangeRateFeePercentage ?? 0)
+                }
 
                 // Auto-calculate receive amount when rate is fetched (skip during swap)
                 if (sendAmount && !isSwapping.current) {
                     const amount = parseFloat(sendAmount.replace(/\s/g, ''))
                     if (!isNaN(amount)) {
-                        const converted = amount * rateData.rate
-                        setReceiveAmount(converted.toLocaleString('en-US', { maximumFractionDigits: 2 }))
+                        const tFee = rateData.feePercentages?.transferFeePercentage ?? transferFeePercentage
+                        const eFee = rateData.feePercentages?.exchangeRateFeePercentage ?? exchangeRateFeePercentage
+                        const calculation = calculateTransactionFees(amount, tFee, eFee, rateData.rate)
+                        setFeeCalculation(calculation)
+                        setReceiveAmount(calculation.amountReceived.toLocaleString('en-US', { maximumFractionDigits: 2 }))
                     }
                 }
             } catch (error) {

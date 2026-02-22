@@ -3,7 +3,7 @@ import SEO from '../components/SEO'
 
 const AboutUs = () => {
 
-  let { t, navigate } = useGlobalContext();
+  let { t } = useGlobalContext();
 
   return (
     <>
@@ -139,7 +139,7 @@ const AboutUs = () => {
         </p>
         <button onClick={() => {
           localStorage.setItem("pending", true)
-          navigate('/currency')
+          window.location.href = '/currency'
         }}>
           {t("transfersend")}
         </button>
