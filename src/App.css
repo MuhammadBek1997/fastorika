@@ -3135,6 +3135,14 @@ nav.scrolled {
         display: block !important;
         z-index: 20;
     }
+
+    #light .sidebar-sticky-list {
+        background-color: var(--bg-light);
+    }
+
+    #dark .sidebar-sticky-list {
+        background-color: var(--bg-dark);
+    }
 }
 
 /* Ensure burger button is visible at exactly 768px */
