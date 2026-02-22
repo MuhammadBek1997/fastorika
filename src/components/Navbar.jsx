@@ -107,18 +107,18 @@ const Navbar = () => {
 
                 <div className="flex nav:order-2 items-center rtl:space-x-reverse">
 
-                    {!isMobileMenuOpen && (
-                        isAuthenticated ? (
-                            <button
-                                onClick={() => navigate('/profile')}
-                                type="button"
-                                className="nav-avatar-btn"
-                                title={profileFirstName || ''}
-                            >
-                                {profileFirstName ? profileFirstName[0].toUpperCase() : ''}
-                                {profileLastName ? profileLastName[0].toUpperCase() : ''}
-                            </button>
-                        ) : (
+                    {isAuthenticated ? (
+                        <button
+                            onClick={() => navigate('/profile')}
+                            type="button"
+                            className="nav-avatar-btn"
+                            title={profileFirstName || ''}
+                        >
+                            {profileFirstName ? profileFirstName[0].toUpperCase() : ''}
+                            {profileLastName ? profileLastName[0].toUpperCase() : ''}
+                        </button>
+                    ) : (
+                        !isMobileMenuOpen && (
                             <button onClick={() => handleNavigateLogin()} type="button" className="loginBtn">{t("login")}</button>
                         )
                     )}

@@ -85,7 +85,7 @@ section {
 }
 
 #light nav a,
-#light nav button:not(.loginBtn):not(.themeToggle) {
+#light nav button:not(.loginBtn):not(.themeToggle):not(.nav-avatar-btn) {
     color: var(--text-light);
 }
 
@@ -118,7 +118,7 @@ section {
 }
 
 #dark nav a,
-#dark nav button:not(.loginBtn):not(.themeToggle) {
+#dark nav button:not(.loginBtn):not(.themeToggle):not(.nav-avatar-btn) {
     color: var(--text-dark);
 }
 
