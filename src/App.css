@@ -5770,10 +5770,10 @@ nav.scrolled {
 
     .sidebar-sticky-list {
         position: fixed;
-        top: 15%;
+        top: 0;
         left: 0;
-        height: 85%;
-        border-radius: 2rem;
+        height: 100%;
+        border-radius: 0;
     }
 
     .sidebar-list {
