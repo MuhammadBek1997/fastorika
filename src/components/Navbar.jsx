@@ -17,7 +17,9 @@ const Navbar = () => {
         languages,
         isAuthenticated,
         profileFirstName,
-        profileLastName
+        profileLastName,
+        isSideMobileMenuOpen,
+        setIsSideMobileMenuOpen
     } = useGlobalContext()
     const [isThemeOpen, setIsThemeOpen] = useState(false)
     const [isLangOpen, setIsLangOpen] = useState(false)
@@ -84,11 +86,17 @@ const Navbar = () => {
             <div className="max-w-screen-xxl flex flex-wrap items-center justify-between mx-auto p-3">
                 <div className="flex gap-1">
                     <button
-                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                        onClick={() => {
+                            if (isAuthenticated) {
+                                setIsSideMobileMenuOpen(!isSideMobileMenuOpen)
+                            } else {
+                                setIsMobileMenuOpen(!isMobileMenuOpen)
+                            }
+                        }}
                         type="button"
                         className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm rounded-lg nav:hidden"
                         aria-controls="navbar-sticky"
-                        aria-expanded={isMobileMenuOpen}
+                        aria-expanded={isAuthenticated ? isSideMobileMenuOpen : isMobileMenuOpen}
                     >
                         <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
                             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1h15M1 7h15M1 13h15" />
@@ -125,7 +133,7 @@ const Navbar = () => {
 
                 </div>
 
-                <div className={`${isMobileMenuOpen ? 'block' : 'hidden'} items-center justify-end w-full nav:flex nav:w-auto nav:order-1`} style={{ marginTop: isMobileMenuOpen ? "1rem" : null, width: isMobileMenuOpen ? "100%" : null, borderRadius: isMobileMenuOpen ? "1rem" : null }} id="navbar-sticky">
+                <div className={`${!isAuthenticated && isMobileMenuOpen ? 'block' : 'hidden'} items-center justify-end w-full nav:flex nav:w-auto nav:order-1`} style={{ marginTop: isMobileMenuOpen ? "1rem" : null, width: isMobileMenuOpen ? "100%" : null, borderRadius: isMobileMenuOpen ? "1rem" : null }} id="navbar-sticky">
                     <ul className="flex flex-col p-4 nav:p-0 mt-4 gap-3 font-medium rounded-lg nav:space-x-8 rtl:space-x-reverse nav:flex-row nav:mt-0">
                         <li>
                             <a href="/#faq" className="block" aria-current="page" onClick={()=>handleFaqClick()}>{t("faq")}</a>

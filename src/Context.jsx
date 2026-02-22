@@ -32,6 +32,9 @@ export const AppProvider = ({ children }) => {
   const [globalDropdownKey, setGlobalDropdownKey] = useState(0)
   const closeAllDropdowns = () => setGlobalDropdownKey(prev => prev + 1)
 
+  // Sidebar mobile menu state - shared between Sidebar and Navbar
+  const [isSideMobileMenuOpen, setIsSideMobileMenuOpen] = useState(false)
+
   // Transfer Flow State - persists data across transfer steps
   const [transferData, setTransferData] = useState({
     // Step 1: Currency/Amount (UnRegCur)
@@ -1148,6 +1151,10 @@ let mockUsers = [
       // Global Dropdown Coordination
       globalDropdownKey,
       closeAllDropdowns,
+
+      // Sidebar mobile menu
+      isSideMobileMenuOpen,
+      setIsSideMobileMenuOpen,
 
       // Transfer Flow
       transferData,

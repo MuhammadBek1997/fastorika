@@ -3,11 +3,10 @@ import { NavLink, useLocation } from 'react-router-dom'
 import { useGlobalContext } from '../Context'
 import { ArrowRightCircle, CreditCard, User, Settings as SettingsIcon, MessageCircle, LogOut } from 'lucide-react'
 
-const Sidebar = () => {
+const Sidebar = ({ publicPage = false }) => {
     const [themeSideOpen, setThemeSideOpen] = useState(false)
     const [langSideOpen, setLangSideOpen] = useState(false)
-    const [isSideMobileMenuOpen, setIsSideMobileMenuOpen] = useState(false)
-    let { t, theme, navigate, toggleTheme, languages, currentLang, currentLanguage, handleChange, handleLogout, globalDropdownKey, closeAllDropdowns } = useGlobalContext()
+    let { t, theme, navigate, toggleTheme, languages, currentLang, currentLanguage, handleChange, handleLogout, globalDropdownKey, closeAllDropdowns, isSideMobileMenuOpen, setIsSideMobileMenuOpen } = useGlobalContext()
 
     // Track if this component triggered the global close to avoid self-closing loop
     const selfTriggered = useRef(false)
@@ -47,6 +46,48 @@ const Sidebar = () => {
         document.body.style.overflow = isSideMobileMenuOpen ? 'hidden' : ''
         return () => { document.body.style.overflow = '' }
     }, [isSideMobileMenuOpen])
+
+    // Public page mode: only render the mobile overlay panel
+    if (publicPage) {
+        return (
+            <>
+                {isSideMobileMenuOpen && (
+                    <div
+                        className="fixed inset-0 bg-black/40"
+                        onClick={() => setIsSideMobileMenuOpen(false)}
+                        style={{ zIndex: 19 }}
+                    />
+                )}
+                <div
+                    className={`sidebar-sticky-list ${isSideMobileMenuOpen ? 'sidebar-menu-open' : 'sidebar-menu-closed'}`}
+                >
+                    <div className="sidebar-list">
+                        <NavLink to={'/transactions'} className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`} onClick={() => setIsSideMobileMenuOpen(false)}>
+                            {() => <><ArrowRightCircle className="sidebar-icon" />{t('nav.transactions')}</>}
+                        </NavLink>
+                        <NavLink to={'/cards'} className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`} onClick={() => setIsSideMobileMenuOpen(false)}>
+                            {() => <><CreditCard className="sidebar-icon" />{t('nav.cards')}</>}
+                        </NavLink>
+                        <NavLink to={'/profile'} className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`} onClick={() => setIsSideMobileMenuOpen(false)}>
+                            {() => <><User className="sidebar-icon" />{t('nav.profile')}</>}
+                        </NavLink>
+                        <NavLink to={'/settings'} className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`} onClick={() => setIsSideMobileMenuOpen(false)}>
+                            {() => <><SettingsIcon className="sidebar-icon" />{t('nav.settings')}</>}
+                        </NavLink>
+                        <NavLink to={'/support'} className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`} onClick={() => setIsSideMobileMenuOpen(false)}>
+                            {() => <><MessageCircle className="sidebar-icon" />{t('nav.support')}</>}
+                        </NavLink>
+                    </div>
+                    <button onClick={() => { handleLogout(); setIsSideMobileMenuOpen(false) }} className='forM'>
+                        <div style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <LogOut className='sidebar-icon' />
+                            logout
+                        </div>
+                    </button>
+                </div>
+            </>
+        )
+    }
 
     return (
         <div className='sidebar'>
