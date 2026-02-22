@@ -365,7 +365,16 @@
     "notVerifiedTitle": "Verification Failed",
     "notVerifiedDesc": "Your verification was not successful. Please try again.",
     "tryAgain": "Try Again",
-    "nameLocked": "Name is locked after verification starts"
+    "nameLocked": "Name is locked after verification starts",
+    "deleteAccount": {
+      "btn": "Delete Account",
+      "modalTitle": "Delete Account",
+      "modalDescPart1": "This action is irreversible. Type",
+      "modalDescPart2": "to confirm.",
+      "cancel": "Cancel",
+      "confirm": "Delete",
+      "confirming": "Deleting..."
+    }
   },
   "verifyModal": {
     "title": "Enter code",

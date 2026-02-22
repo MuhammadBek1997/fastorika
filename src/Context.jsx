@@ -200,6 +200,10 @@ export const AppProvider = ({ children }) => {
         countryId: data?.countryId ?? null,
         backendCountryName: backendCountry
       })
+      // Use userVerification from user data as a reliable source for KYC status
+      if (data.userVerification === true) {
+        setKycStatus('VERIFIED')
+      }
       setProfileStatus({ type: null, message: '' })
     } catch (e) {
       console.warn('Profile load network error', e)
@@ -225,7 +229,12 @@ export const AppProvider = ({ children }) => {
       const dataArray = Array.isArray(raw) ? raw : (Array.isArray(raw?.content) ? raw.content : [])
       const normalized = dataArray.map(c => ({
         countryId: c.countryId ?? c.id ?? null,
-        name: c.name ?? ''
+        name: c.name ?? '',
+        isoCode: c.isoCode ?? c.code ?? '',
+        phoneCode: c.phoneCode ?? '',
+        currency: c.currency ?? '',
+        cardIndicators: c.cardIndicators ?? null,
+        active: c.active ?? true
       })).filter(c => c.name)
       setProfileCountriesList(normalized)
     } catch (e) {
@@ -765,7 +774,7 @@ let mockUsers = [
       setKycStatus(statusData?.verificationStatus || statusData?.status || null)
     } catch (e) {
       console.warn('KYC status load error:', e?.message || e)
-      setKycStatus(null)
+      // Don't reset status on error — keep value set from userVerification in loadProfile
     } finally {
       setKycLoading(false)
     }

@@ -230,6 +230,24 @@ nav.scrolled {
     transition: all 0.3s ease;
 }
 
+.nav-avatar-btn {
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    border: none;
+    background: #00D796;
+    color: #000;
+    font-weight: 700;
+    font-size: 0.8rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s ease;
+    flex-shrink: 0;
+}
+.nav-avatar-btn:hover { opacity: 0.85; }
+
 /* ============================================
    DROPDOWNS CONTAINER
    ============================================ */

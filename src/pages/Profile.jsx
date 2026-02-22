@@ -2,10 +2,14 @@ import { useState } from 'react'
 import './profile.css'
 import { useGlobalContext } from "../Context"
 import { apiFetch } from "../api"
-import { Calendar, ChevronLeft, ChevronRight, CheckCircle, Clock, XCircle, Loader2 } from "lucide-react"
+import { Calendar, ChevronLeft, ChevronRight, CheckCircle, Clock, XCircle, Loader2, ShieldAlert } from "lucide-react"
 import { useNotification } from '../components/Notification'
 
 const Profile = () => {
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [deleteInput, setDeleteInput] = useState('')
+  const [deleteLoading, setDeleteLoading] = useState(false)
+
   const {
     t,
     theme,
@@ -207,6 +211,35 @@ const Profile = () => {
 
   // Profile and countries are now loaded in global context on auth
 
+  const handleDeleteAccount = async () => {
+    if (deleteInput !== 'delete') return
+    setDeleteLoading(true)
+    try {
+      const token = sessionStorage.getItem('token')
+      const res = await apiFetch('users/me/delete', {
+        method: 'PATCH',
+        headers: token ? { Authorization: 'Bearer ' + token } : {}
+      })
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        notify.error(data?.message || 'Error deleting account')
+        return
+      }
+      // Logout
+      sessionStorage.removeItem('token')
+      sessionStorage.removeItem('refreshToken')
+      localStorage.removeItem('user')
+      localStorage.removeItem('logged')
+      localStorage.removeItem('authToken')
+      localStorage.removeItem('refreshToken')
+      navigate('/')
+    } catch {
+      notify.error('Network error')
+    } finally {
+      setDeleteLoading(false)
+    }
+  }
+
   // Lock name/surname once KYC has been initiated
   const isNameLocked = kycStatus === 'PENDING' || kycStatus === 'VERIFIED' || kycStatus === 'NOT_VERIFIED'
 
@@ -272,7 +305,7 @@ const Profile = () => {
                 {t('profilePage.unverified')}
               </div>
               <div className="profile-verify-head">
-                <img src={`/images/notverified${theme}.png`} alt="" />
+                <ShieldAlert size={48} className="unverified-icon" />
                 <h3>{t('profilePage.verifyTitle')}</h3>
               </div>
               <p>{t('profilePage.verifyDesc')}</p>
@@ -299,9 +332,27 @@ const Profile = () => {
                   readOnly={isNameLocked}
                 />
               </div>
-              {isNameLocked && (
-                <p className="field-locked-note">{t('profilePage.nameLocked') || 'Name is locked after verification starts'}</p>
-              )}
+            </div>
+            <div className="profile-info-right">
+              <label className="date-input-label">
+                {t('profilePage.labels.lastName')}
+              </label>
+              <div className="date-input-container">
+                <input
+                  type="text"
+                  className={`date-input-field${isNameLocked ? ' field-locked' : ''}`}
+                  value={profileLastName}
+                  onChange={(e) => !isNameLocked && setProfileLastName(e.target.value)}
+                  readOnly={isNameLocked}
+                />
+              </div>
+            </div>
+          </div>
+          {isNameLocked && (
+            <p className="field-locked-note">{t('profilePage.nameLocked') || 'Name is locked after verification starts'}</p>
+          )}
+          <div className="profile-info-cont">
+            <div className="profile-info-left">
               <label className="date-input-label">
                 {t('profilePage.labels.email')}
               </label>
@@ -333,21 +384,8 @@ const Profile = () => {
                   </div>
                 )}
               </div>
-
             </div>
             <div className="profile-info-right">
-              <label className="date-input-label">
-                {t('profilePage.labels.lastName')}
-              </label>
-              <div className="date-input-container">
-                <input
-                  type="text"
-                  className={`date-input-field${isNameLocked ? ' field-locked' : ''}`}
-                  value={profileLastName}
-                  onChange={(e) => !isNameLocked && setProfileLastName(e.target.value)}
-                  readOnly={isNameLocked}
-                />
-              </div>
               <label className="date-input-label">
                 {t('profilePage.labels.phone')}
               </label>
@@ -591,8 +629,50 @@ const Profile = () => {
           {profileStatus.type && (
             <div className={`status-msg ${profileStatus.type}`}>{profileStatus.message}</div>
           )}
+
+          <button
+            className="delete-account-btn"
+            onClick={() => { setDeleteInput(''); setShowDeleteModal(true) }}
+          >
+            {t('profilePage.deleteAccount.btn')}
+          </button>
         </div>
       </div>
+
+      {showDeleteModal && (
+        <div className="delete-account-overlay" onClick={() => setShowDeleteModal(false)}>
+          <div className="delete-account-modal" onClick={(e) => e.stopPropagation()}>
+            <h3 className="delete-account-modal-title">{t('profilePage.deleteAccount.modalTitle')}</h3>
+            <p className="delete-account-modal-desc">
+              {t('profilePage.deleteAccount.modalDescPart1')} <strong>delete</strong> {t('profilePage.deleteAccount.modalDescPart2')}
+            </p>
+            <input
+              className="delete-confirm-input"
+              type="text"
+              placeholder="delete"
+              value={deleteInput}
+              onChange={(e) => setDeleteInput(e.target.value)}
+              autoFocus
+            />
+            <div className="delete-account-modal-actions">
+              <button
+                className="delete-cancel-btn"
+                onClick={() => setShowDeleteModal(false)}
+                disabled={deleteLoading}
+              >
+                {t('profilePage.deleteAccount.cancel')}
+              </button>
+              <button
+                className="delete-confirm-btn"
+                onClick={handleDeleteAccount}
+                disabled={deleteInput !== 'delete' || deleteLoading}
+              >
+                {deleteLoading ? t('profilePage.deleteAccount.confirming') : t('profilePage.deleteAccount.confirm')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

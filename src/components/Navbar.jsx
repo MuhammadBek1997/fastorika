@@ -14,7 +14,10 @@ const Navbar = () => {
         handleNavigateLogin,
         clientPage,
         currentLang,
-        languages
+        languages,
+        isAuthenticated,
+        profileFirstName,
+        profileLastName
     } = useGlobalContext()
     const [isThemeOpen, setIsThemeOpen] = useState(false)
     const [isLangOpen, setIsLangOpen] = useState(false)
@@ -104,7 +107,21 @@ const Navbar = () => {
 
                 <div className="flex nav:order-2 items-center rtl:space-x-reverse">
 
-                    {!isMobileMenuOpen && <button onClick={()=>handleNavigateLogin()} type="button" className="loginBtn">{t("login")}</button>}
+                    {!isMobileMenuOpen && (
+                        isAuthenticated ? (
+                            <button
+                                onClick={() => navigate('/profile')}
+                                type="button"
+                                className="nav-avatar-btn"
+                                title={profileFirstName || ''}
+                            >
+                                {profileFirstName ? profileFirstName[0].toUpperCase() : ''}
+                                {profileLastName ? profileLastName[0].toUpperCase() : ''}
+                            </button>
+                        ) : (
+                            <button onClick={() => handleNavigateLogin()} type="button" className="loginBtn">{t("login")}</button>
+                        )
+                    )}
 
                 </div>
 
