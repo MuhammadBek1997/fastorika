@@ -3126,13 +3126,21 @@ nav.scrolled {
     display: block;
 }
 
+/* Public page sidebar panel: always hidden on non-mobile */
+@media (min-width: 769px) {
+    .sidebar-public-panel {
+        display: none !important;
+    }
+}
+
 @media (max-width: 768px) {
     .sidebar-menu-closed {
         display: none !important;
     }
 
     .sidebar-menu-open {
-        display: block !important;
+        display: flex !important;
+        flex-direction: column;
         z-index: 20;
     }
 
@@ -5776,13 +5784,15 @@ nav.scrolled {
         height: 100%;
         border-radius: 0;
         padding: 1rem;
+        display: flex;
+        flex-direction: column;
     }
 
     .sidebar-list {
         padding: 0.5rem;
     }
 
-    .sidebar-sticky-list .forM {
+    #navbar-sticky.sidebar-sticky-list .forM {
         position: absolute;
         bottom: 2rem;
         left: 40%;
