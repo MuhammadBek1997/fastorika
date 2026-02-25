@@ -5,7 +5,7 @@
   "outputDirectory": "dist",
   "rewrites": [
     {
-      "source": "/((?!assets/|yandex_).*)",
+      "source": "/((?!assets/|yandex_|favicon\\.ico|images/).*)",
       "destination": "/index.html"
     }
   ]
