@@ -758,16 +758,38 @@ nav.scrolled {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     z-index: 50;
     animation: fadeIn 0.2s ease;
+    max-height: calc(4 * 3.5rem);
+    overflow-y: auto;
 }
 
 #light .currDropdownMenu {
     background-color: var(--bg-light);
     border: 1px solid var(--border-light);
+    scrollbar-color: var(--border-light) transparent;
 }
 
 #dark .currDropdownMenu {
     background-color: var(--bg-dark);
     border: 1px solid var(--border-dark);
+    scrollbar-color: var(--border-dark) transparent;
+}
+
+.currDropdownMenu::-webkit-scrollbar {
+    width: 4px;
+}
+
+.currDropdownMenu::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#light .currDropdownMenu::-webkit-scrollbar-thumb {
+    background-color: var(--border-light);
+    border-radius: 4px;
+}
+
+#dark .currDropdownMenu::-webkit-scrollbar-thumb {
+    background-color: var(--border-dark);
+    border-radius: 4px;
 }
 
 /* currency Options */
@@ -2019,19 +2041,8 @@ nav.scrolled {
    ============================================ */
 
 @media(max-width:855px){
-    nav {
-        padding: 0.5rem;
-        position: fixed !important;
-    }
-
     section {
         padding-top: 1rem;
-    }
-
-    #navbar-sticky {
-        width: 100% !important;
-        gap: 1rem !important;
-        padding: 0.5rem !important;
     }
 
     /* Hero section */
@@ -2092,22 +2103,6 @@ nav.scrolled {
         font-size: 12px;
         line-height: 1.2;
     }
-    /* Dropdowns */
-    .dropdowns-cont {
-        position: absolute;
-        top: 0.5rem;
-        right: 2rem;
-        left: auto !important;
-        gap: 0.5rem;
-        flex-wrap: nowrap;
-    }
-
-    .langToggle,
-    .themeToggle {
-        padding: 0.4rem 0.6rem;
-        font-size: 12px;
-    }
-
     /* Hero right section */
     .hero-right {
         width: 100%;
@@ -3134,6 +3129,32 @@ nav.scrolled {
 }
 
 @media (max-width: 768px) {
+    nav {
+        padding: 0.5rem;
+        position: fixed !important;
+    }
+
+    #navbar-sticky {
+        width: 100% !important;
+        gap: 1rem !important;
+        padding: 0.5rem !important;
+    }
+
+    .dropdowns-cont {
+        position: absolute;
+        top: 0.5rem;
+        right: 2rem;
+        left: auto !important;
+        gap: 0.5rem;
+        flex-wrap: nowrap;
+    }
+
+    .langToggle,
+    .themeToggle {
+        padding: 0.4rem 0.6rem;
+        font-size: 12px;
+    }
+
     .sidebar-menu-closed {
         display: none !important;
     }

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react"
 import './currency.css'
 import { useNavigate, useLocation } from "react-router-dom"
 import { useGlobalContext } from "../Context"
-import { ArrowUpDown, ChevronRight, ChevronDown, CreditCard, Bitcoin, BanknoteArrowUp, Info, X } from "lucide-react"
+import { ArrowUpDown, ChevronRight, CreditCard, Bitcoin, BanknoteArrowUp, Info, X } from "lucide-react"
 import { getRatePair, calculateTransactionFees } from "../api"
 import VerificationModal from "../components/VerificationModal"
 import CancelTransactionModal from "../components/CancelTransactionModal"
@@ -10,7 +10,7 @@ import CancelTransactionModal from "../components/CancelTransactionModal"
 
 const UnRegCur = () => {
 
-    let { t, theme, transferData, updateTransferData, kycStatus } = useGlobalContext()
+    let { t, transferData, updateTransferData } = useGlobalContext()
     const navigate = useNavigate()
     const location = useLocation()
 
@@ -57,7 +57,6 @@ const UnRegCur = () => {
 
     const [isMethodOpen, setIsMethodOpen] = useState(false)
     const [curMethod, setMethod] = useState(transferData?.paymentMethod || "")
-    const [selMeth, setSelMeth] = useState({})
     const [isMyCurrencyOpen, setIsMyCurrencyOpen] = useState(false)
     const [isOtherCurrencyOpen, setIsOtherCurrencyOpen] = useState(false)
     const [myCurrency, setMyCurrency] = useState(() => {
@@ -77,7 +76,6 @@ const UnRegCur = () => {
         const [sendAmount, setSendAmount] = useState(transferData?.sendAmount || '0')
     const [receiveAmount, setReceiveAmount] = useState(transferData?.receiveAmount || '0')
     const [exchangeRate, setExchangeRate] = useState(null)
-    const [isLoadingRate, setIsLoadingRate] = useState(false)
     const [feeCalculation, setFeeCalculation] = useState(null)
 
     // Fee configuration - default values (should be fetched from backend per country)
@@ -86,7 +84,6 @@ const UnRegCur = () => {
 
     // Auth state
     const isLoggedIn = !!sessionStorage.getItem('token')
-    const [isFeeExpanded, setIsFeeExpanded] = useState(false)
     const [isFeeModalOpen, setIsFeeModalOpen] = useState(false)
     const isSwapping = useRef(false)
     const editingField = useRef(null) // 'send' or 'receive' — tracks which input the user is typing in
@@ -100,58 +97,24 @@ const UnRegCur = () => {
         { code: 'BNB', name: 'Binance Coin', icon: '🔶' }
     ]
 
-    const networkOptions = {
-        USDT: [
-            { code: 'TRC20', name: 'Tron (TRC20)', fee: 'Low fee' },
-            { code: 'ERC20', name: 'Ethereum (ERC20)', fee: 'High fee' },
-            { code: 'BEP20', name: 'BSC (BEP20)', fee: 'Low fee' }
-        ],
-        BTC: [
-            { code: 'BTC', name: 'Bitcoin Network', fee: 'Variable' }
-        ],
-        ETH: [
-            { code: 'ERC20', name: 'Ethereum (ERC20)', fee: 'High fee' },
-            { code: 'BEP20', name: 'BSC (BEP20)', fee: 'Low fee' }
-        ],
-        USDC: [
-            { code: 'ERC20', name: 'Ethereum (ERC20)', fee: 'High fee' },
-            { code: 'BEP20', name: 'BSC (BEP20)', fee: 'Low fee' }
-        ],
-        BNB: [
-            { code: 'BEP20', name: 'BSC (BEP20)', fee: 'Low fee' }
-        ]
-    }
-
-    const [selectedCrypto, setSelectedCrypto] = useState(cryptoCurrencies[0])
-    const [selectedNetwork, setSelectedNetwork] = useState(networkOptions['USDT'][0])
-    const [walletAddress, setWalletAddress] = useState("")
-    const [cryptoReceiverName, setCryptoReceiverName] = useState("")
-    const [isCryptoOpen, setIsCryptoOpen] = useState(false)
-    const [isNetworkOpen, setIsNetworkOpen] = useState(false)
-    const [cryptoTermsChecked, setCryptoTermsChecked] = useState(false)
+    const [selectedSendCrypto, setSelectedSendCrypto] = useState(cryptoCurrencies[1]) // BTC — jo'natish uchun
+    const [isSendCryptoOpen, setIsSendCryptoOpen] = useState(false)
 
     // Modal states
     const [showVerificationModal, setShowVerificationModal] = useState(false)
     const [showCancelModal, setShowCancelModal] = useState(false)
 
-    // Update network options when crypto changes
-    useEffect(() => {
-        const networks = networkOptions[selectedCrypto.code]
-        if (networks && networks.length > 0) {
-            setSelectedNetwork(networks[0])
-        }
-    }, [selectedCrypto])
-
     // Function to proceed with transfer after verification check
     const proceedWithTransfer = () => {
         // Build transfer data and save to global context
         // Note: Sender card is not collected here - user enters it on payment system (Volet)
+        const isCryptoMethod = curMethod === t('methods.crypto')
         const newTransferData = {
             sendAmount,
             receiveAmount,
-            fromCurrency: myCurrency.currencyName,
-            toCurrency: curMethod === t('methods.crypto') ? selectedCrypto.code : otherCurrency.currencyName,
-            fromFlag: myCurrency.flag,
+            fromCurrency: isCryptoMethod ? selectedSendCrypto.code : myCurrency.currencyName,
+            toCurrency: otherCurrency.currencyName,
+            fromFlag: isCryptoMethod ? null : myCurrency.flag,
             toFlag: otherCurrency.flag,
             paymentMethod: curMethod,
             exchangeRate: exchangeRate?.rate || null,
@@ -162,10 +125,10 @@ const UnRegCur = () => {
         }
 
         // Add crypto data if crypto method selected
-        if (curMethod === t('methods.crypto')) {
-            newTransferData.cryptoCurrency = selectedCrypto.code
-            newTransferData.cryptoIcon = selectedCrypto.icon
-            newTransferData.cryptoName = selectedCrypto.name
+        if (isCryptoMethod) {
+            newTransferData.sendCryptoCurrency = selectedSendCrypto.code
+            newTransferData.sendCryptoIcon = selectedSendCrypto.icon
+            newTransferData.sendCryptoName = selectedSendCrypto.name
         }
 
         // Save to global context
@@ -180,16 +143,6 @@ const UnRegCur = () => {
         } else {
             setIsMethodOpen(true)
         }
-    }
-
-    // Validate wallet address format
-    const validateWalletAddress = (address) => {
-        if (!address) return false
-        if (address.length < 26) return false
-        if (selectedNetwork.code === 'TRC20' && !address.startsWith('T')) return false
-        if ((selectedNetwork.code === 'ERC20' || selectedNetwork.code === 'BEP20') && !address.startsWith('0x')) return false
-        if (selectedNetwork.code === 'BTC' && !address.match(/^(1|3|bc1)/)) return false
-        return true
     }
 
     // Get transfer data from Home page
@@ -244,7 +197,6 @@ const UnRegCur = () => {
             }
 
             try {
-                setIsLoadingRate(true)
                 const rateData = await getRatePair(
                     myCurrency.currencyName,
                     otherCurrency.currencyName,
@@ -273,7 +225,6 @@ const UnRegCur = () => {
                 console.error('Failed to fetch exchange rate:', error)
                 setExchangeRate(null)
             } finally {
-                setIsLoadingRate(false)
             }
         }
 
@@ -364,56 +315,102 @@ const UnRegCur = () => {
                             />
                         </div>
                         <div className="currDropdown">
-                            <button
-                                onClick={() => {
-                                    setIsMyCurrencyOpen(!isMyCurrencyOpen)
-                                    // Boshqa dropdownlarni yopish
-                                    setIsOtherCurrencyOpen(false)
-                                    setIsCryptoOpen(false)
-                                    setIsNetworkOpen(false)
-                                    setIsMethodOpen(false)
-                                }}
-                                className="currToggle"
-                            >
-                                <img src={myCurrency.flag} alt="" className="currImg" />
-                                <span className="currCode">{myCurrency?.currencyName.toUpperCase()}</span>
-                                <svg className="ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
-                                </svg>
-                            </button>
+                            {curMethod === t('methods.crypto') ? (
+                                <>
+                                    <button
+                                        onClick={() => {
+                                            setIsSendCryptoOpen(!isSendCryptoOpen)
+                                            setIsMyCurrencyOpen(false)
+                                            setIsOtherCurrencyOpen(false)
 
-                            {isMyCurrencyOpen && (
-                                <div className="currDropdownMenu">
-                                    {currency.map((cur, index) => (
-                                        <button
-                                            key={index}
-                                            onClick={() => {
-                                                setMyCurrency(cur)
-                                                setIsMyCurrencyOpen(false)
-                                            }}
-                                            className={`currOption ${myCurrency.currencyName === cur.currencyName ? 'active' : ''}`}
-                                        >
-                                            <img src={cur.flag} alt="" className="currImg" />
-                                            <span>{cur.currencyName}</span>
-                                        </button>
-                                    ))}
-                                </div>
+
+                                            setIsMethodOpen(false)
+                                        }}
+                                        className="currToggle"
+                                    >
+                                        <span style={{ fontSize: '1.25rem' }}>{selectedSendCrypto.icon}</span>
+                                        <span className="currCode">{selectedSendCrypto.code}</span>
+                                        <svg className="ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
+                                        </svg>
+                                    </button>
+                                    {isSendCryptoOpen && (
+                                        <div className="currDropdownMenu">
+                                            {cryptoCurrencies.map((crypto) => (
+                                                <button
+                                                    key={crypto.code}
+                                                    onClick={() => {
+                                                        setSelectedSendCrypto(crypto)
+                                                        setIsSendCryptoOpen(false)
+                                                    }}
+                                                    className={`currOption ${selectedSendCrypto.code === crypto.code ? 'active' : ''}`}
+                                                >
+                                                    <span style={{ fontSize: '1.25rem', marginRight: '0.5rem' }}>{crypto.icon}</span>
+                                                    <span>{crypto.code}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
+                                </>
+                            ) : (
+                                <>
+                                    <button
+                                        onClick={() => {
+                                            setIsMyCurrencyOpen(!isMyCurrencyOpen)
+                                            setIsOtherCurrencyOpen(false)
+
+
+                                            setIsMethodOpen(false)
+                                        }}
+                                        className="currToggle"
+                                    >
+                                        <img src={myCurrency.flag} alt="" className="currImg" />
+                                        <span className="currCode">{myCurrency?.currencyName.toUpperCase()}</span>
+                                        <svg className="ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
+                                        </svg>
+                                    </button>
+                                    {isMyCurrencyOpen && (
+                                        <div className="currDropdownMenu">
+                                            {currency.map((cur, index) => (
+                                                <button
+                                                    key={index}
+                                                    onClick={() => {
+                                                        setMyCurrency(cur)
+                                                        setIsMyCurrencyOpen(false)
+                                                    }}
+                                                    className={`currOption ${myCurrency.currencyName === cur.currencyName ? 'active' : ''}`}
+                                                >
+                                                    <img src={cur.flag} alt="" className="currImg" />
+                                                    <span>{cur.currencyName}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
+                                </>
                             )}
                         </div>
                     </div>
-                    <button type='button' className='changeBtn' onClick={() => {
-                        isSwapping.current = true
-                        // Swap amounts
-                        const tempAmount = sendAmount
-                        setSendAmount(receiveAmount.replace(/,/g, ''))
-                        setReceiveAmount(tempAmount)
-                        // Swap currencies
-                        const tempCur = myCurrency
-                        setMyCurrency(otherCurrency)
-                        setOtherCurrency(tempCur)
-                        // Reset flags after state updates
-                        setTimeout(() => { isSwapping.current = false; editingField.current = null }, 100)
-                    }}>
+                    <button
+                        type='button'
+                        className='changeBtn'
+                        disabled={curMethod === t('methods.crypto')}
+                        style={{
+                            opacity: curMethod === t('methods.crypto') ? 0.35 : 1,
+                            cursor: curMethod === t('methods.crypto') ? 'not-allowed' : 'pointer'
+                        }}
+                        onClick={() => {
+                            if (curMethod === t('methods.crypto')) return
+                            isSwapping.current = true
+                            const tempAmount = sendAmount
+                            setSendAmount(receiveAmount.replace(/,/g, ''))
+                            setReceiveAmount(tempAmount)
+                            const tempCur = myCurrency
+                            setMyCurrency(otherCurrency)
+                            setOtherCurrency(tempCur)
+                            setTimeout(() => { isSwapping.current = false; editingField.current = null }, 100)
+                        }}
+                    >
                         <ArrowUpDown/>
                     </button>
                     <div className='currency-transfer-bottom'>
@@ -441,53 +438,13 @@ const UnRegCur = () => {
                             />
                         </div>
                         <div className="currDropdown">
-                            {/* Show crypto dropdown when crypto method is selected */}
-                            {curMethod === t('methods.crypto') ? (
-                                <>
-                                    <button
-                                        onClick={() => {
-                                            setIsCryptoOpen(!isCryptoOpen)
-                                            // Boshqa dropdownlarni yopish
-                                            setIsMyCurrencyOpen(false)
-                                            setIsOtherCurrencyOpen(false)
-                                            setIsNetworkOpen(false)
-                                            setIsMethodOpen(false)
-                                        }}
-                                        className="currToggle"
-                                    >
-                                        <span style={{ fontSize: '1.25rem' }}>{selectedCrypto.icon}</span>
-                                        <span className="currCode">{selectedCrypto.code}</span>
-                                        <svg className="ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
-                                        </svg>
-                                    </button>
-                                    {isCryptoOpen && (
-                                        <div className="currDropdownMenu">
-                                            {cryptoCurrencies.map((crypto) => (
-                                                <button
-                                                    key={crypto.code}
-                                                    onClick={() => {
-                                                        setSelectedCrypto(crypto)
-                                                        setIsCryptoOpen(false)
-                                                    }}
-                                                    className={`currOption ${selectedCrypto.code === crypto.code ? 'active' : ''}`}
-                                                >
-                                                    <span style={{ fontSize: '1.25rem', marginRight: '0.5rem' }}>{crypto.icon}</span>
-                                                    <span>{crypto.code}</span>
-                                                </button>
-                                            ))}
-                                        </div>
-                                    )}
-                                </>
-                            ) : (
-                                <>
+                            {/* Always show fiat dropdown on receiver side */}
+                            <>
                                     <button
                                         onClick={() => {
                                             setIsOtherCurrencyOpen(!isOtherCurrencyOpen)
-                                            // Boshqa dropdownlarni yopish
                                             setIsMyCurrencyOpen(false)
-                                            setIsCryptoOpen(false)
-                                            setIsNetworkOpen(false)
+                                            setIsSendCryptoOpen(false)
                                             setIsMethodOpen(false)
                                         }}
                                         className="currToggle"
@@ -516,7 +473,6 @@ const UnRegCur = () => {
                                         </div>
                                     )}
                                 </>
-                            )}
                         </div>
                     </div>
                 </div>
@@ -553,11 +509,9 @@ const UnRegCur = () => {
                         <button
                             onClick={() => {
                                 setIsMethodOpen(!isMethodOpen)
-                                // Boshqa dropdownlarni yopish
                                 setIsMyCurrencyOpen(false)
                                 setIsOtherCurrencyOpen(false)
-                                setIsCryptoOpen(false)
-                                setIsNetworkOpen(false)
+                                setIsSendCryptoOpen(false)
                             }}
                             className="country-select-btn"
                         >
