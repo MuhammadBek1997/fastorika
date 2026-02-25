@@ -1,4 +1,5 @@
 # Fastorika Robots.txt
+
 User-agent: *
 Allow: /
 Disallow: /login
@@ -16,6 +17,28 @@ Disallow: /bank-transfer
 Disallow: /cardnumber
 Disallow: /provider
 Disallow: /instruction
+
+# Yandex specific
+User-agent: Yandexbot
+Allow: /
+Disallow: /login
+Disallow: /registration
+Disallow: /transactions
+Disallow: /cards
+Disallow: /profile
+Disallow: /settings
+Disallow: /support
+Disallow: /docs
+Disallow: /kyc
+Disallow: /currency
+Disallow: /crypto
+Disallow: /bank-transfer
+Disallow: /cardnumber
+Disallow: /provider
+Disallow: /instruction
+
+User-agent: YandexImages
+Allow: /images/
 
 # Sitemap
 Sitemap: https://fastorika.com/sitemap.xml

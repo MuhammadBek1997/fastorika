@@ -103,7 +103,6 @@ export const getCurrentUser = async () => {
  * @param {string} userData.phone - User's phone number
  * @param {number} userData.countryId - User's country ID
  * @param {string} userData.dateOfBirth - User's date of birth (YYYY-MM-DD)
- *
  * @returns {Promise<Object>} Updated user data
  */
 export const updateCurrentUser = async (userData) => {
