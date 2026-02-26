@@ -7,7 +7,7 @@ import UnRegCopyModal from "./UnRegCopyModal"
 import { findClientByFastorikaId } from "../api"
 
 const UnRegCardNum = () => {
-    let { t, theme, user, profilePhone, transferData, updateTransferData } = useGlobalContext()
+    let { t, theme, user, profilePhone, transferData, updateTransferData, profileCountriesList } = useGlobalContext()
     const navigate = useNavigate()
     const location = useLocation()
 
@@ -33,6 +33,17 @@ const UnRegCardNum = () => {
 
     // Check if this is a crypto transfer
     const isCryptoTransfer = paymentMethod === 'CRYPTO'
+
+    // Find destination country and its card indicators
+    const destinationCountry = profileCountriesList?.find(
+        c => c.currency?.toUpperCase() === toCurrency?.toUpperCase()
+    )
+    const destCardIndicators = destinationCountry?.cardIndicators
+    // If indicators are configured (not null), check if at least one is enabled
+    // If not configured (null), show form by default
+    const hasAnyIndicatorEnabled = destCardIndicators
+        ? Object.values(destCardIndicators).some(v => v === true)
+        : true
 
     // Crypto-specific state
     const [walletAddress, setWalletAddress] = useState(savedWalletAddress || "")
@@ -328,6 +339,20 @@ const UnRegCardNum = () => {
                             disabled={!walletAddress || walletAddress.length < 10}
                         >
                             {t('continue') || "Продолжить"}
+                        </button>
+                    </div>
+                ) : !hasAnyIndicatorEnabled ? (
+                    <div className="currency-inner" style={{ textAlign: 'center', padding: '2rem 1rem' }}>
+                        <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🚫</div>
+                        <p style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '0.5rem' }}>
+                            {t('paymentMethodUnavailable') || 'Bu yo\'nalish uchun to\'lov usuli mavjud emas'}
+                        </p>
+                        <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary, #888)', marginBottom: '1.5rem' }}>
+                            {t('paymentMethodUnavailableDesc') || 'Tanlangan valyuta uchun hech qanday to\'lov indikatori yoqilmagan'}
+                        </p>
+                        <button className="back-btn" onClick={() => navigate(-1)}>
+                            <ArrowLeft size={18} />
+                            {t('back')}
                         </button>
                     </div>
                 ) : (

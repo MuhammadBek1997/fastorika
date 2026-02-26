@@ -246,11 +246,15 @@ export const AppProvider = ({ children }) => {
     }
   }
 
-  // Load profile and countries when authenticated
+  // Load countries on mount (public endpoint, no auth required)
+  useEffect(() => {
+    loadCountries()
+  }, [])
+
+  // Load profile when authenticated
   useEffect(() => {
     if (isAuthenticated) {
       loadProfile()
-      loadCountries()
     }
   }, [isAuthenticated])
 
