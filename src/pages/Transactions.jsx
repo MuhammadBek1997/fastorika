@@ -5,7 +5,7 @@ import { ArrowLeftRight, Check, Clock, List, MessagesSquare, MinusCircle, X } fr
 import { getExchangeRate, calculateTransactionFees } from '../api'
 
 const Transactions = () => {
-  let { t, theme, navigate, transactions, globalDropdownKey, closeAllDropdowns } = useGlobalContext()
+  let { t, theme, navigate, transactions, globalDropdownKey, closeAllDropdowns, profileCountriesList } = useGlobalContext()
 
   // Track if this component triggered the global close to avoid self-closing loop
   const selfTriggered = useRef(false)
@@ -45,7 +45,7 @@ const Transactions = () => {
   const toCardPrimary = t('transactions.toCard')
   const toCardResolved = toCardPrimary === 'transactions.toCard' ? t('global.toCard') : toCardPrimary
   // Fiat currencies
-  const currency = [
+  const allCurrencies = [
     { flag: 'https://img.icons8.com/color/96/usa-circular.png', currencyName: 'USD' },
     { flag: 'https://img.icons8.com/color/96/uzbekistan-circular.png', currencyName: 'UZS' },
     { flag: 'https://img.icons8.com/color/96/russian-federation-circular.png', currencyName: 'RUB' },
@@ -54,6 +54,13 @@ const Transactions = () => {
     { flag: 'https://img.icons8.com/color/96/turkey-circular.png', currencyName: 'TRY' },
     { flag: 'https://img.icons8.com/color/96/kazakhstan-circular.png', currencyName: 'KZT' }
   ]
+
+  // profileCountriesList dan kelgan valyutalar bo'yicha filter
+  const currency = profileCountriesList.length > 0
+    ? allCurrencies.filter(cur =>
+        profileCountriesList.some(c => c.currency?.toUpperCase() === cur.currencyName)
+      )
+    : allCurrencies
 
   // Crypto currencies (for receiving only)
   const cryptoCurrencies = [
@@ -87,6 +94,17 @@ const Transactions = () => {
   }, [globalDropdownKey])
   const [myTransCur, setMyTransCur] = useState(currency[0])
   const [otherTransCur, setOtherTransCur] = useState(currency[1])
+
+  // profileCountriesList yuklanganida tanlangan valyuta listda yo'q bo'lsa reset
+  useEffect(() => {
+    if (currency.length === 0) return
+    if (!currency.find(c => c.currencyName === myTransCur.currencyName)) {
+      setMyTransCur(currency[0])
+    }
+    if (!currency.find(c => c.currencyName === otherTransCur.currencyName)) {
+      setOtherTransCur(currency.length > 1 ? currency[1] : currency[0])
+    }
+  }, [currency.length])
   const [selectedCrypto, setSelectedCrypto] = useState(null) // null = fiat, object = crypto
   const [sendAmount, setSendAmount] = useState('0')
   const [receiveAmount, setReceiveAmount] = useState('0')

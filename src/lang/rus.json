@@ -196,7 +196,8 @@
     "repeat": "Повторить",
     "needHelp": "Нужна помощь?",
     "helpDesc": "Наши специалисты помогут вам",
-    "write": "Написать"
+    "write": "Написать",
+    "paid": "Оплачено"
   },
   "nav": {
     "transactions": "Мои транзакции",
@@ -294,7 +295,8 @@
   "placeholders": {
     "firstName": "Имя",
     "lastName": "Фамилия",
-    "userId": "ID пользователя"
+    "userId": "ID пользователя",
+    "cardNumber": "ХXXX XXXX XXXX XXXX"
   },
   "recipientDetails": "Укажите получателя",
   "fillRecipientInfo": "Заполните необходимые данные о получателе",
@@ -546,7 +548,6 @@
   "confirmRecipientVerified": "Подтверждаю, что получатель является",
   "expiryMonth": "Месяц (MM)",
   "expiryYear": "Год (YYYY)",
-
   "bankTransferDetails": "Банковский перевод",
   "enterBankAccountInfo": "Введите банковские реквизиты получателя",
   "selectBank": "Выберите банк",
@@ -567,18 +568,15 @@
   "invalidAccountNumber": "Неверный формат номера счёта",
   "invalidAccountFormat": "Неверный формат номера счёта",
   "invalidSwiftFormat": "SWIFT код должен содержать 8 или 11 символов",
-
   "invalidWalletAddress": "Неверный адрес кошелька для выбранной сети",
   "paymentConfigError": "Ошибка конфигурации платежа. Пожалуйста, обратитесь в поддержку.",
   "transactionCreated": "Транзакция успешно создана!",
   "transactionError": "Не удалось создать транзакцию",
-
   "paymentSuccess": "Оплата прошла успешно!",
   "paymentSuccessDesc": "Ваш платёж принят. Транзакция будет обработана в ближайшее время.",
   "paymentFailed": "Оплата не прошла",
   "paymentFailedDesc": "Произошла ошибка при обработке платежа. Пожалуйста, попробуйте ещё раз.",
   "goToTransactions": "Перейти к транзакциям",
-
   "faqItems": {
     "q1": {
       "question": "Как отправить деньги?",
@@ -602,5 +600,14 @@
     }
   },
   "paymentMethodUnavailable": "Способ оплаты недоступен",
-  "paymentMethodUnavailableDesc": "Для выбранной валюты не настроен ни один способ оплаты"
+  "paymentMethodUnavailableDesc": "Для выбранной валюты не настроен ни один способ оплаты",
+  "cryptoDetails": "Данные криптовалюты",
+  "enterCryptoWalletInfo": "Введите данные криптокошелька получателя",
+  "selectCryptoCurrency": "Выберите криптовалюту",
+  "invalidWalletFormat": "Неверный формат адреса кошелька",
+  "receiverName": "Имя получателя",
+  "enterReceiverName": "Введите имя",
+  "cryptoNetworkWarning": "Убедитесь, что адрес принадлежит выбранной сети. Отправка в неправильную сеть может привести к потере средств.",
+  "confirmWalletAddress": "Подтверждаю, что адрес кошелька верный и соответствует выбранной сети",
+  "confirmNetworkAddress": "Подтверждаю соответствие адреса выбранной сети"
 }

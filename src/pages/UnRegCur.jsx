@@ -10,11 +10,11 @@ import CancelTransactionModal from "../components/CancelTransactionModal"
 
 const UnRegCur = () => {
 
-    let { t, transferData, updateTransferData } = useGlobalContext()
+    let { t, transferData, updateTransferData, profileCountriesList } = useGlobalContext()
     const navigate = useNavigate()
     const location = useLocation()
 
-    let currency = [
+    const allCurrencies = [
         {
             flag: 'https://img.icons8.com/color/96/usa-circular.png',
             currencyName: 'USD'
@@ -44,6 +44,13 @@ const UnRegCur = () => {
             currencyName: 'KZT'
         }
     ]
+
+    // profileCountriesList dan kelgan valyutalar bo'yicha filter
+    const currency = profileCountriesList.length > 0
+        ? allCurrencies.filter(cur =>
+            profileCountriesList.some(c => c.currency?.toUpperCase() === cur.currencyName)
+          )
+        : allCurrencies
     const methods = [
         t('methods.debit'),
         t('methods.crypto'),
@@ -148,6 +155,17 @@ const UnRegCur = () => {
             setIsMethodOpen(true)
         }
     }
+
+    // profileCountriesList yuklanganida tanlangan valyuta listda yo'q bo'lsa reset
+    useEffect(() => {
+        if (currency.length === 0) return
+        if (!currency.find(c => c.currencyName === myCurrency.currencyName)) {
+            setMyCurrency(currency[0])
+        }
+        if (!currency.find(c => c.currencyName === otherCurrency.currencyName)) {
+            setOtherCurrency(currency.length > 1 ? currency[1] : currency[0])
+        }
+    }, [currency.length])
 
     // Get transfer data from Home page
     useEffect(() => {

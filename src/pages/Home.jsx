@@ -14,7 +14,7 @@ const Home = () => {
   const [countryMap, setCountryMap] = useState({}) // currency → country
   const [isFeeModalOpen, setIsFeeModalOpen] = useState(false)
 
-  let currency = [
+  const allCurrencies = [
     {
       flag: 'https://img.icons8.com/color/96/usa-circular.png',
       currencyName: 'USD'
@@ -44,6 +44,11 @@ const Home = () => {
       currencyName: 'KZT'
     }
   ]
+
+  // countryMap yuklangandan keyin faqat backend qo'llab-quvvatlaydigan valyutalarni ko'rsatish
+  const currency = Object.keys(countryMap).length > 0
+    ? allCurrencies.filter(cur => countryMap[cur.currencyName])
+    : allCurrencies
 
 
   const [isMyCurOpen, setIsMyCurOpen] = useState(false)
@@ -100,6 +105,19 @@ const Home = () => {
     }
     loadCountries()
   }, [])
+
+  // countryMap yuklanganidan keyin tanlangan valyuta filter ro'yxatida yo'q bo'lsa reset
+  useEffect(() => {
+    if (Object.keys(countryMap).length === 0) return
+    const filtered = allCurrencies.filter(cur => countryMap[cur.currencyName])
+    if (filtered.length === 0) return
+    if (!filtered.find(c => c.currencyName === myCur.currencyName)) {
+      setMyCur(filtered[0])
+    }
+    if (!filtered.find(c => c.currencyName === otherCur.currencyName)) {
+      setOtherCur(filtered.length > 1 ? filtered[1] : filtered[0])
+    }
+  }, [countryMap])
 
   // Fetch fees when receiver currency changes
   useEffect(() => {

@@ -196,7 +196,8 @@
     "repeat": "Repeat",
     "needHelp": "Need help?",
     "helpDesc": "Our specialists will assist you",
-    "write": "Write"
+    "write": "Write",
+    "paid": "Paid"
   },
   "nav": {
     "transactions": "My transactions",
@@ -294,7 +295,8 @@
   "placeholders": {
     "firstName": "First name",
     "lastName": "Last name",
-    "userId": "User ID"
+    "userId": "User ID",
+    "cardNumber": "XXXX XXXX XXXX XXXX"
   },
   "recipientDetails": "Specify the recipient",
   "fillRecipientInfo": "Fill in the required recipient details",
@@ -546,7 +548,6 @@
   "confirmRecipientVerified": "I confirm the recipient is",
   "expiryMonth": "Month (MM)",
   "expiryYear": "Year (YYYY)",
-
   "bankTransferDetails": "Bank Transfer",
   "enterBankAccountInfo": "Enter recipient's bank account details",
   "selectBank": "Select bank",
@@ -567,18 +568,15 @@
   "invalidAccountNumber": "Invalid account number format",
   "invalidAccountFormat": "Invalid account number format",
   "invalidSwiftFormat": "SWIFT code must be 8 or 11 characters",
-
   "invalidWalletAddress": "Invalid wallet address for selected network",
   "paymentConfigError": "Payment configuration error. Please contact support.",
   "transactionCreated": "Transaction created successfully!",
   "transactionError": "Failed to create transaction",
-
   "paymentSuccess": "Payment Successful!",
   "paymentSuccessDesc": "Your payment has been accepted. The transaction will be processed shortly.",
   "paymentFailed": "Payment Failed",
   "paymentFailedDesc": "An error occurred during payment processing. Please try again.",
   "goToTransactions": "Go to Transactions",
-
   "faqItems": {
     "q1": {
       "question": "How do I send money?",
@@ -602,5 +600,14 @@
     }
   },
   "paymentMethodUnavailable": "Payment method unavailable",
-  "paymentMethodUnavailableDesc": "No payment method is configured for the selected currency"
+  "paymentMethodUnavailableDesc": "No payment method is configured for the selected currency",
+  "cryptoDetails": "Crypto Details",
+  "enterCryptoWalletInfo": "Enter recipient's crypto wallet details",
+  "selectCryptoCurrency": "Select Cryptocurrency",
+  "invalidWalletFormat": "Invalid wallet address format",
+  "receiverName": "Receiver Name",
+  "enterReceiverName": "Enter name",
+  "cryptoNetworkWarning": "Make sure the address belongs to the selected network. Sending to the wrong network may result in loss of funds.",
+  "confirmWalletAddress": "I confirm the wallet address is correct and matches the selected network",
+  "confirmNetworkAddress": "I confirm the address matches the selected network"
 }
