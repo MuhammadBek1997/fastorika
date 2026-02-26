@@ -343,7 +343,12 @@ const UnRegCardNum = () => {
                     </div>
                 ) : !hasAnyIndicatorEnabled ? (
                     <div className="currency-inner" style={{ textAlign: 'center', padding: '2rem 1rem' }}>
-                        <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🚫</div>
+                        <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}>
+                            <svg width="52" height="52" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="12" cy="12" r="10" stroke="#ef4444" strokeWidth="2"/>
+                                <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" stroke="#ef4444" strokeWidth="2" strokeLinecap="round"/>
+                            </svg>
+                        </div>
                         <p style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '0.5rem' }}>
                             {t('paymentMethodUnavailable') || 'Bu yo\'nalish uchun to\'lov usuli mavjud emas'}
                         </p>
