@@ -600,5 +600,7 @@
       "question": "What are the transfer limits?",
       "answer": "The daily limit for verified users is up to $10,000, and the monthly limit is up to $50,000. Unverified accounts have much lower limits. Separate limits apply to international transfers."
     }
-  }
+  },
+  "paymentMethodUnavailable": "Payment method unavailable",
+  "paymentMethodUnavailableDesc": "No payment method is configured for the selected currency"
 }
