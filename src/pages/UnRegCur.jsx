@@ -134,6 +134,10 @@ const UnRegCur = () => {
         // Save to global context
         updateTransferData(newTransferData)
 
+        // Persist key values to sessionStorage as fallback (survives page refresh)
+        sessionStorage.setItem('transfer_sendAmount', String(sendAmount))
+        sessionStorage.setItem('transfer_fromCurrency', isCryptoMethod ? selectedSendCrypto.code : myCurrency.currencyName)
+
         if (curMethod === t('methods.debit')) {
             navigate('/cardnumber')
         } else if (curMethod === t('methods.crypto')) {

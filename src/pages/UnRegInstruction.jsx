@@ -68,7 +68,20 @@ const UnRegInstruction = () => {
               setIsLoading(true)
 
               // Build transaction data for API
-              const { recipient, feeCalculation, sendAmount, fromCurrency, toCurrency, paymentMethod, cryptoDetails, bankDetails, cryptoCurrency, senderCard } = transferData
+              const { recipient, feeCalculation, fromCurrency: ctxFromCurrency, toCurrency, paymentMethod, cryptoDetails, bankDetails, cryptoCurrency, senderCard } = transferData
+
+              // sendAmount: use context value, fallback to sessionStorage (survives page refresh)
+              const rawSendAmount = transferData.sendAmount || sessionStorage.getItem('transfer_sendAmount') || ''
+              const sendAmount = rawSendAmount
+              const fromCurrency = ctxFromCurrency || sessionStorage.getItem('transfer_fromCurrency') || 'USD'
+
+              // Validate required fields before API call
+              const parsedAmount = parseFloat(String(sendAmount).replace(/\s/g, ''))
+              if (!sendAmount || isNaN(parsedAmount) || parsedAmount <= 0) {
+                notify.error(t('amountRequired') || 'Please go back and enter the transfer amount')
+                setIsLoading(false)
+                return
+              }
 
               // Log sender card info (card from which payment will be taken via Volet)
 
@@ -105,7 +118,7 @@ const UnRegInstruction = () => {
               // Build the transaction request according to Swagger API spec
               const transactionRequest = {
                 paymentMethod: paymentMethodType,
-                amountSent: parseFloat(String(sendAmount).replace(/\s/g, '')),
+                amountSent: parsedAmount,
                 sourceCurrency: fromCurrency || 'USD',
                 receiverCurrency: toCurrency || 'UZS',
                 receiverName: recipient?.receiverName || `${recipient?.firstName || ''} ${recipient?.lastName || ''}`.trim(),
@@ -246,6 +259,8 @@ const UnRegInstruction = () => {
                 })
 
                 document.body.appendChild(form)
+                sessionStorage.removeItem('transfer_sendAmount')
+                sessionStorage.removeItem('transfer_fromCurrency')
                 form.submit()
               } else if (hasActionUrl) {
                 // Has URL but missing some fields - log and show error
@@ -264,6 +279,8 @@ const UnRegInstruction = () => {
               } else {
                 // No payment URL - just complete without redirect
                 localStorage.removeItem('pending')
+                sessionStorage.removeItem('transfer_sendAmount')
+                sessionStorage.removeItem('transfer_fromCurrency')
                 notify.success(t('transactionCreated') || 'Transaction created successfully!')
                 navigate('/transactions')
               }
