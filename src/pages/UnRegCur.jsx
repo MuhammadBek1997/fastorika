@@ -45,8 +45,8 @@ const UnRegCur = () => {
         }
     ]
 
-    // profileCountriesList dan kelgan valyutalar bo'yicha filter
-    const currency = profileCountriesList.length > 0
+    // Qabul qiluvchi uchun — faqat backend country lari bo'yicha
+    const receiverCurrencies = profileCountriesList.length > 0
         ? allCurrencies.filter(cur =>
             profileCountriesList.some(c => c.currency?.toUpperCase() === cur.currencyName)
           )
@@ -68,17 +68,17 @@ const UnRegCur = () => {
     const [isOtherCurrencyOpen, setIsOtherCurrencyOpen] = useState(false)
     const [myCurrency, setMyCurrency] = useState(() => {
         if (transferData?.fromCurrency) {
-            const found = currency.find(c => c.currencyName === transferData.fromCurrency)
-            return found || currency[0]
+            const found = allCurrencies.find(c => c.currencyName === transferData.fromCurrency)
+            return found || allCurrencies[0]
         }
-        return currency[0]
+        return allCurrencies[0]
     })
     const [otherCurrency, setOtherCurrency] = useState(() => {
         if (transferData?.toCurrency) {
-            const found = currency.find(c => c.currencyName === transferData.toCurrency)
-            return found || currency[1]
+            const found = allCurrencies.find(c => c.currencyName === transferData.toCurrency)
+            return found || allCurrencies[1]
         }
-        return currency[1]
+        return allCurrencies[1]
     })
         const [sendAmount, setSendAmount] = useState(transferData?.sendAmount || '0')
     const [receiveAmount, setReceiveAmount] = useState(transferData?.receiveAmount || '0')
@@ -156,16 +156,13 @@ const UnRegCur = () => {
         }
     }
 
-    // profileCountriesList yuklanganida tanlangan valyuta listda yo'q bo'lsa reset
+    // receiverCurrencies yuklanganida qabul qiluvchi valyuta listda yo'q bo'lsa reset
     useEffect(() => {
-        if (currency.length === 0) return
-        if (!currency.find(c => c.currencyName === myCurrency.currencyName)) {
-            setMyCurrency(currency[0])
+        if (receiverCurrencies.length === 0) return
+        if (!receiverCurrencies.find(c => c.currencyName === otherCurrency.currencyName)) {
+            setOtherCurrency(receiverCurrencies[0])
         }
-        if (!currency.find(c => c.currencyName === otherCurrency.currencyName)) {
-            setOtherCurrency(currency.length > 1 ? currency[1] : currency[0])
-        }
-    }, [currency.length])
+    }, [receiverCurrencies.length])
 
     // Get transfer data from Home page
     useEffect(() => {
@@ -394,7 +391,7 @@ const UnRegCur = () => {
                                     </button>
                                     {isMyCurrencyOpen && (
                                         <div className="currDropdownMenu">
-                                            {currency.map((cur, index) => (
+                                            {allCurrencies.map((cur, index) => (
                                                 <button
                                                     key={index}
                                                     onClick={() => {
@@ -479,7 +476,7 @@ const UnRegCur = () => {
                                     </button>
                                     {isOtherCurrencyOpen && (
                                         <div className="currDropdownMenu">
-                                            {currency.map((cur, index) => (
+                                            {receiverCurrencies.map((cur, index) => (
                                                 <button
                                                     key={index}
                                                     onClick={() => {

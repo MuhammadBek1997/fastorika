@@ -55,8 +55,8 @@ const Transactions = () => {
     { flag: 'https://img.icons8.com/color/96/kazakhstan-circular.png', currencyName: 'KZT' }
   ]
 
-  // profileCountriesList dan kelgan valyutalar bo'yicha filter
-  const currency = profileCountriesList.length > 0
+  // Qabul qiluvchi uchun — faqat backend country lari bo'yicha
+  const receiverCurrencies = profileCountriesList.length > 0
     ? allCurrencies.filter(cur =>
         profileCountriesList.some(c => c.currency?.toUpperCase() === cur.currencyName)
       )
@@ -74,7 +74,7 @@ const Transactions = () => {
   // Helper: get flag URL or emoji for a currency code
   const getCurrencyFlag = (code) => {
     if (!code) return null
-    const fiat = currency.find(c => c.currencyName === code.toUpperCase())
+    const fiat = allCurrencies.find(c => c.currencyName === code.toUpperCase())
     if (fiat) return { type: 'img', src: fiat.flag }
     const crypto = cryptoCurrencies.find(c => c.code === code.toUpperCase())
     if (crypto) return { type: 'emoji', icon: crypto.icon }
@@ -95,16 +95,13 @@ const Transactions = () => {
   const [myTransCur, setMyTransCur] = useState(currency[0])
   const [otherTransCur, setOtherTransCur] = useState(currency[1])
 
-  // profileCountriesList yuklanganida tanlangan valyuta listda yo'q bo'lsa reset
+  // receiverCurrencies yuklanganida qabul qiluvchi valyuta listda yo'q bo'lsa reset
   useEffect(() => {
-    if (currency.length === 0) return
-    if (!currency.find(c => c.currencyName === myTransCur.currencyName)) {
-      setMyTransCur(currency[0])
+    if (receiverCurrencies.length === 0) return
+    if (!receiverCurrencies.find(c => c.currencyName === otherTransCur.currencyName)) {
+      setOtherTransCur(receiverCurrencies[0])
     }
-    if (!currency.find(c => c.currencyName === otherTransCur.currencyName)) {
-      setOtherTransCur(currency.length > 1 ? currency[1] : currency[0])
-    }
-  }, [currency.length])
+  }, [receiverCurrencies.length])
   const [selectedCrypto, setSelectedCrypto] = useState(null) // null = fiat, object = crypto
   const [sendAmount, setSendAmount] = useState('0')
   const [receiveAmount, setReceiveAmount] = useState('0')
@@ -288,7 +285,7 @@ const Transactions = () => {
 
               {isMyTransCurOpen && (
                 <div className="currTransDropdownMenu">
-                  {currency.map((cur, index) => (
+                  {allCurrencies.map((cur, index) => (
                     <button
                       key={index}
                       onClick={() => {
@@ -376,8 +373,8 @@ const Transactions = () => {
 
               {isOtheTransCurOpen && (
                 <div className="currTransDropdownMenu">
-                  {/* Fiat currencies */}
-                  {currency.map((cur, index) => (
+                  {/* Fiat currencies — faqat backend country lari */}
+                  {receiverCurrencies.map((cur, index) => (
                     <button
                       key={`fiat-${index}`}
                       onClick={() => {

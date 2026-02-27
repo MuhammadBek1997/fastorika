@@ -45,16 +45,16 @@ const Home = () => {
     }
   ]
 
-  // countryMap yuklangandan keyin faqat backend qo'llab-quvvatlaydigan valyutalarni ko'rsatish
-  const currency = Object.keys(countryMap).length > 0
+  // Qabul qiluvchi uchun — faqat backend country lari bo'yicha
+  const receiverCurrencies = Object.keys(countryMap).length > 0
     ? allCurrencies.filter(cur => countryMap[cur.currencyName])
     : allCurrencies
 
 
   const [isMyCurOpen, setIsMyCurOpen] = useState(false)
   const [isOtheCurOpen, setIsOtheCurOpen] = useState(false)
-  const [myCur, setMyCur] = useState(currency[0])
-  const [otherCur, setOtherCur] = useState(currency[1])
+  const [myCur, setMyCur] = useState(allCurrencies[0])
+  const [otherCur, setOtherCur] = useState(allCurrencies[1])
     const [sendAmount, setSendAmount] = useState('0')
   const [receiveAmount, setReceiveAmount] = useState('0')
   const [isMethodOpen, setIsMethodOpen] = useState(false)
@@ -106,16 +106,13 @@ const Home = () => {
     loadCountries()
   }, [])
 
-  // countryMap yuklanganidan keyin tanlangan valyuta filter ro'yxatida yo'q bo'lsa reset
+  // countryMap yuklanganida qabul qiluvchi valyuta listda yo'q bo'lsa reset
   useEffect(() => {
     if (Object.keys(countryMap).length === 0) return
     const filtered = allCurrencies.filter(cur => countryMap[cur.currencyName])
     if (filtered.length === 0) return
-    if (!filtered.find(c => c.currencyName === myCur.currencyName)) {
-      setMyCur(filtered[0])
-    }
     if (!filtered.find(c => c.currencyName === otherCur.currencyName)) {
-      setOtherCur(filtered.length > 1 ? filtered[1] : filtered[0])
+      setOtherCur(filtered[0])
     }
   }, [countryMap])
 
@@ -320,7 +317,7 @@ const Home = () => {
 
                 {isMyCurOpen && (
                   <div className="currDropdownMenu">
-                    {currency.map((cur, index) => (
+                    {allCurrencies.map((cur, index) => (
                       <button
                         key={index}
                         onClick={() => {
@@ -435,7 +432,7 @@ const Home = () => {
 
                     {isOtheCurOpen && (
                       <div className="currDropdownMenu">
-                        {currency.map((cur, index) => (
+                        {receiverCurrencies.map((cur, index) => (
                           <button
                             key={index}
                             onClick={() => {
