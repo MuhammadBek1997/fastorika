@@ -14,35 +14,26 @@ const Home = () => {
   const [countryMap, setCountryMap] = useState({}) // currency → country
   const [isFeeModalOpen, setIsFeeModalOpen] = useState(false)
 
+  // Receiver filterlash + flag ko'rsatish uchun to'liq ro'yxat
   const allCurrencies = [
-    {
-      flag: 'https://img.icons8.com/color/96/usa-circular.png',
-      currencyName: 'USD'
-    },
-    {
-      flag: 'https://img.icons8.com/color/96/uzbekistan-circular.png',
-      currencyName: 'UZS'
-    },
-    {
-      flag: 'https://img.icons8.com/color/96/russian-federation-circular.png',
-      currencyName: 'RUB'
-    },
-    {
-      flag: 'https://img.icons8.com/fluency/96/european-union-circular-flag.png',
-      currencyName: 'EUR'
-    },
-    {
-      flag: 'https://img.icons8.com/color/96/great-britain-circular.png',
-      currencyName: 'GBP'
-    },
-    {
-      flag: 'https://img.icons8.com/color/96/turkey-circular.png',
-      currencyName: 'TRY'
-    },
-    {
-      flag: 'https://img.icons8.com/color/96/kazakhstan-circular.png',
-      currencyName: 'KZT'
-    }
+    { flag: 'https://img.icons8.com/color/96/usa-circular.png', currencyName: 'USD' },
+    { flag: 'https://img.icons8.com/color/96/uzbekistan-circular.png', currencyName: 'UZS' },
+    { flag: 'https://img.icons8.com/color/96/russian-federation-circular.png', currencyName: 'RUB' },
+    { flag: 'https://img.icons8.com/fluency/96/european-union-circular-flag.png', currencyName: 'EUR' },
+    { flag: 'https://img.icons8.com/color/96/great-britain-circular.png', currencyName: 'GBP' },
+    { flag: 'https://img.icons8.com/color/96/turkey-circular.png', currencyName: 'TRY' },
+    { flag: 'https://img.icons8.com/color/96/kazakhstan-circular.png', currencyName: 'KZT' },
+  ]
+
+  // Jo'natuvchi uchun — hozircha faqat USD va EUR
+  const senderFiatCurrencies = [
+    { flag: 'https://img.icons8.com/color/96/usa-circular.png', currencyName: 'USD' },
+    { flag: 'https://img.icons8.com/fluency/96/european-union-circular-flag.png', currencyName: 'EUR' },
+    // { flag: 'https://img.icons8.com/color/96/uzbekistan-circular.png', currencyName: 'UZS' },
+    // { flag: 'https://img.icons8.com/color/96/russian-federation-circular.png', currencyName: 'RUB' },
+    // { flag: 'https://img.icons8.com/color/96/great-britain-circular.png', currencyName: 'GBP' },
+    // { flag: 'https://img.icons8.com/color/96/turkey-circular.png', currencyName: 'TRY' },
+    // { flag: 'https://img.icons8.com/color/96/kazakhstan-circular.png', currencyName: 'KZT' },
   ]
 
   // Qabul qiluvchi uchun — faqat backend country lari bo'yicha
@@ -53,7 +44,7 @@ const Home = () => {
 
   const [isMyCurOpen, setIsMyCurOpen] = useState(false)
   const [isOtheCurOpen, setIsOtheCurOpen] = useState(false)
-  const [myCur, setMyCur] = useState(allCurrencies[0])
+  const [myCur, setMyCur] = useState(senderFiatCurrencies[0])
   const [otherCur, setOtherCur] = useState(allCurrencies[1])
     const [sendAmount, setSendAmount] = useState('0')
   const [receiveAmount, setReceiveAmount] = useState('0')
@@ -66,12 +57,13 @@ const Home = () => {
   const lastEdited = useRef('send') // 'send' yoki 'receive' — qaysi input oxirgi o'zgartirilgan
 
   // Crypto state
+  // Hozircha faqat USDT
   const cryptoCurrencies = [
     { code: 'USDT', name: 'Tether USD', icon: '💵' },
-    { code: 'BTC', name: 'Bitcoin', icon: '₿' },
-    { code: 'ETH', name: 'Ethereum', icon: 'Ξ' },
-    { code: 'USDC', name: 'USD Coin', icon: '💲' },
-    { code: 'BNB', name: 'Binance Coin', icon: '🔶' }
+    // { code: 'BTC', name: 'Bitcoin', icon: '₿' },
+    // { code: 'ETH', name: 'Ethereum', icon: 'Ξ' },
+    // { code: 'USDC', name: 'USD Coin', icon: '💲' },
+    // { code: 'BNB', name: 'Binance Coin', icon: '🔶' },
   ]
   const [selectedCrypto, setSelectedCrypto] = useState(cryptoCurrencies[0])
   const [isCryptoOpen, setIsCryptoOpen] = useState(false)
@@ -317,7 +309,7 @@ const Home = () => {
 
                 {isMyCurOpen && (
                   <div className="currDropdownMenu">
-                    {allCurrencies.map((cur, index) => (
+                    {senderFiatCurrencies.map((cur, index) => (
                       <button
                         key={index}
                         onClick={() => {

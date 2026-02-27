@@ -44,7 +44,7 @@ const Transactions = () => {
   }
   const toCardPrimary = t('transactions.toCard')
   const toCardResolved = toCardPrimary === 'transactions.toCard' ? t('global.toCard') : toCardPrimary
-  // Fiat currencies
+  // Receiver filterlash + flag ko'rsatish uchun to'liq ro'yxat
   const allCurrencies = [
     { flag: 'https://img.icons8.com/color/96/usa-circular.png', currencyName: 'USD' },
     { flag: 'https://img.icons8.com/color/96/uzbekistan-circular.png', currencyName: 'UZS' },
@@ -52,7 +52,18 @@ const Transactions = () => {
     { flag: 'https://img.icons8.com/fluency/96/european-union-circular-flag.png', currencyName: 'EUR' },
     { flag: 'https://img.icons8.com/color/96/great-britain-circular.png', currencyName: 'GBP' },
     { flag: 'https://img.icons8.com/color/96/turkey-circular.png', currencyName: 'TRY' },
-    { flag: 'https://img.icons8.com/color/96/kazakhstan-circular.png', currencyName: 'KZT' }
+    { flag: 'https://img.icons8.com/color/96/kazakhstan-circular.png', currencyName: 'KZT' },
+  ]
+
+  // Jo'natuvchi uchun — hozircha faqat USD va EUR
+  const senderFiatCurrencies = [
+    { flag: 'https://img.icons8.com/color/96/usa-circular.png', currencyName: 'USD' },
+    { flag: 'https://img.icons8.com/fluency/96/european-union-circular-flag.png', currencyName: 'EUR' },
+    // { flag: 'https://img.icons8.com/color/96/uzbekistan-circular.png', currencyName: 'UZS' },
+    // { flag: 'https://img.icons8.com/color/96/russian-federation-circular.png', currencyName: 'RUB' },
+    // { flag: 'https://img.icons8.com/color/96/great-britain-circular.png', currencyName: 'GBP' },
+    // { flag: 'https://img.icons8.com/color/96/turkey-circular.png', currencyName: 'TRY' },
+    // { flag: 'https://img.icons8.com/color/96/kazakhstan-circular.png', currencyName: 'KZT' },
   ]
 
   // Qabul qiluvchi uchun — faqat backend country lari bo'yicha
@@ -63,12 +74,13 @@ const Transactions = () => {
     : allCurrencies
 
   // Crypto currencies (for receiving only)
+  // Hozircha faqat USDT
   const cryptoCurrencies = [
     { code: 'USDT', name: 'Tether USD', icon: '💵' },
-    { code: 'BTC', name: 'Bitcoin', icon: '₿' },
-    { code: 'ETH', name: 'Ethereum', icon: 'Ξ' },
-    { code: 'USDC', name: 'USD Coin', icon: '💲' },
-    { code: 'BNB', name: 'Binance Coin', icon: '🔶' }
+    // { code: 'BTC', name: 'Bitcoin', icon: '₿' },
+    // { code: 'ETH', name: 'Ethereum', icon: 'Ξ' },
+    // { code: 'USDC', name: 'USD Coin', icon: '💲' },
+    // { code: 'BNB', name: 'Binance Coin', icon: '🔶' },
   ]
 
   // Helper: get flag URL or emoji for a currency code
@@ -92,8 +104,8 @@ const Transactions = () => {
     }
     selfTriggered.current = false
   }, [globalDropdownKey])
-  const [myTransCur, setMyTransCur] = useState(currency[0])
-  const [otherTransCur, setOtherTransCur] = useState(currency[1])
+  const [myTransCur, setMyTransCur] = useState(senderFiatCurrencies[0])
+  const [otherTransCur, setOtherTransCur] = useState(allCurrencies[1])
 
   // receiverCurrencies yuklanganida qabul qiluvchi valyuta listda yo'q bo'lsa reset
   useEffect(() => {
@@ -285,7 +297,7 @@ const Transactions = () => {
 
               {isMyTransCurOpen && (
                 <div className="currTransDropdownMenu">
-                  {allCurrencies.map((cur, index) => (
+                  {senderFiatCurrencies.map((cur, index) => (
                     <button
                       key={index}
                       onClick={() => {

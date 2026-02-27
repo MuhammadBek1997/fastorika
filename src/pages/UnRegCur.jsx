@@ -14,35 +14,26 @@ const UnRegCur = () => {
     const navigate = useNavigate()
     const location = useLocation()
 
+    // Receiver filterlash uchun to'liq ro'yxat
     const allCurrencies = [
-        {
-            flag: 'https://img.icons8.com/color/96/usa-circular.png',
-            currencyName: 'USD'
-        },
-        {
-            flag: 'https://img.icons8.com/color/96/uzbekistan-circular.png',
-            currencyName: 'UZS'
-        },
-        {
-            flag: 'https://img.icons8.com/color/96/russian-federation-circular.png',
-            currencyName: 'RUB'
-        },
-        {
-            flag: 'https://img.icons8.com/fluency/96/european-union-circular-flag.png',
-            currencyName: 'EUR'
-        },
-        {
-            flag: 'https://img.icons8.com/color/96/great-britain-circular.png',
-            currencyName: 'GBP'
-        },
-        {
-            flag: 'https://img.icons8.com/color/96/turkey-circular.png',
-            currencyName: 'TRY'
-        },
-        {
-            flag: 'https://img.icons8.com/color/96/kazakhstan-circular.png',
-            currencyName: 'KZT'
-        }
+        { flag: 'https://img.icons8.com/color/96/usa-circular.png', currencyName: 'USD' },
+        { flag: 'https://img.icons8.com/color/96/uzbekistan-circular.png', currencyName: 'UZS' },
+        { flag: 'https://img.icons8.com/color/96/russian-federation-circular.png', currencyName: 'RUB' },
+        { flag: 'https://img.icons8.com/fluency/96/european-union-circular-flag.png', currencyName: 'EUR' },
+        { flag: 'https://img.icons8.com/color/96/great-britain-circular.png', currencyName: 'GBP' },
+        { flag: 'https://img.icons8.com/color/96/turkey-circular.png', currencyName: 'TRY' },
+        { flag: 'https://img.icons8.com/color/96/kazakhstan-circular.png', currencyName: 'KZT' },
+    ]
+
+    // Jo'natuvchi uchun — hozircha faqat USD va EUR
+    const senderFiatCurrencies = [
+        { flag: 'https://img.icons8.com/color/96/usa-circular.png', currencyName: 'USD' },
+        { flag: 'https://img.icons8.com/fluency/96/european-union-circular-flag.png', currencyName: 'EUR' },
+        // { flag: 'https://img.icons8.com/color/96/uzbekistan-circular.png', currencyName: 'UZS' },
+        // { flag: 'https://img.icons8.com/color/96/russian-federation-circular.png', currencyName: 'RUB' },
+        // { flag: 'https://img.icons8.com/color/96/great-britain-circular.png', currencyName: 'GBP' },
+        // { flag: 'https://img.icons8.com/color/96/turkey-circular.png', currencyName: 'TRY' },
+        // { flag: 'https://img.icons8.com/color/96/kazakhstan-circular.png', currencyName: 'KZT' },
     ]
 
     // Qabul qiluvchi uchun — faqat backend country lari bo'yicha
@@ -68,10 +59,10 @@ const UnRegCur = () => {
     const [isOtherCurrencyOpen, setIsOtherCurrencyOpen] = useState(false)
     const [myCurrency, setMyCurrency] = useState(() => {
         if (transferData?.fromCurrency) {
-            const found = allCurrencies.find(c => c.currencyName === transferData.fromCurrency)
-            return found || allCurrencies[0]
+            const found = senderFiatCurrencies.find(c => c.currencyName === transferData.fromCurrency)
+            return found || senderFiatCurrencies[0]
         }
-        return allCurrencies[0]
+        return senderFiatCurrencies[0]
     })
     const [otherCurrency, setOtherCurrency] = useState(() => {
         if (transferData?.toCurrency) {
@@ -95,16 +86,16 @@ const UnRegCur = () => {
     const isSwapping = useRef(false)
     const editingField = useRef(null) // 'send' or 'receive' — tracks which input the user is typing in
 
-    // Crypto state
+    // Jo'natuvchi uchun crypto — hozircha faqat USDT
     const cryptoCurrencies = [
         { code: 'USDT', name: 'Tether USD', icon: '💵' },
-        { code: 'BTC', name: 'Bitcoin', icon: '₿' },
-        { code: 'ETH', name: 'Ethereum', icon: 'Ξ' },
-        { code: 'USDC', name: 'USD Coin', icon: '💲' },
-        { code: 'BNB', name: 'Binance Coin', icon: '🔶' }
+        // { code: 'BTC', name: 'Bitcoin', icon: '₿' },
+        // { code: 'ETH', name: 'Ethereum', icon: 'Ξ' },
+        // { code: 'USDC', name: 'USD Coin', icon: '💲' },
+        // { code: 'BNB', name: 'Binance Coin', icon: '🔶' },
     ]
 
-    const [selectedSendCrypto, setSelectedSendCrypto] = useState(cryptoCurrencies[1]) // BTC — jo'natish uchun
+    const [selectedSendCrypto, setSelectedSendCrypto] = useState(cryptoCurrencies[0]) // USDT
     const [isSendCryptoOpen, setIsSendCryptoOpen] = useState(false)
 
     // Modal states
@@ -391,7 +382,7 @@ const UnRegCur = () => {
                                     </button>
                                     {isMyCurrencyOpen && (
                                         <div className="currDropdownMenu">
-                                            {allCurrencies.map((cur, index) => (
+                                            {senderFiatCurrencies.map((cur, index) => (
                                                 <button
                                                     key={index}
                                                     onClick={() => {
